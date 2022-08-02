@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>12053596555-abejjte595g4jlge0ctmt9ks3mnfnvba.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.12053596555-abejjte595g4jlge0ctmt9ks3mnfnvba</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>12053596555-d6e5m2gcef4p6pv8rcltrs089mru5nvr.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyBOLo5ENCEoBV-AH3QYghQ1z9OZJcN5zyc</string>
+	<key>GCM_SENDER_ID</key>
+	<string>12053596555</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.hottake.app</string>
+	<key>PROJECT_ID</key>
+	<string>hottake-app</string>
+	<key>STORAGE_BUCKET</key>
+	<string>hottake-app.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:12053596555:ios:e406a243938ff75eb9c78e</string>
+	<key>DATABASE_URL</key>
+	<string>https://hottake-app-default-rtdb.firebaseio.com</string>
+</dict>
+</plist>

@@ -1,0 +1,135 @@
+{
+  "project_info": {
+    "project_number": "12053596555",
+    "firebase_url": "https://hottake-app-default-rtdb.firebaseio.com",
+    "project_id": "hottake-app",
+    "storage_bucket": "hottake-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12053596555:android:6609416270bcf4fcb9c78e",
+        "android_client_info": {
+          "package_name": "com.hottake"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12053596555-86e6mdsc7cdl3a2be30b83c0svrgrqcr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzn4TPLQogSDFDv_E4Ta15naRjew2Wmj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12053596555-86e6mdsc7cdl3a2be30b83c0svrgrqcr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "12053596555-oesr1ie9prla2elvpacdbl7abgcfs4hf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hottake.hottakeapp.hottake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12053596555:android:c397ed75ee4fd9e8b9c78e",
+        "android_client_info": {
+          "package_name": "com.hottake.hottakeapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12053596555-d6e5m2gcef4p6pv8rcltrs089mru5nvr.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hottake.hottakeapp",
+            "certificate_hash": "d34223e6ca47795b1dcef17b25b8aafb2593335f"
+          }
+        },
+        {
+          "client_id": "12053596555-tmrh86gv1mt938pmv83egg08jv0akjub.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.hottake.hottakeapp",
+            "certificate_hash": "e8e3ebdf26f316739d0236c79fedf7bcecd614ec"
+          }
+        },
+        {
+          "client_id": "12053596555-86e6mdsc7cdl3a2be30b83c0svrgrqcr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzn4TPLQogSDFDv_E4Ta15naRjew2Wmj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12053596555-86e6mdsc7cdl3a2be30b83c0svrgrqcr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "12053596555-oesr1ie9prla2elvpacdbl7abgcfs4hf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hottake.hottakeapp.hottake"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:12053596555:android:1081b560797f428eb9c78e",
+        "android_client_info": {
+          "package_name": "com.hottake.hottakeapp.hottake"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "12053596555-86e6mdsc7cdl3a2be30b83c0svrgrqcr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAzn4TPLQogSDFDv_E4Ta15naRjew2Wmj8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "12053596555-86e6mdsc7cdl3a2be30b83c0svrgrqcr.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "12053596555-oesr1ie9prla2elvpacdbl7abgcfs4hf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hottake.hottakeapp.hottake"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
