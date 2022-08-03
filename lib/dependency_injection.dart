@@ -9,9 +9,11 @@ final dI = GetIt.instance;
 void init() {
   // Cubits
   dI.registerFactory(() => ThemeCubit());
+  dI.registerFactory(() => BackendCubit());
 
   // Cubits Event
   dI.registerLazySingleton(() => ThemeCubitEvent());
+  dI.registerLazySingleton(() => BackendCubitEvent());
 
   // Usecases
   dI.registerLazySingleton(() => GetTheme(dI()));
@@ -31,5 +33,8 @@ void init() {
   // Core
   dI.registerLazySingleton(
     () => FirebaseAuthImpl(),
+  );
+  dI.registerLazySingleton(
+    () => AuthImpl(),
   );
 }

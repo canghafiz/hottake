@@ -15,7 +15,7 @@ class ControlPage extends StatelessWidget {
       body: Center(
         child: ElevatedButton(
           onPressed: () {
-            dI<FirebaseAuthImpl>().logout();
+            dI<AuthImpl>().logout(context);
           },
           child: const Text("Logout"),
         ),

@@ -8,6 +8,7 @@ ThemeData appTheme({
   required ThemeEntity theme,
 }) {
   return ThemeData(
+    fontFamily: "Poppins",
     scaffoldBackgroundColor: convertTheme(theme.primary),
     colorScheme: const ColorScheme.light().copyWith(
       primary: convertTheme(theme.primary),

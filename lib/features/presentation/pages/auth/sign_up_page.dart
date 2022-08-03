@@ -5,22 +5,24 @@ import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
-class SignInPage extends StatefulWidget {
-  const SignInPage({Key? key}) : super(key: key);
+class SignUpPage extends StatefulWidget {
+  const SignUpPage({Key? key}) : super(key: key);
 
   @override
-  State<SignInPage> createState() => _SignInPageState();
+  State<SignUpPage> createState() => _SignUpPageState();
 }
 
-class _SignInPageState extends State<SignInPage> {
+class _SignUpPageState extends State<SignUpPage> {
   final formKey = GlobalKey<FormState>();
 
+  final username = TextEditingController();
   final email = TextEditingController();
   final password = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
+    username.dispose();
     email.dispose();
     password.dispose();
   }
@@ -30,12 +32,26 @@ class _SignInPageState extends State<SignInPage> {
     // Clear State
     clearState(context);
 
-    return Scaffold(
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
-          selector: (state) => state,
-          builder: (_, themeEntity) => Padding(
+    return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
+      selector: (state) => state,
+      builder: (_, themeEntity) => Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: convertTheme(themeEntity.secondary),
+            ),
+          ),
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+        ),
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16,
             ),
@@ -45,7 +61,6 @@ class _SignInPageState extends State<SignInPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                  const SizedBox(height: 48),
                   // Logo
                   Center(
                     child: Image.asset(
@@ -56,7 +71,7 @@ class _SignInPageState extends State<SignInPage> {
                   const SizedBox(height: 16),
                   // Title
                   Text(
-                    "Sign In for HotTake",
+                    "Sign Up for HotTake",
                     style: fontStyle(
                       size: 19,
                       theme: themeEntity,
@@ -73,6 +88,26 @@ class _SignInPageState extends State<SignInPage> {
                     ),
                   ),
                   const SizedBox(height: 36),
+                  // Username
+                  TextFormFieldCustom(
+                    controller: username,
+                    inputType: TextInputType.name,
+                    validator: (value) {
+                      if (value!.isEmpty) {
+                        return "Must Be Filled";
+                      }
+                    },
+                    hintText: "Username",
+                    themeEntity: themeEntity,
+                    prefix: Text(
+                      "@ ",
+                      style: fontStyle(
+                        size: 11,
+                        theme: themeEntity,
+                      ),
+                    ),
+                  ),
+                  const SizedBox(height: 16),
                   // Email
                   TextFormFieldCustom(
                     controller: email,
@@ -99,31 +134,17 @@ class _SignInPageState extends State<SignInPage> {
                     themeEntity: themeEntity,
                     obscureText: true,
                   ),
-                  const SizedBox(height: 16),
-                  // Forgot Password
-                  GestureDetector(
-                    onTap: () {
-                      // Navigate
-                      toPasswordPage(context);
-                    },
-                    child: Text(
-                      "Forgot Password ? Change Here",
-                      style: fontStyle(
-                        size: 10,
-                        theme: themeEntity,
-                      ),
-                    ),
-                  ),
                   const SizedBox(height: 36),
-                  // Btn Sign In
+                  // Btn Sign Up
                   BlocSelector<BackendCubit, BackendStatus, BackendStatus>(
                     selector: (state) => state,
                     builder: (_, state) => ElevatedButtonText(
                       onTap: () {
                         if (formKey.currentState!.validate()) {
-                          dI<AuthImpl>().loginWithEmail(
+                          dI<AuthImpl>().createAccount(
                             email: email.text,
                             password: password.text,
+                            username: username.text,
                             context: context,
                           );
                         }
@@ -131,20 +152,8 @@ class _SignInPageState extends State<SignInPage> {
                       themeEntity: themeEntity,
                       text: (state == BackendStatus.doing)
                           ? "Loading..."
-                          : "Sign In",
+                          : "Sign Up",
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Btn Sign Up
-                  ElevatedButtonText(
-                    onTap: () {
-                      // Navigate
-                      toSignUpPage(context);
-                    },
-                    themeEntity: themeEntity,
-                    text: "Sign Up",
-                    btnColor: convertTheme(themeEntity.secondary),
-                    textColor: convertTheme(themeEntity.third),
                   ),
                   // Or Divider
                   Padding(
