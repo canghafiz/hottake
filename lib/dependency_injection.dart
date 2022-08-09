@@ -10,13 +10,18 @@ void init() {
   // Cubits
   dI.registerFactory(() => ThemeCubit());
   dI.registerFactory(() => BackendCubit());
+  dI.registerFactory(() => NavbarCubit());
 
   // Cubits Event
   dI.registerLazySingleton(() => ThemeCubitEvent());
   dI.registerLazySingleton(() => BackendCubitEvent());
+  dI.registerLazySingleton(() => NavbarCubitEvent());
 
   // Usecases
   dI.registerLazySingleton(() => GetTheme(dI()));
+  dI.registerLazySingleton(() => UserCreateAccount(dI()));
+  dI.registerLazySingleton(() => UserUpdateData(dI()));
+  dI.registerLazySingleton(() => UserUpdatePhoto(dI()));
 
   // Repositories
   dI.registerLazySingleton<ThemeRepository>(
@@ -25,16 +30,24 @@ void init() {
     ),
   );
 
+  dI.registerLazySingleton<UserRepository>(
+    () => UserRepositoryImpl(
+      remoteDataSource: dI(),
+    ),
+  );
+
   // Data Source
   dI.registerLazySingleton<ThemeLocalDataSource>(
     () => ThemeLocalDataSourceImpl(),
   );
 
+  dI.registerLazySingleton<UserRemoteDataSource>(
+    () => UserRemoteDataSourceFirebase(),
+  );
+
   // Core
-  dI.registerLazySingleton(
-    () => FirebaseAuthImpl(),
-  );
-  dI.registerLazySingleton(
-    () => AuthImpl(),
-  );
+  dI.registerLazySingleton(() => FirebaseAuthImpl());
+  dI.registerLazySingleton(() => AuthImpl());
+  dI.registerLazySingleton(() => UserFirestore());
+  dI.registerLazySingleton(() => ImagePickerService());
 }

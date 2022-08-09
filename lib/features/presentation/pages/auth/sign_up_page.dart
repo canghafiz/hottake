@@ -35,6 +35,7 @@ class _SignUpPageState extends State<SignUpPage> {
     return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
       selector: (state) => state,
       builder: (_, themeEntity) => Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {
@@ -61,6 +62,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
+                  const SizedBox(height: 48),
                   // Logo
                   Center(
                     child: Image.asset(

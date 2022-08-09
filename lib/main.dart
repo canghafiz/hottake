@@ -32,6 +32,9 @@ class MainApp extends StatelessWidget {
         BlocProvider<BackendCubit>(
           create: (_) => dI<BackendCubit>(),
         ),
+        BlocProvider<NavbarCubit>(
+          create: (_) => dI<NavbarCubit>(),
+        ),
       ],
       child: BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
         selector: (state) => state,

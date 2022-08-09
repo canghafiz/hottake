@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
+import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
 class AuthResponse {
@@ -53,46 +54,81 @@ class AuthImpl {
     required String username,
     required BuildContext context,
   }) async {
-    await _impl
-        .createAccount(
-      email: email,
-      password: password,
-      updateStateOnLoad: () {
-        dI<BackendCubitEvent>().read(context).updateStatus(BackendStatus.doing);
-      },
-      updateStateOnDone: () {
-        dI<BackendCubitEvent>()
-            .read(context)
-            .updateStatus(BackendStatus.undoing);
-      },
-    )
-        .then(
-      (response) {
-        // When Success
-        if (response.userId != null) {
-          // Update Data
+    // Chcek Username
+    await dI<UserFirestore>().checkUsername(
+      username: username,
+      valid: () async {
+        await _impl
+            .createAccount(
+          email: email,
+          password: password,
+          updateStateOnLoad: () {
+            dI<BackendCubitEvent>()
+                .read(context)
+                .updateStatus(BackendStatus.doing);
+          },
+          updateStateOnDone: () {
+            dI<BackendCubitEvent>()
+                .read(context)
+                .updateStatus(BackendStatus.undoing);
+          },
+        )
+            .then(
+          (response) {
+            // When Success
+            if (response.userId != null) {
+              // Update Data
+              dI<UserFirestore>().checkIsUserAvailable(
+                userId: response.userId!,
+                not: () {
+                  // Call Data
+                  dI<UserCreateAccount>().call(
+                    userId: response.userId!,
+                    email: email,
+                    username: username,
+                    photo: null,
+                    bio: null,
+                    socialMedia: null,
+                    theme: dI<ThemeCubitEvent>().read(context).state,
+                  );
+                },
+              );
 
-          // Check Message Status
-          if (response.successMessage != null) {
+              // Check Message Status
+              if (response.successMessage != null) {
+                // Call Dialog
+                showDialog(
+                  context: context,
+                  builder: (_) => textDialog(
+                    text: response.successMessage!,
+                    size: 15,
+                    color: Colors.green,
+                    align: TextAlign.center,
+                  ),
+                );
+
+                return;
+              }
+            }
             // Call Dialog
             showDialog(
               context: context,
               builder: (_) => textDialog(
-                text: response.successMessage!,
+                text: response.errorMessage!,
                 size: 15,
-                color: Colors.green,
+                color: Colors.red,
                 align: TextAlign.center,
               ),
             );
-
-            return;
-          }
-        }
+          },
+        );
+      },
+      notValid: () {
         // Call Dialog
         showDialog(
           context: context,
           builder: (_) => textDialog(
-            text: response.errorMessage!,
+            text: "Username has been used by other account",
             size: 15,
             color: Colors.red,
             align: TextAlign.center,

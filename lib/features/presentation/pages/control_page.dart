@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:hottake/core/core.dart';
-import 'package:hottake/dependency_injection.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hottake/features/presentation/presentation.dart';
 
 class ControlPage extends StatelessWidget {
   const ControlPage({
@@ -11,13 +11,42 @@ class ControlPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // // Update State
+    // clearState(context);
+    initState(context: context, userId: userId);
+
+    final pages = [
+      HomePage(userId: userId),
+      MapPage(userId: userId),
+      NoteChoosePage(userId: userId),
+      FavouritesPage(userId: userId),
+      UserPage(userId: userId),
+    ];
     return Scaffold(
-      body: Center(
-        child: ElevatedButton(
-          onPressed: () {
-            dI<AuthImpl>().logout(context);
-          },
-          child: const Text("Logout"),
+      body: SafeArea(
+        child: Column(
+          children: [
+            // Content
+            Expanded(
+              child: BlocSelector<NavbarCubit, NavbarState, int>(
+                selector: (state) => state.bottomNav,
+                builder: (_, bottomNav) => Column(
+                  children: [
+                    // Top Nav
+                    (bottomNav == 0)
+                        ? const TopNavbarWidget()
+                        : const SizedBox(),
+                    // Pages
+                    Expanded(
+                      child: pages.elementAt(bottomNav),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            // Bottom Nav
+            const BottomNavbarWidget(),
+          ],
         ),
       ),
     );

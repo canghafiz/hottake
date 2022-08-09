@@ -1,0 +1,403 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hottake/core/core.dart';
+import 'package:hottake/dependency_injection.dart';
+import 'package:hottake/features/domain/domain.dart';
+import 'package:hottake/features/presentation/presentation.dart';
+
+class EditUserPage extends StatefulWidget {
+  const EditUserPage({
+    Key? key,
+    required this.user,
+    required this.userId,
+  }) : super(key: key);
+  final String userId;
+  final UserEntity user;
+
+  @override
+  State<EditUserPage> createState() => _EditUserPageState();
+}
+
+class _EditUserPageState extends State<EditUserPage> {
+  final formKey = GlobalKey<FormState>();
+
+  final username = TextEditingController();
+  final email = TextEditingController();
+  final bio = TextEditingController();
+  final socialMedia = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    username.dispose();
+    email.dispose();
+    bio.dispose();
+    socialMedia.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final themeState = dI<ThemeCubitEvent>().read(context).state;
+    return WillPopScope(
+      onWillPop: () async {
+        // Update State
+        dI<ThemeCubitEvent>().read(context).update(themeState);
+        return true;
+      },
+      child: BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
+        selector: (state) => state,
+        builder: (_, theme) => Scaffold(
+          appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                // Update State
+                dI<ThemeCubitEvent>().read(context).update(themeState);
+
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back,
+                color: convertTheme(theme.secondary),
+              ),
+            ),
+            title: Text(
+              "Edit Profile",
+              style: fontStyle(size: 15, theme: theme),
+            ),
+            centerTitle: true,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            shadowColor: Colors.transparent,
+          ),
+          body: SingleChildScrollView(
+              physics: const BouncingScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                ),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 24),
+                    // Photo
+                    Center(
+                      child: EditUserPhotoProfileWidget(
+                        userId: widget.userId,
+                        theme: theme,
+                      ),
+                    ),
+                    // Username
+                    EditUserTextfieldWidget(
+                      controller: username..text = widget.user.username,
+                      label: "Username",
+                      theme: theme,
+                      prefix: Text(
+                        "@ ",
+                        style: fontStyle(
+                          size: 15,
+                          theme: theme,
+                        ),
+                      ),
+                      enable: false,
+                      maxLength: null,
+                    ),
+                    const SizedBox(height: 24),
+                    // Email
+                    EditUserTextfieldWidget(
+                      controller: email..text = widget.user.email,
+                      label: "Email",
+                      theme: theme,
+                      prefix: null,
+                      enable: false,
+                      maxLength: null,
+                    ),
+                    const SizedBox(height: 24),
+                    // Bio
+                    EditUserTextfieldWidget(
+                      controller: bio..text = widget.user.bio ?? "",
+                      label: "Bio",
+                      theme: theme,
+                      prefix: null,
+                      enable: true,
+                      maxLength: 500,
+                    ),
+                    const SizedBox(height: 24),
+                    // Social Media
+                    Form(
+                      key: formKey,
+                      child: EditUserTextfieldWidget(
+                        controller: socialMedia
+                          ..text = widget.user.socialMedia ?? "",
+                        label: "Social Media",
+                        theme: theme,
+                        prefix: null,
+                        enable: true,
+                        maxLength: null,
+                        validator: (value) {
+                          if (value!.isNotEmpty) {
+                            bool validUrl = Uri.parse(value).isAbsolute;
+                            if (!validUrl) {
+                              return "Url is not valid!";
+                            }
+                          }
+                          return null;
+                        },
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    // App Theme
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // Title
+                        Text(
+                          "App Theme",
+                          style: fontStyle(
+                            size: 11,
+                            theme: theme,
+                            weight: FontWeight.w300,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        // Data
+                        SingleChildScrollView(
+                          physics: const BouncingScrollPhysics(),
+                          scrollDirection: Axis.horizontal,
+                          child: Row(
+                            children: themes
+                                .map(
+                                  (data) => GestureDetector(
+                                    onTap: () {
+                                      // Update State
+                                      dI<ThemeCubitEvent>()
+                                          .read(context)
+                                          .update(data);
+                                    },
+                                    child: Container(
+                                      margin: const EdgeInsets.only(right: 16),
+                                      width: 48,
+                                      height: 48,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: convertTheme(data.primary),
+                                        border: Border.all(
+                                          color: (theme == data)
+                                              ? convertTheme(data.secondary)
+                                              : Colors.transparent,
+                                          width: 3,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                )
+                                .toList(),
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 36),
+                    // Btn Save
+                    ElevatedButtonText(
+                      onTap: () {
+                        if (formKey.currentState!.validate()) {
+                          dI<UserFirestore>().updateData(
+                            userId: widget.userId,
+                            username: username.text,
+                            bio: (bio.text.isEmpty) ? null : bio.text,
+                            socialMedia: (socialMedia.text.isEmpty)
+                                ? null
+                                : socialMedia.text,
+                            theme: theme,
+                            context: context,
+                          );
+                        }
+                      },
+                      themeEntity: theme,
+                      text: "Save",
+                      btnColor: convertTheme(theme.secondary),
+                      textColor: convertTheme(theme.third),
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                ),
+              )),
+        ),
+      ),
+    );
+  }
+}
+
+// Photo
+class EditUserPhotoProfileWidget extends StatelessWidget {
+  const EditUserPhotoProfileWidget({
+    Key? key,
+    required this.userId,
+    required this.theme,
+  }) : super(key: key);
+  final String userId;
+  final ThemeEntity theme;
+
+  @override
+  Widget build(BuildContext context) {
+    Widget photo(String? url) {
+      return SizedBox(
+        height: 84,
+        width: 84,
+        child: Stack(
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                border: Border.all(
+                  width: 3,
+                  color: convertTheme(
+                    theme.secondary,
+                  ),
+                ),
+              ),
+              child: Stack(
+                children: [
+                  PhotoProfileWidget(url: url, size: 84, theme: theme),
+                  Container(
+                    width: double.infinity,
+                    height: double.infinity,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.black.withOpacity(0.5),
+                    ),
+                    child: Center(
+                      child: Icon(
+                        Icons.camera_alt_outlined,
+                        color: convertTheme(
+                          theme.secondary,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            GestureDetector(
+              onTap: () {
+                // Show Modal Bottom
+                showModalBottom(
+                  theme: theme,
+                  context: context,
+                  content: PhotoProfileBottomSheetWidget(
+                    url: url,
+                    theme: theme,
+                    userId: userId,
+                  ),
+                );
+              },
+              child: Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  padding: const EdgeInsets.all(4),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: convertTheme(theme.primary),
+                    border: Border.all(
+                      width: 3,
+                      color: convertTheme(
+                        theme.secondary,
+                      ),
+                    ),
+                  ),
+                  child: Icon(
+                    Icons.add,
+                    color: convertTheme(theme.secondary),
+                    size: 12,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return StreamBuilder<DocumentSnapshot>(
+      stream: dI<UserFirestore>().getRealTimeUser(userId),
+      builder: (_, snapshot) {
+        if (!snapshot.hasData) {
+          return photo(null);
+        }
+        // Model
+        final UserEntity user =
+            UserEntity.fromMap(snapshot.data!.data() as Map<String, dynamic>);
+
+        return photo(user.photo);
+      },
+    );
+  }
+}
+
+// Textfield
+class EditUserTextfieldWidget extends StatelessWidget {
+  const EditUserTextfieldWidget({
+    Key? key,
+    required this.controller,
+    required this.label,
+    required this.theme,
+    required this.prefix,
+    required this.enable,
+    required this.maxLength,
+    this.validator,
+  }) : super(key: key);
+  final TextEditingController controller;
+  final String label;
+  final ThemeEntity theme;
+  final Widget? prefix;
+  final bool enable;
+  final int? maxLength;
+  final Function(String?)? validator;
+
+  @override
+  Widget build(BuildContext context) {
+    final border = UnderlineInputBorder(
+      borderSide: BorderSide(
+        color: convertTheme(theme.third),
+      ),
+    );
+    final activeBorder = UnderlineInputBorder(
+      borderSide: BorderSide(
+        color: convertTheme(theme.third),
+        width: 3,
+      ),
+    );
+
+    return TextFormField(
+      enabled: enable,
+      controller: controller,
+      validator: (validator == null) ? null : (value) => validator!(value),
+      style: fontStyle(
+        size: 13,
+        theme: theme,
+        weight: FontWeight.bold,
+      ),
+      cursorColor: convertTheme(theme.secondary),
+      maxLength: maxLength,
+      decoration: InputDecoration(
+        contentPadding: const EdgeInsets.all(4),
+        border: border,
+        errorBorder: border,
+        enabledBorder: border,
+        disabledBorder: border,
+        focusedBorder: activeBorder,
+        focusedErrorBorder: activeBorder,
+        prefix: prefix,
+        labelText: label,
+        labelStyle: fontStyle(size: 15, theme: theme, weight: FontWeight.w300),
+        errorStyle: fontStyle(
+          size: 13,
+          theme: theme,
+        ),
+        counterStyle: fontStyle(
+          size: 11,
+          theme: theme,
+        ),
+      ),
+    );
+  }
+}

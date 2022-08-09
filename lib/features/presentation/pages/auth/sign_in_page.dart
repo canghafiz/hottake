@@ -29,7 +29,6 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     // Clear State
     clearState(context);
-
     return Scaffold(
       body: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),

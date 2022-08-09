@@ -61,6 +61,7 @@ Widget alertDialogTextWith2Button({
               color: fontColor,
               theme: theme,
             ),
+            textAlign: TextAlign.center,
           ),
           actions: [
             // Yes
@@ -70,14 +71,13 @@ Widget alertDialogTextWith2Button({
                 onTrueText,
                 style: fontStyle(
                   size: fontSize,
-                  color: Colors.white,
                   theme: theme,
                 ),
               ),
               style: ElevatedButton.styleFrom(
                 shape: const RoundedRectangleBorder(
                     borderRadius: BorderRadius.all(Radius.circular(4))),
-                primary: Colors.blue,
+                primary: convertTheme(theme.third),
                 elevation: 0,
                 shadowColor: Colors.transparent,
               ),
@@ -89,8 +89,8 @@ Widget alertDialogTextWith2Button({
                 onFalseText,
                 style: fontStyle(
                   size: fontSize,
-                  color: Colors.black,
                   theme: theme,
+                  color: convertTheme(theme.primary),
                 ),
               ),
               style: ElevatedButton.styleFrom(
