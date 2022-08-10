@@ -1,0 +1,85 @@
+import 'package:flutter/material.dart';
+import 'package:hottake/core/core.dart';
+import 'package:hottake/dependency_injection.dart';
+import 'package:hottake/features/domain/domain.dart';
+import 'package:hottake/features/presentation/presentation.dart';
+
+class NoteCreatorwidget extends StatefulWidget {
+  const NoteCreatorwidget({
+    Key? key,
+    required this.theme,
+  }) : super(key: key);
+  final ThemeEntity theme;
+
+  @override
+  State<NoteCreatorwidget> createState() => _NoteCreatorwidgetState();
+}
+
+class _NoteCreatorwidgetState extends State<NoteCreatorwidget> {
+  final formKey = GlobalKey<FormState>();
+
+  final title = TextEditingController();
+  final note = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    title.dispose();
+    note.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Form(
+      key: formKey,
+      child: Column(
+        children: [
+          // Title
+          TextfieldPostWidget(
+            controller: title,
+            hintText: "Title",
+            theme: widget.theme,
+            validator: (value) {
+              if (value!.isEmpty) {
+                return "Must be filled!";
+              }
+            },
+            type: TextInputType.text,
+          ),
+          const SizedBox(height: 16),
+          // Note
+          TextfieldPostWidget(
+            controller: note,
+            hintText: "Note",
+            theme: widget.theme,
+            validator: (value) {
+              if (value!.isEmpty) {
+                return "Must be filled!";
+              }
+            },
+            type: TextInputType.text,
+            maxLine: 8,
+          ),
+          const SizedBox(height: 24),
+          // Btn Next
+          ButtonCreatorWidget(
+            onTap: () {
+              if (formKey.currentState!.validate()) {
+                // Update State
+                dI<PostCubitEvent>().read(context).updateNote(
+                      title: title.text,
+                      note: note.text,
+                    );
+
+                // Navigate
+                toPostLocationPage(context);
+              }
+            },
+            title: "Next",
+            theme: widget.theme,
+          ),
+        ],
+      ),
+    );
+  }
+}

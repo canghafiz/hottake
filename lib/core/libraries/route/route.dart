@@ -26,3 +26,17 @@ void toEditUserPage({
     ),
   );
 }
+
+void toPostCreatorPage({
+  required BuildContext context,
+  required String userId,
+}) {
+  Navigator.push(
+    context,
+    _route(PostCreatorPage(userId: userId)),
+  );
+}
+
+void toPostLocationPage(BuildContext context) {
+  Navigator.push(context, _route(const PostLocationPage()));
+}

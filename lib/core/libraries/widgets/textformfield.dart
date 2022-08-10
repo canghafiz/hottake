@@ -14,6 +14,7 @@ class TextFormFieldCustom extends StatelessWidget {
     this.textColor,
     this.borderColor,
     this.prefix,
+    this.maxLine,
   }) : super(key: key);
   final TextEditingController controller;
   final TextInputType inputType;
@@ -23,6 +24,7 @@ class TextFormFieldCustom extends StatelessWidget {
   final bool? obscureText;
   final Widget? prefix;
   final ThemeEntity themeEntity;
+  final int? maxLine;
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +62,7 @@ class TextFormFieldCustom extends StatelessWidget {
       obscureText: obscureText ?? false,
       style: textStyle,
       cursorColor: textStyle.color,
+      maxLines: maxLine ?? 1,
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.all(8),
         focusedBorder: borderWhenActive,

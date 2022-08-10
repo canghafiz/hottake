@@ -11,11 +11,13 @@ void init() {
   dI.registerFactory(() => ThemeCubit());
   dI.registerFactory(() => BackendCubit());
   dI.registerFactory(() => NavbarCubit());
+  dI.registerFactory(() => PostCubit());
 
   // Cubits Event
   dI.registerLazySingleton(() => ThemeCubitEvent());
   dI.registerLazySingleton(() => BackendCubitEvent());
   dI.registerLazySingleton(() => NavbarCubitEvent());
+  dI.registerLazySingleton(() => PostCubitEvent());
 
   // Usecases
   dI.registerLazySingleton(() => GetTheme(dI()));

@@ -71,7 +71,11 @@ class UserRemoteDataSourceFirebase implements UserRemoteDataSource {
         "username": username,
         "bio": bio,
         "socialMedia": socialMedia,
-        "theme": theme,
+        "theme": ThemeEntity.toMap(
+          primary: theme.primary,
+          secondary: theme.secondary,
+          third: theme.third,
+        ),
       },
       SetOptions(merge: true),
     );

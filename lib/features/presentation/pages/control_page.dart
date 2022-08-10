@@ -18,7 +18,7 @@ class ControlPage extends StatelessWidget {
     final pages = [
       HomePage(userId: userId),
       MapPage(userId: userId),
-      NoteChoosePage(userId: userId),
+      PostChoosePage(userId: userId),
       FavouritesPage(userId: userId),
       UserPage(userId: userId),
     ];

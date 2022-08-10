@@ -37,11 +37,11 @@ class ElevatedButtonText extends StatelessWidget {
           width ?? double.infinity,
           height ?? 48,
         ),
+        primary: btnColor ?? convertTheme(themeEntity.third),
         maximumSize: Size(
           width ?? double.infinity,
           height ?? 48,
         ),
-        primary: btnColor ?? convertTheme(themeEntity.third),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(25),
@@ -90,11 +90,11 @@ class ElevatedButtonTextWithIcon extends StatelessWidget {
           width ?? double.infinity,
           height ?? 48,
         ),
+        primary: btnColor ?? convertTheme(themeEntity.third),
         maximumSize: Size(
           width ?? double.infinity,
           height ?? 48,
         ),
-        primary: btnColor ?? convertTheme(themeEntity.third),
         shape: const RoundedRectangleBorder(
           borderRadius: BorderRadius.all(
             Radius.circular(25),

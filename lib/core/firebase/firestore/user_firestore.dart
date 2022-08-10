@@ -106,10 +106,9 @@ class UserFirestore {
           style: fontStyle(
             size: 13,
             theme: theme,
-            color: convertTheme(theme.primary),
           ),
         ),
-        backgroundColor: convertTheme(theme.third),
+        backgroundColor: convertTheme(theme.primary),
       ),
     );
   }

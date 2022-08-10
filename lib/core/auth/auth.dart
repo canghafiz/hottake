@@ -255,6 +255,9 @@ class AuthImpl {
         },
         onTrue: () {
           _impl.logout();
+          // Update State
+          clearState(context);
+          dI<ThemeCubitEvent>().read(context).clear();
           Navigator.pop(context);
         },
         onFalseText: "Cancel",

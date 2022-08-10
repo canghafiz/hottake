@@ -104,6 +104,7 @@ class UserProfileWidget extends StatelessWidget {
                           ? TextDecoration.underline
                           : null,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   ),
                   onPressed: () {
                     if (user.socialMedia != null) {

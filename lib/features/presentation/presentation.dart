@@ -3,6 +3,7 @@ export 'package:hottake/features/presentation/cubits/theme/theme_cubit.dart';
 export 'package:hottake/features/presentation/cubits/backend/backend_cubit.dart';
 export 'package:hottake/features/presentation/cubits/navbar/navbar_cubit.dart';
 export 'package:hottake/features/presentation/cubits/cubit.dart';
+export 'package:hottake/features/presentation/cubits/post/post_cubit.dart';
 
 // Pages
 export 'package:hottake/features/presentation/pages/main_page.dart';
@@ -16,8 +17,9 @@ export 'package:hottake/features/presentation/pages/main_page.dart';
 export 'package:hottake/features/presentation/pages/map_page.dart';
 export 'package:hottake/features/presentation/pages/user/user_page.dart';
 export 'package:hottake/features/presentation/pages/user/edit_user_page.dart';
-export 'package:hottake/features/presentation/pages/note/note_choose_page.dart';
-export 'package:hottake/features/presentation/pages/note/note_creator_page.dart';
+export 'package:hottake/features/presentation/pages/post/post_choose_page.dart';
+export 'package:hottake/features/presentation/pages/post/post_creator_page.dart';
+export 'package:hottake/features/presentation/pages/post/post_location_page.dart';
 
 // Widgets
 export 'package:hottake/features/presentation/widgets/navbar_widget.dart';
@@ -25,3 +27,8 @@ export 'package:hottake/features/presentation/widgets/user/user_notes_widget.dar
 export 'package:hottake/features/presentation/widgets/user/user_profile_widget.dart';
 export 'package:hottake/features/presentation/widgets/photo/photo_profile_widget.dart';
 export 'package:hottake/features/presentation/widgets/photo/photo_profile_bottom_sheet_widget.dart';
+export 'package:hottake/features/presentation/widgets/post/note_creator_widget.dart';
+export 'package:hottake/features/presentation/widgets/post/polling_creator_widget.dart';
+export 'package:hottake/features/presentation/widgets/post/rating_creator_widget.dart';
+export 'package:hottake/features/presentation/widgets/post/textfield_post_widget.dart';
+export 'package:hottake/features/presentation/widgets/post/button_creator_widget.dart';

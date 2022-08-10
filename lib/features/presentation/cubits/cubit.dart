@@ -19,4 +19,6 @@ void clearState(BuildContext context) {
   dI<BackendCubitEvent>().read(context).clear();
   // Navbar
   dI<NavbarCubitEvent>().read(context).clear();
+  // Post
+  dI<PostCubitEvent>().read(context).clear();
 }
