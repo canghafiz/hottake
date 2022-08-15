@@ -8,8 +8,10 @@ import 'package:hottake/features/presentation/presentation.dart';
 class UserPage extends StatelessWidget {
   const UserPage({
     Key? key,
+    this.initialTab,
     required this.userId,
   }) : super(key: key);
+  final int? initialTab;
   final String userId;
 
   @override
@@ -18,8 +20,18 @@ class UserPage extends StatelessWidget {
       selector: (state) => state,
       builder: (_, theme) => DefaultTabController(
         length: 2,
+        initialIndex: initialTab ?? 0,
         child: Scaffold(
           appBar: AppBar(
+            leading: IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: Icon(
+                Icons.arrow_back_ios,
+                color: convertTheme(theme.secondary),
+              ),
+            ),
             actions: [
               PopupMenuButton(
                 color: convertTheme(theme.primary),

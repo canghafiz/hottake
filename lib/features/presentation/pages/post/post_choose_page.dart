@@ -37,7 +37,7 @@ class PostChoosePage extends StatelessWidget {
                     boxShadow: [
                       BoxShadow(
                         blurRadius: 16,
-                        color: Colors.black.withOpacity(0.1),
+                        color: Colors.black.withOpacity(0.5),
                         offset: const Offset(0, 0),
                       ),
                     ],
@@ -84,10 +84,10 @@ class PostChoosePage extends StatelessWidget {
                                 // Update State
                                 dI<PostCubitEvent>()
                                     .read(context)
-                                    .updateUserPoll(
-                                      value: null,
+                                    .updatePolling(
                                       index: null,
-                                      updateItem: false,
+                                      pollCubit: null,
+                                      initial: true,
                                     );
                               },
                               theme: theme,
@@ -166,7 +166,11 @@ Widget noteChooseTypeWidget({
             ? IconButton(
                 onPressed: () {
                   // Navigate
-                  toPostCreatorPage(context: context, userId: userId);
+                  toPostLocationPage(
+                    context: context,
+                    userId: userId,
+                    postId: null,
+                  );
                 },
                 icon: Icon(
                   Icons.arrow_forward_ios_outlined,

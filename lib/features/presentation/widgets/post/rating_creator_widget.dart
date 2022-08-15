@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
@@ -7,8 +9,12 @@ import 'package:hottake/features/presentation/presentation.dart';
 class RatingCreatorWidget extends StatefulWidget {
   const RatingCreatorWidget({
     Key? key,
+    required this.postId,
+    required this.userId,
     required this.theme,
   }) : super(key: key);
+  final String? postId;
+  final String userId;
   final ThemeEntity theme;
 
   @override
@@ -32,6 +38,30 @@ class _RatingCreatorWidgetState extends State<RatingCreatorWidget> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         // Rating
+        BlocSelector<PostCubit, PostState, RatingEntity>(
+          selector: (state) => state.rating!,
+          builder: (_, state) => RatingBar.builder(
+            initialRating: state.rating,
+            minRating: 0,
+            direction: Axis.horizontal,
+            allowHalfRating: true,
+            itemCount: 5,
+            itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
+            itemSize: 36,
+            unratedColor: convertTheme(widget.theme.secondary),
+            itemBuilder: (context, _) => const Icon(
+              Icons.star,
+              color: Colors.amber,
+            ),
+            onRatingUpdate: (value) {
+              // Update State
+              dI<PostCubitEvent>().read(context).updateRating(
+                    description: description.text,
+                    value: value,
+                  );
+            },
+          ),
+        ),
         const SizedBox(height: 16),
         // Description
         Form(
@@ -50,23 +80,61 @@ class _RatingCreatorWidgetState extends State<RatingCreatorWidget> {
           ),
         ),
         const SizedBox(height: 24),
-        // Btn Next
+        // Btn Post
         Center(
-          child: ButtonCreatorWidget(
-            onTap: () {
-              if (formKey.currentState!.validate()) {
-                // Update State
-                dI<PostCubitEvent>().read(context).updateRating(
-                      description: description.text,
-                      value: 0,
+          child: BlocSelector<PostCubit, PostState, PostState>(
+            selector: (state) => state,
+            builder: (_, state) => ButtonCreatorWidget(
+              onTap: () {
+                if (formKey.currentState!.validate()) {
+                  if (state.rating!.rating == 0) {
+                    // Show Dialog
+                    showDialog(
+                      context: context,
+                      builder: (context) => textDialog(
+                        text: "Rating must be filled!",
+                        size: 13,
+                        color: Colors.red,
+                        align: TextAlign.center,
+                      ),
                     );
-
-                // Navigate
-                toPostLocationPage(context);
-              }
-            },
-            title: "Next",
-            theme: widget.theme,
+                  } else {
+                    if (widget.postId == null) {
+                      // Create
+                      dI<CreatePost>().call(
+                        userId: widget.userId,
+                        longitude: state.longitude ?? "",
+                        latitude: state.latitude ?? "",
+                        note: null,
+                        userPoll: null,
+                        rating: RatingEntity.toMap(
+                          rating: state.rating!.rating,
+                          description: description.text,
+                        ),
+                        context: context,
+                      );
+                    } else {
+                      // Update
+                      dI<UpdatePost>().call(
+                        userId: widget.userId,
+                        postId: widget.postId!,
+                        longitude: state.longitude ?? "",
+                        latitude: state.latitude ?? "",
+                        note: null,
+                        userPoll: null,
+                        rating: RatingEntity.toMap(
+                          rating: state.rating!.rating,
+                          description: description.text,
+                        ),
+                        context: context,
+                      );
+                    }
+                  }
+                }
+              },
+              title: "Post",
+              theme: widget.theme,
+            ),
           ),
         ),
       ],

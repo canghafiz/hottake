@@ -38,6 +38,20 @@ Widget textDialog({
   );
 }
 
+Widget alertDialogWithCustomContent(Widget content) {
+  return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
+    selector: (state) => state,
+    builder: (_, theme) {
+      return AlertDialog(
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(5)),
+        ),
+        content: content,
+      );
+    },
+  );
+}
+
 Widget alertDialogTextWith2Button({
   required String text,
   required double fontSize,

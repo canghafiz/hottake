@@ -7,8 +7,10 @@ import 'package:hottake/features/presentation/presentation.dart';
 class PostCreatorPage extends StatelessWidget {
   const PostCreatorPage({
     Key? key,
+    required this.postId,
     required this.userId,
   }) : super(key: key);
+  final String? postId;
   final String userId;
 
   @override
@@ -33,7 +35,7 @@ class PostCreatorPage extends StatelessWidget {
                 boxShadow: [
                   BoxShadow(
                     blurRadius: 16,
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withOpacity(0.5),
                     offset: const Offset(0, 0),
                   ),
                 ],
@@ -107,6 +109,8 @@ class PostCreatorPage extends StatelessWidget {
                             const SizedBox(height: 16),
                             // Content
                             postCreatorContentDefine(
+                              postId: postId,
+                              userId: userId,
                               note: state.note,
                               polling: state.userPoll,
                               rating: state.rating,
@@ -144,6 +148,8 @@ String postCreatorTitleDefine({
 }
 
 Widget postCreatorContentDefine({
+  required String? postId,
+  required String userId,
   required NoteEntity? note,
   required UserPollEntity? polling,
   required RatingEntity? rating,
@@ -151,11 +157,15 @@ Widget postCreatorContentDefine({
 }) {
   // Note
   if (note != null) {
-    return NoteCreatorwidget(theme: theme);
+    return NoteCreatorwidget(
+      theme: theme,
+      userId: userId,
+      postId: postId,
+    );
   }
   // Polling
   if (polling != null) {
-    return PollingCreatorWidget(theme: theme);
+    return PollingCreatorWidget(theme: theme, userId: userId, postId: postId);
   }
-  return RatingCreatorWidget(theme: theme);
+  return RatingCreatorWidget(theme: theme, userId: userId, postId: postId);
 }

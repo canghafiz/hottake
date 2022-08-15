@@ -14,6 +14,7 @@ class TextFormFieldCustom extends StatelessWidget {
     this.textColor,
     this.borderColor,
     this.prefix,
+    this.suffix,
     this.maxLine,
   }) : super(key: key);
   final TextEditingController controller;
@@ -22,7 +23,7 @@ class TextFormFieldCustom extends StatelessWidget {
   final Color? borderColor, textColor;
   final String hintText;
   final bool? obscureText;
-  final Widget? prefix;
+  final Widget? prefix, suffix;
   final ThemeEntity themeEntity;
   final int? maxLine;
 
@@ -75,6 +76,7 @@ class TextFormFieldCustom extends StatelessWidget {
         hintStyle: textStyle,
         errorStyle: errorStyle,
         prefix: prefix,
+        suffix: suffix,
       ),
     );
   }

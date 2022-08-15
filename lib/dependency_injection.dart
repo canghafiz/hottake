@@ -24,6 +24,10 @@ void init() {
   dI.registerLazySingleton(() => UserCreateAccount(dI()));
   dI.registerLazySingleton(() => UserUpdateData(dI()));
   dI.registerLazySingleton(() => UserUpdatePhoto(dI()));
+  dI.registerLazySingleton(() => CreatePost(dI()));
+  dI.registerLazySingleton(() => UpdatePost(dI()));
+  dI.registerLazySingleton(() => UpdateFavoritePost(dI()));
+  dI.registerLazySingleton(() => DeletePost(dI()));
 
   // Repositories
   dI.registerLazySingleton<ThemeRepository>(
@@ -38,6 +42,12 @@ void init() {
     ),
   );
 
+  dI.registerLazySingleton<PostRepository>(
+    () => PostRepositoryImpl(
+      remoteDataSource: dI(),
+    ),
+  );
+
   // Data Source
   dI.registerLazySingleton<ThemeLocalDataSource>(
     () => ThemeLocalDataSourceImpl(),
@@ -45,6 +55,10 @@ void init() {
 
   dI.registerLazySingleton<UserRemoteDataSource>(
     () => UserRemoteDataSourceFirebase(),
+  );
+
+  dI.registerLazySingleton<PostRemoteDataSource>(
+    () => PostRemoteDataSourceFirebase(),
   );
 
   // Core

@@ -5,7 +5,13 @@ import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
 class PostLocationPage extends StatelessWidget {
-  const PostLocationPage({Key? key}) : super(key: key);
+  const PostLocationPage({
+    Key? key,
+    required this.postId,
+    required this.userId,
+  }) : super(key: key);
+  final String? postId;
+  final String userId;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +47,18 @@ class PostLocationPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 16),
-            // Btn Post
-            ButtonCreatorWidget(onTap: () {}, title: "Post", theme: theme),
+            // Btn Next
+            ButtonCreatorWidget(
+                onTap: () {
+                  // Navigate
+                  toPostCreatorPage(
+                    context: context,
+                    userId: userId,
+                    postId: postId,
+                  );
+                },
+                title: "Next",
+                theme: theme),
             const SizedBox(height: 16),
           ],
         ),

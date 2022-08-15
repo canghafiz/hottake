@@ -15,3 +15,7 @@ List themes = [
 Color convertTheme(String value) {
   return Color(int.parse("0xff$value"));
 }
+
+String convertTime(DateTime time) {
+  return "${time.year}-${time.month}-${time.day} ${time.hour}:${time.minute}:${time.second}";
+}

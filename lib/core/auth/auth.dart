@@ -180,7 +180,7 @@ class AuthImpl {
     BuildContext context,
   ) async {
     await _impl.loginWithGoogle().then(
-      (response) {
+      (response) async {
         // Error
         if (response.errorMessage != null) {
           // Call Dialog
@@ -193,7 +193,23 @@ class AuthImpl {
               align: TextAlign.center,
             ),
           );
-          return;
+        } else if (response.userCredential != null) {
+          // Update Data
+          await dI<UserFirestore>().checkIsUserAvailable(
+            userId: response.userCredential!.user!.uid,
+            not: () {
+              // Call Data
+              dI<UserCreateAccount>().call(
+                userId: response.userCredential!.user!.uid,
+                email: response.userCredential!.user!.email!,
+                username: response.userCredential!.user!.displayName!,
+                photo: response.userCredential!.user!.photoURL,
+                bio: null,
+                socialMedia: null,
+                theme: dI<ThemeCubitEvent>().read(context).state,
+              );
+            },
+          );
         }
       },
     );

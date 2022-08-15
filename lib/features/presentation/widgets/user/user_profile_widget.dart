@@ -6,7 +6,7 @@ import 'package:hottake/core/core.dart';
 import 'package:hottake/core/firebase/firestore/user_firestore.dart';
 import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
-import 'package:hottake/features/presentation/widgets/photo/photo_profile_widget.dart';
+import 'package:hottake/features/presentation/presentation.dart';
 import 'package:sizer/sizer.dart';
 import 'package:url_launcher/url_launcher_string.dart';
 

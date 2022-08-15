@@ -34,8 +34,8 @@ class PostCubit extends Cubit<PostState> {
   PostCubit() : super(_default);
 
   static final _default = PostState(
-    latitude: null,
-    longitude: null,
+    latitude: "",
+    longitude: "",
     note: null,
     rating: null,
     userPoll: null,
@@ -97,41 +97,56 @@ class PostCubit extends Cubit<PostState> {
     );
   }
 
-  void updateUserPoll({
-    required PollCubit? value,
+  void updatePolling({
     required int? index,
-    required bool updateItem,
+    required PollCubit? pollCubit,
+    required bool initial,
   }) {
-    state.userPoll = UserPollEntity([]);
-    if (value != null) {
-      if (index != null && updateItem) {
-        state.userPoll!.polls[index] = value;
-      } else if (index == null && !updateItem) {
-        state.userPoll!.polls.add(value);
-      } else {
-        state.userPoll!.polls.removeAt(index!);
-      }
-    } else {
-      if (state.userPoll!.polls.isEmpty) {
-        state.userPoll!.polls.add(
-          PollCubit(
-            controller: TextEditingController(),
-            poll: PollEntity(
-              question: "",
-              value: 0,
+    // Not Initial
+    if (!initial) {
+      // Add | Min
+      if (pollCubit == null) {
+        if (index == null) {
+          state.userPoll!.polls.add(
+            PollCubit(
+              controller: TextEditingController(),
+              poll: PollEntity(question: "", value: 0),
             ),
-          ),
-        );
+          );
+        } else {
+          // Min
+          state.userPoll!.polls.removeAt(index);
+        }
+      } else if (index != null) {
+        state.userPoll!.polls[index] = pollCubit;
       }
+
+      emit(
+        PostState(
+          latitude: state.latitude,
+          longitude: state.longitude,
+          note: _default.note,
+          rating: _default.rating,
+          userPoll: state.userPoll, // Update
+        ),
+      );
+    } else {
+      emit(
+        PostState(
+          latitude: state.latitude,
+          longitude: state.longitude,
+          note: _default.note,
+          rating: _default.rating,
+          userPoll: UserPollEntity(
+            [
+              PollCubit(
+                controller: TextEditingController(),
+                poll: PollEntity(question: "", value: 0),
+              ),
+            ],
+          ), // Update
+        ),
+      );
     }
-    emit(
-      PostState(
-        latitude: state.latitude,
-        longitude: state.longitude,
-        note: _default.note,
-        rating: _default.rating,
-        userPoll: state.userPoll, // Update
-      ),
-    );
   }
 }

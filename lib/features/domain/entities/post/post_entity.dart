@@ -1,3 +1,5 @@
+import 'package:hottake/core/core.dart';
+
 class PostEntity {
   final String userId, longitude, latitude, dateCreated;
   final List favorites;
@@ -43,6 +45,8 @@ class PostEntity {
       "note": note,
       "userPoll": userPoll,
       "rating": rating,
+      "dateCreated": convertTime(DateTime.now()),
+      "favorites": [],
     };
   }
 }

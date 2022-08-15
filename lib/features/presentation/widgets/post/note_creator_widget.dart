@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:hottake/core/core.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
@@ -7,8 +7,12 @@ import 'package:hottake/features/presentation/presentation.dart';
 class NoteCreatorwidget extends StatefulWidget {
   const NoteCreatorwidget({
     Key? key,
+    required this.postId,
     required this.theme,
+    required this.userId,
   }) : super(key: key);
+  final String? postId;
+  final String userId;
   final ThemeEntity theme;
 
   @override
@@ -30,56 +34,83 @@ class _NoteCreatorwidgetState extends State<NoteCreatorwidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: formKey,
-      child: Column(
-        children: [
-          // Title
-          TextfieldPostWidget(
-            controller: title,
-            hintText: "Title",
-            theme: widget.theme,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "Must be filled!";
-              }
-            },
-            type: TextInputType.text,
+    return BlocSelector<PostCubit, PostState, NoteEntity?>(
+      selector: (state) => state.note,
+      builder: (_, noteState) {
+        return Form(
+          key: formKey,
+          child: Column(
+            children: [
+              // Title
+              TextfieldPostWidget(
+                controller: title..text = noteState?.title ?? "",
+                hintText: "Title",
+                theme: widget.theme,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Must be filled!";
+                  }
+                },
+                type: TextInputType.text,
+              ),
+              const SizedBox(height: 16),
+              // Note
+              TextfieldPostWidget(
+                controller: note..text = noteState?.note ?? "",
+                hintText: "Note",
+                theme: widget.theme,
+                validator: (value) {
+                  if (value!.isEmpty) {
+                    return "Must be filled!";
+                  }
+                },
+                type: TextInputType.text,
+                maxLine: 8,
+              ),
+              const SizedBox(height: 24),
+              // Btn Post
+              BlocSelector<PostCubit, PostState, PostState>(
+                selector: (state) => state,
+                builder: (_, state) => ButtonCreatorWidget(
+                  onTap: () {
+                    if (formKey.currentState!.validate()) {
+                      // Data
+                      if (widget.postId == null) {
+                        // Create
+                        dI<CreatePost>().call(
+                          userId: widget.userId,
+                          longitude: state.longitude ?? "",
+                          latitude: state.latitude ?? "",
+                          note: NoteEntity.toMap(
+                              title: title.text, note: note.text),
+                          userPoll: null,
+                          rating: null,
+                          context: context,
+                        );
+                      } else {
+                        // Update
+                        dI<UpdatePost>().call(
+                          userId: widget.userId,
+                          postId: widget.postId!,
+                          longitude: state.longitude ?? "",
+                          latitude: state.latitude ?? "",
+                          note: NoteEntity.toMap(
+                              title: title.text, note: note.text),
+                          userPoll: null,
+                          rating: null,
+                          context: context,
+                        );
+                      }
+                    }
+                  },
+                  title: "Post",
+                  theme: widget.theme,
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16),
-          // Note
-          TextfieldPostWidget(
-            controller: note,
-            hintText: "Note",
-            theme: widget.theme,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "Must be filled!";
-              }
-            },
-            type: TextInputType.text,
-            maxLine: 8,
-          ),
-          const SizedBox(height: 24),
-          // Btn Next
-          ButtonCreatorWidget(
-            onTap: () {
-              if (formKey.currentState!.validate()) {
-                // Update State
-                dI<PostCubitEvent>().read(context).updateNote(
-                      title: title.text,
-                      note: note.text,
-                    );
-
-                // Navigate
-                toPostLocationPage(context);
-              }
-            },
-            title: "Next",
-            theme: widget.theme,
-          ),
-        ],
-      ),
+        );
+      },
     );
   }
 }
