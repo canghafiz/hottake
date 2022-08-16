@@ -66,17 +66,20 @@ class _RatingCreatorWidgetState extends State<RatingCreatorWidget> {
         // Description
         Form(
           key: formKey,
-          child: TextfieldPostWidget(
-            controller: description,
-            hintText: "Description",
-            theme: widget.theme,
-            validator: (value) {
-              if (value!.isEmpty) {
-                return "Must be filled!";
-              }
-            },
-            type: TextInputType.text,
-            maxLine: 8,
+          child: BlocSelector<PostCubit, PostState, RatingEntity>(
+            selector: (state) => state.rating!,
+            builder: (_, state) => TextfieldPostWidget(
+              controller: description..text = state.description,
+              hintText: "Description",
+              theme: widget.theme,
+              validator: (value) {
+                if (value!.isEmpty) {
+                  return "Must be filled!";
+                }
+              },
+              type: TextInputType.text,
+              maxLine: 8,
+            ),
           ),
         ),
         const SizedBox(height: 24),

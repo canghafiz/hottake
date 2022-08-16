@@ -4,4 +4,5 @@ class Firestore {
   static final instance = FirebaseFirestore.instance;
   static const userCollection = "USER";
   static const postCollection = "POST";
+  static const commentCollection = "COMMENT";
 }

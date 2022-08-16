@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:hottake/features/data/data.dart';
+import 'package:intl/intl.dart';
 
 const keyTheme = "Theme";
 
@@ -18,4 +19,37 @@ Color convertTheme(String value) {
 
 String convertTime(DateTime time) {
   return "${time.year}-${time.month}-${time.day} ${time.hour}:${time.minute}:${time.second}";
+}
+
+String time(String time) {
+  final DateTime dateTime = DateFormat("yyyy-MM-dd").parse(time);
+  String month = "";
+
+  if (dateTime.month == 1) {
+    month = "January";
+  } else if (dateTime.month == 2) {
+    month = "February";
+  } else if (dateTime.month == 3) {
+    month = "March";
+  } else if (dateTime.month == 4) {
+    month = "April";
+  } else if (dateTime.month == 5) {
+    month = "May";
+  } else if (dateTime.month == 6) {
+    month = "June";
+  } else if (dateTime.month == 7) {
+    month = "July";
+  } else if (dateTime.month == 8) {
+    month = "August";
+  } else if (dateTime.month == 9) {
+    month = "September";
+  } else if (dateTime.month == 10) {
+    month = "October";
+  } else if (dateTime.month == 11) {
+    month = "November";
+  } else {
+    month = "December";
+  }
+
+  return "${dateTime.day} $month ${dateTime.year}";
 }

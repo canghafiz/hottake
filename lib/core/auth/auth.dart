@@ -258,14 +258,17 @@ class AuthImpl {
     });
   }
 
-  Future<void> logout(BuildContext context) async {
+  Future<void> logout({
+    required BuildContext context,
+    required ThemeEntity theme,
+  }) async {
     // Show Dialog
     showDialog(
       context: context,
       builder: (_) => alertDialogTextWith2Button(
         text: "Are you sure want sign out?",
         fontSize: 15,
-        fontColor: Colors.black,
+        fontColor: convertTheme(theme.third),
         onfalse: () {
           Navigator.pop(context);
         },

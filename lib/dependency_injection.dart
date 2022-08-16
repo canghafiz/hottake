@@ -12,12 +12,14 @@ void init() {
   dI.registerFactory(() => BackendCubit());
   dI.registerFactory(() => NavbarCubit());
   dI.registerFactory(() => PostCubit());
+  dI.registerFactory(() => CommentCubit());
 
   // Cubits Event
   dI.registerLazySingleton(() => ThemeCubitEvent());
   dI.registerLazySingleton(() => BackendCubitEvent());
   dI.registerLazySingleton(() => NavbarCubitEvent());
   dI.registerLazySingleton(() => PostCubitEvent());
+  dI.registerLazySingleton(() => CommentCubitEvent());
 
   // Usecases
   dI.registerLazySingleton(() => GetTheme(dI()));
@@ -28,6 +30,10 @@ void init() {
   dI.registerLazySingleton(() => UpdatePost(dI()));
   dI.registerLazySingleton(() => UpdateFavoritePost(dI()));
   dI.registerLazySingleton(() => DeletePost(dI()));
+  dI.registerLazySingleton(() => AddComment(dI()));
+  dI.registerLazySingleton(() => AddSubComment(dI()));
+  dI.registerLazySingleton(() => UpdateFavoriteComment(dI()));
+  dI.registerLazySingleton(() => UpdateFavoriteSubComment(dI()));
 
   // Repositories
   dI.registerLazySingleton<ThemeRepository>(
@@ -48,6 +54,12 @@ void init() {
     ),
   );
 
+  dI.registerLazySingleton<CommentRepository>(
+    () => CommentRepositoryImpl(
+      remoteDataSource: dI(),
+    ),
+  );
+
   // Data Source
   dI.registerLazySingleton<ThemeLocalDataSource>(
     () => ThemeLocalDataSourceImpl(),
@@ -61,9 +73,15 @@ void init() {
     () => PostRemoteDataSourceFirebase(),
   );
 
+  dI.registerLazySingleton<CommentRemoteDataSource>(
+    () => CommentRemoteDataSourceFirebase(),
+  );
+
   // Core
   dI.registerLazySingleton(() => FirebaseAuthImpl());
   dI.registerLazySingleton(() => AuthImpl());
   dI.registerLazySingleton(() => UserFirestore());
+  dI.registerLazySingleton(() => PostFirestore());
+  dI.registerLazySingleton(() => CommentFirestore());
   dI.registerLazySingleton(() => ImagePickerService());
 }

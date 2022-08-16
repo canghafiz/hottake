@@ -4,6 +4,7 @@ class PostEntity {
   final String userId, longitude, latitude, dateCreated;
   final List favorites;
   final Map<String, dynamic>? note, userPoll, rating;
+  final int totalComments, totalFavorites;
 
   PostEntity({
     required this.dateCreated,
@@ -14,20 +15,23 @@ class PostEntity {
     required this.rating,
     required this.userId,
     required this.userPoll,
+    required this.totalComments,
+    required this.totalFavorites,
   });
 
   // Map
   static PostEntity fromMap(Map<String, dynamic> data) {
     return PostEntity(
-      dateCreated: data['dateCreated'],
-      favorites: data['favorites'],
-      latitude: data['latitude'],
-      longitude: data['longitude'],
-      note: data['note'],
-      rating: data['rating'],
-      userId: data['userId'],
-      userPoll: data['userPoll'],
-    );
+        dateCreated: data['dateCreated'],
+        favorites: data['favorites'],
+        latitude: data['latitude'],
+        longitude: data['longitude'],
+        note: data['note'],
+        rating: data['rating'],
+        userId: data['userId'],
+        userPoll: data['userPoll'],
+        totalComments: data['totalComments'],
+        totalFavorites: data['totalFavorites']);
   }
 
   static Map<String, dynamic> toMap({
@@ -47,6 +51,8 @@ class PostEntity {
       "rating": rating,
       "dateCreated": convertTime(DateTime.now()),
       "favorites": [],
+      "totalFavorites": 0,
+      "totalComments": 0,
     };
   }
 }

@@ -67,3 +67,21 @@ void toPostLocationPage({
     ),
   );
 }
+
+void toCommentsPage({
+  required BuildContext context,
+  required String userId,
+  required String postId,
+  required PostEntity post,
+}) {
+  Navigator.push(
+    context,
+    _route(
+      CommentsPage(
+        postId: postId,
+        userId: userId,
+        post: post,
+      ),
+    ),
+  );
+}

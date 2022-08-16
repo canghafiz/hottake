@@ -11,6 +11,8 @@ class PostModel extends PostEntity {
     required super.rating,
     required super.userId,
     required super.userPoll,
+    required super.totalFavorites,
+    required super.totalComments,
   });
 
   static Map<String, dynamic> toMap({
@@ -30,6 +32,8 @@ class PostModel extends PostEntity {
       "rating": rating,
       "dateCreated": convertTime(DateTime.now()),
       "favorites": [],
+      "totalFavorites": 0,
+      "totalComments": 0,
     };
   }
 }

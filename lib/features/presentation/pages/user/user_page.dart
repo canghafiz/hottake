@@ -23,15 +23,7 @@ class UserPage extends StatelessWidget {
         initialIndex: initialTab ?? 0,
         child: Scaffold(
           appBar: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back_ios,
-                color: convertTheme(theme.secondary),
-              ),
-            ),
+            automaticallyImplyLeading: false,
             actions: [
               PopupMenuButton(
                 color: convertTheme(theme.primary),
@@ -41,7 +33,10 @@ class UserPage extends StatelessWidget {
                 ),
                 onSelected: (value) {
                   if (value == 0) {
-                    dI<AuthImpl>().logout(context);
+                    dI<AuthImpl>().logout(
+                      context: context,
+                      theme: theme,
+                    );
                   }
                 },
                 itemBuilder: (context) => [
@@ -83,7 +78,7 @@ class UserPage extends StatelessWidget {
           body: TabBarView(
             children: [
               UserProfileWidget(userId: userId, theme: theme),
-              UserNotesWidget(userId: userId),
+              UserNotesWidget(userId: userId, theme: theme),
             ],
           ),
         ),

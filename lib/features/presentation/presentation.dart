@@ -4,6 +4,7 @@ export 'package:hottake/features/presentation/cubits/backend/backend_cubit.dart'
 export 'package:hottake/features/presentation/cubits/navbar/navbar_cubit.dart';
 export 'package:hottake/features/presentation/cubits/cubit.dart';
 export 'package:hottake/features/presentation/cubits/post/post_cubit.dart';
+export 'package:hottake/features/presentation/cubits/comment/comment_cubit.dart';
 
 // Pages
 export 'package:hottake/features/presentation/pages/main_page.dart';
@@ -20,6 +21,7 @@ export 'package:hottake/features/presentation/pages/user/edit_user_page.dart';
 export 'package:hottake/features/presentation/pages/post/post_choose_page.dart';
 export 'package:hottake/features/presentation/pages/post/post_creator_page.dart';
 export 'package:hottake/features/presentation/pages/post/post_location_page.dart';
+export 'package:hottake/features/presentation/pages/comments_page.dart';
 
 // Widgets
 export 'package:hottake/features/presentation/widgets/navbar_widget.dart';
@@ -32,3 +34,9 @@ export 'package:hottake/features/presentation/widgets/post/polling_creator_widge
 export 'package:hottake/features/presentation/widgets/post/rating_creator_widget.dart';
 export 'package:hottake/features/presentation/widgets/post/textfield_post_widget.dart';
 export 'package:hottake/features/presentation/widgets/post/button_creator_widget.dart';
+export 'package:hottake/features/presentation/widgets/post/card/post_card_widget.dart';
+export 'package:hottake/features/presentation/widgets/post/card/note_card_widget.dart';
+export 'package:hottake/features/presentation/widgets/post/card/rating_card_widget.dart';
+export 'package:hottake/features/presentation/widgets/post/card/user_poll_card_widget.dart';
+export 'package:hottake/features/presentation/widgets/comment/textfield_comments_widget.dart';
+export 'package:hottake/features/presentation/widgets/comment/comment_card_widget.dart';

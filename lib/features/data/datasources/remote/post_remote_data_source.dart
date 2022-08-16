@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/features/data/data.dart';
+import 'package:hottake/features/domain/domain.dart';
 
 abstract class PostRemoteDataSource {
   Future<void> createPost({
@@ -104,6 +105,34 @@ class PostRemoteDataSourceFirebase implements PostRemoteDataSource {
         "favorites": FieldValue.arrayRemove([userId]),
       });
     }
+
+    // Transaction
+    DocumentReference documentReference =
+        Firestore.instance.collection(Firestore.postCollection).doc(postId);
+
+    Firestore.instance.runTransaction(
+      (transaction) async {
+        // Get the document
+        DocumentSnapshot snapshot = await transaction.get(documentReference);
+
+        if (snapshot.exists) {
+          // Model
+          final PostEntity post =
+              PostEntity.fromMap(snapshot.data() as Map<String, dynamic>);
+
+          int newFavoritesCount = isAdd
+              ? post.totalFavorites + 1
+              : (post.totalFavorites < 1)
+                  ? 0
+                  : post.totalFavorites - 1;
+
+          transaction.update(
+            documentReference,
+            {"totalFavorites": newFavoritesCount},
+          );
+        }
+      },
+    );
   }
 
   @override

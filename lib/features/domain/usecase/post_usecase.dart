@@ -55,6 +55,9 @@ class UpdatePost {
       userPoll: userPoll,
       rating: rating,
     );
+
+    // Navigate
+    toUserPage(context: context, userId: userId, initialTab: 1);
   }
 }
 
@@ -67,7 +70,6 @@ class UpdateFavoritePost {
     required String postId,
     required String userId,
     required bool isAdd,
-    required BuildContext context,
   }) {
     repository.updateFavorite(
       postId: postId,

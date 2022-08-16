@@ -171,6 +171,8 @@ Widget noteChooseTypeWidget({
                     userId: userId,
                     postId: null,
                   );
+
+                  onTap.call();
                 },
                 icon: Icon(
                   Icons.arrow_forward_ios_outlined,

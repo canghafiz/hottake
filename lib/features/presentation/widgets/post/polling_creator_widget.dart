@@ -163,7 +163,8 @@ class _PollingInputCreatorWidgetState extends State<PollingInputCreatorWidget>
         // Textfield
         Expanded(
           child: TextFormFieldCustom(
-            controller: widget.poll.controller,
+            controller: widget.poll.controller
+              ..text = widget.poll.poll.question,
             inputType: TextInputType.text,
             validator: (value) {
               if (value!.isEmpty) {
@@ -288,7 +289,11 @@ class PickValuePollingCreatorWidget extends StatelessWidget {
           Center(
             child: Text(
               "${(state.userPoll!.polls[index] as PollCubit).poll.value}%",
-              style: fontStyle(size: 13, theme: theme),
+              style: fontStyle(
+                size: 13,
+                theme: theme,
+                color: convertTheme(theme.third),
+              ),
             ),
           ),
         ],
