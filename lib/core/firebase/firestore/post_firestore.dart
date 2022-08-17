@@ -9,4 +9,8 @@ class PostFirestore {
         .orderBy("totalFavorites", descending: true)
         .snapshots();
   }
+
+  Stream<QuerySnapshot> getNotes() {
+    return Firestore.instance.collection(Firestore.postCollection).snapshots();
+  }
 }

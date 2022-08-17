@@ -18,6 +18,8 @@ class CommentsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Update State
+    dI<CommentCubitEvent>().read(context).clear();
     return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
       selector: (state) => state,
       builder: (_, theme) => Scaffold(

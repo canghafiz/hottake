@@ -62,8 +62,8 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
               // Textfield
               Expanded(
                 child: TextField(
+                  focusNode: state.focusNode,
                   autocorrect: true,
-                  autofocus: state.onFocus,
                   controller: controller,
                   style: fontStyle(
                     size: 13,
@@ -103,6 +103,9 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
                       );
 
                       controller.clear();
+
+                      // Update State
+                      dI<CommentCubitEvent>().read(context).unFocus();
                     } else {
                       // SubComment
                       dI<AddSubComment>().call(
@@ -113,6 +116,12 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
                       );
 
                       controller.clear();
+
+                      // Update State
+                      dI<CommentCubitEvent>()
+                          .read(context)
+                          .updateCommentId(null);
+                      dI<CommentCubitEvent>().read(context).unFocus();
                     }
                   }
                 },

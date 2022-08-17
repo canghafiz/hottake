@@ -39,12 +39,14 @@ dependencies:
   flutter_linkify: ^5.0.2
   flutter_rating_bar: ^4.0.1
   geoflutterfire: ^3.0.3
+  geolocator: ^7.4.0
   get_it: ^7.2.0
   google_maps_flutter: ^2.1.10
   google_sign_in: ^5.4.0
   image_cropper: ^2.0.3
   image_picker: ^0.8.5+3
   intl: ^0.17.0
+  jiffy: ^5.0.0
   network_info_plus: ^2.1.3
   provider: ^6.0.3
   sizer: ^2.0.15

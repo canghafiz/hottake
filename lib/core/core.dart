@@ -16,3 +16,4 @@ export 'package:hottake/core/libraries/widgets/bottom_sheet.dart';
 export 'package:hottake/core/image/image_crop.dart';
 export 'package:hottake/core/image/image_picker.dart';
 export 'package:hottake/core/image/image_upload.dart';
+export 'package:hottake/core/location/geolocator.dart';

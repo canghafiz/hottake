@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hottake/features/data/data.dart';
 import 'package:intl/intl.dart';
+import 'package:jiffy/jiffy.dart';
 
 const keyTheme = "Theme";
 
@@ -18,7 +21,7 @@ Color convertTheme(String value) {
 }
 
 String convertTime(DateTime time) {
-  return "${time.year}-${time.month}-${time.day} ${time.hour}:${time.minute}:${time.second}";
+  return "${time.year}-${(time.month.toString().length < 2) ? "0${time.month}" : time.month}-${(time.day.toString().length < 2) ? "0${time.day}" : time.day} ${(time.hour.toString().length < 2) ? "0${time.hour}" : time.hour}:${(time.minute.toString().length < 2) ? "0${time.minute}" : time.minute}:${(time.second.toString().length < 2) ? "0${time.second}" : time.second}";
 }
 
 String time(String time) {
@@ -52,4 +55,19 @@ String time(String time) {
   }
 
   return "${dateTime.day} $month ${dateTime.year}";
+}
+
+String timeDuration(String value) {
+  return Jiffy(value, "yyyy-MM-dd hh:mm:ss").fromNow();
+}
+
+const double radiusMap = 100;
+
+double distance({required LatLng current, required LatLng postLoc}) {
+  return Geolocator.distanceBetween(
+    current.latitude,
+    current.longitude,
+    postLoc.latitude,
+    postLoc.longitude,
+  );
 }

@@ -14,7 +14,7 @@ class CommentCubit extends Cubit<CommentState> {
 
   static final _default = CommentState(
     commentId: null,
-    onFocus: false,
+    focusNode: FocusNode(),
   );
 
   // Function
@@ -26,18 +26,16 @@ class CommentCubit extends Cubit<CommentState> {
     emit(
       CommentState(
         commentId: value, // Update
-
-        onFocus: state.onFocus,
+        focusNode: state.focusNode,
       ),
     );
   }
 
-  void updateShowEmoji(bool value) {
-    emit(
-      CommentState(
-        commentId: state.commentId,
-        onFocus: state.onFocus,
-      ),
-    );
+  void showFocus() {
+    state.focusNode.requestFocus();
+  }
+
+  void unFocus() {
+    state.focusNode.unfocus();
   }
 }

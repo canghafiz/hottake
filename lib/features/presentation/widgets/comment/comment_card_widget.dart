@@ -39,6 +39,7 @@ class CommentCardWidget extends StatelessWidget {
                 snapshot.data!.data() as Map<String, dynamic>);
 
             return Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Photo Profile
                 PhotoProfileWidget(
@@ -65,7 +66,7 @@ class CommentCardWidget extends StatelessWidget {
                         child: Text(
                           "@" + user.username,
                           style: fontStyle(
-                            size: 11,
+                            size: 13,
                             theme: theme,
                             color: convertTheme(theme.third).withOpacity(0.5),
                             weight: FontWeight.bold,
@@ -77,10 +78,22 @@ class CommentCardWidget extends StatelessWidget {
                       Text(
                         comment.comments,
                         style: fontStyle(
-                          size: 11,
+                          size: 13,
                           theme: theme,
                           color: convertTheme(theme.third),
                         ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 8),
+                      // Sub
+                      SubCommentWidget(
+                        mainComment: mainComment,
+                        commentId: commentId,
+                        postId: postId,
+                        userId: userId,
+                        comment: comment,
+                        theme: theme,
                       ),
                     ],
                   ),
@@ -142,5 +155,165 @@ class CommentCardWidget extends StatelessWidget {
         const SizedBox(height: 16),
       ],
     );
+  }
+}
+
+class SubCommentWidget extends StatefulWidget {
+  const SubCommentWidget({
+    Key? key,
+    required this.commentId,
+    required this.postId,
+    required this.userId,
+    required this.comment,
+    required this.theme,
+    required this.mainComment,
+  }) : super(key: key);
+  final bool mainComment;
+  final String userId, postId, commentId;
+  final CommentEntity comment;
+  final ThemeEntity theme;
+
+  @override
+  State<SubCommentWidget> createState() => _SubCommentWidgetState();
+}
+
+class _SubCommentWidgetState extends State<SubCommentWidget> {
+  bool showReplies = false;
+
+  void updateShow() {
+    setState(() {
+      showReplies = !showReplies;
+    });
+  }
+
+  Widget replyAndDate() {
+    return Row(
+      children: [
+        // Reply
+        GestureDetector(
+          onTap: () {
+            // Update state
+            dI<CommentCubitEvent>().read(context).showFocus();
+            dI<CommentCubitEvent>()
+                .read(context)
+                .updateCommentId(widget.commentId);
+          },
+          child: Text(
+            "Reply",
+            style: fontStyle(
+              size: 9,
+              theme: widget.theme,
+              color: convertTheme(widget.theme.third).withOpacity(0.5),
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+        // Date
+        Flexible(
+          child: Text(
+            " - " + timeDuration(widget.comment.date),
+            style: fontStyle(
+              size: 9,
+              theme: widget.theme,
+              color: convertTheme(widget.theme.third).withOpacity(0.5),
+            ),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return !widget.mainComment
+        ? replyAndDate()
+        : StreamBuilder<QuerySnapshot>(
+            stream: dI<CommentFirestore>().getSubComments(
+                postId: widget.postId, commentId: widget.commentId),
+            builder: (_, snapshot) {
+              if (!snapshot.hasData) {
+                return Center(
+                  child: CircularProgressIndicator(
+                    color: convertTheme(widget.theme.primary),
+                  ),
+                );
+              }
+              return (snapshot.data!.docs.isEmpty)
+                  ? replyAndDate()
+                  : !showReplies
+                      ?
+                      // Btn Replies
+                      GestureDetector(
+                          onTap: () {
+                            updateShow();
+                          },
+                          child: Row(
+                            children: [
+                              // Text
+                              Text(
+                                "View repliies (${snapshot.data!.docs.length})",
+                                style: fontStyle(
+                                  size: 11,
+                                  theme: widget.theme,
+                                  color: convertTheme(widget.theme.third)
+                                      .withOpacity(0.5),
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              // Icon
+                              Icon(
+                                Icons.arrow_drop_down,
+                                color: convertTheme(widget.theme.third)
+                                    .withOpacity(0.5),
+                              ),
+                            ],
+                          ),
+                        )
+                      : Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            replyAndDate(),
+                            const SizedBox(height: 16),
+                            // Replies
+                            Column(
+                              children: snapshot.data!.docs.map(
+                                (doc) {
+                                  // Model
+                                  final CommentEntity comment =
+                                      CommentEntity.fromMap(
+                                          doc.data() as Map<String, dynamic>);
+
+                                  return CommentCardWidget(
+                                    userId: widget.userId,
+                                    postId: widget.postId,
+                                    commentId: widget.commentId,
+                                    mainComment: false,
+                                    comment: comment,
+                                    theme: widget.theme,
+                                  );
+                                },
+                              ).toList(),
+                            ),
+                            // Btn Hide
+                            GestureDetector(
+                              onTap: () {
+                                updateShow();
+                              },
+                              child: Text(
+                                "Hide repliies (${snapshot.data!.docs.length})",
+                                style: fontStyle(
+                                  size: 11,
+                                  theme: widget.theme,
+                                  color: convertTheme(widget.theme.third)
+                                      .withOpacity(0.5),
+                                ),
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                          ],
+                        );
+            },
+          );
   }
 }

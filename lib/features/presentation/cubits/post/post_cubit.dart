@@ -34,8 +34,8 @@ class PostCubit extends Cubit<PostState> {
   PostCubit() : super(_default);
 
   static final _default = PostState(
-    latitude: "",
-    longitude: "",
+    latitude: null,
+    longitude: null,
     note: null,
     rating: null,
     userPoll: null,
@@ -47,8 +47,8 @@ class PostCubit extends Cubit<PostState> {
   }
 
   void updateLocation({
-    required String latitude,
-    required String longitude,
+    required String? latitude,
+    required String? longitude,
   }) {
     emit(
       PostState(

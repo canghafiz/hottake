@@ -13,4 +13,18 @@ class CommentFirestore {
         )
         .snapshots();
   }
+
+  Stream<QuerySnapshot> getSubComments({
+    required String postId,
+    required String commentId,
+  }) {
+    return Firestore.instance
+        .collection(Firestore.postCollection)
+        .doc(postId)
+        .collection(Firestore.commentCollection)
+        .doc(commentId)
+        .collection(Firestore.commentCollection)
+        .orderBy("date")
+        .snapshots();
+  }
 }

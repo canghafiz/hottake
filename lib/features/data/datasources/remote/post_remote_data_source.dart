@@ -143,5 +143,61 @@ class PostRemoteDataSourceFirebase implements PostRemoteDataSource {
         )
         .doc(postId)
         .delete();
+
+    // Comment
+    await Firestore.instance
+        .collection(
+          Firestore.postCollection,
+        )
+        .doc(postId)
+        .collection(Firestore.commentCollection)
+        .get()
+        .then(
+      (query) async {
+        if (query.docs.isNotEmpty) {
+          for (DocumentSnapshot doc in query.docs) {
+            // SubComment
+            await Firestore.instance
+                .collection(
+                  Firestore.postCollection,
+                )
+                .doc(postId)
+                .collection(Firestore.commentCollection)
+                .doc(doc.id)
+                .collection(Firestore.commentCollection)
+                .get()
+                .then(
+              (query) async {
+                if (query.docs.isNotEmpty) {
+                  for (DocumentSnapshot doc in query.docs) {
+                    // Delete Subcomment
+                    await Firestore.instance
+                        .collection(
+                          Firestore.postCollection,
+                        )
+                        .doc(postId)
+                        .collection(Firestore.commentCollection)
+                        .doc(doc.id)
+                        .collection(Firestore.commentCollection)
+                        .doc(doc.id)
+                        .delete();
+                  }
+                }
+              },
+            );
+
+            // Dlete Comment
+            await Firestore.instance
+                .collection(
+                  Firestore.postCollection,
+                )
+                .doc(postId)
+                .collection(Firestore.commentCollection)
+                .doc(doc.id)
+                .delete();
+          }
+        }
+      },
+    );
   }
 }

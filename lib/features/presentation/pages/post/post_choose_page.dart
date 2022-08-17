@@ -137,7 +137,15 @@ Widget noteChooseTypeWidget({
   required String userId,
 }) {
   return GestureDetector(
-    onTap: () => onTap(),
+    onTap: () {
+      onTap.call();
+
+      // Update State
+      dI<PostCubitEvent>().read(context).updateLocation(
+            latitude: null,
+            longitude: null,
+          );
+    },
     child: Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [

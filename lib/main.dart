@@ -8,6 +8,9 @@ import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+
+final geo = Geoflutterfire();
 
 void main() async {
   init();
