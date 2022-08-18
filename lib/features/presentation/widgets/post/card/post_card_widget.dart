@@ -31,7 +31,15 @@ class PostCardWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        if (enableClick) {}
+        if (enableClick) {
+          // Navigate
+          toMapPage(
+            context: context,
+            userId: userId,
+            postId: postId,
+            theme: theme,
+          );
+        }
       },
       child: Container(
         width: double.infinity,
