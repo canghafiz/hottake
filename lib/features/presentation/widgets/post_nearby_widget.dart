@@ -80,45 +80,53 @@ class PostNearbyWidget extends StatelessWidget {
               return a['weight'].compareTo(b['weight']);
             });
 
-            return SingleChildScrollView(
-              physics: const BouncingScrollPhysics(),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16,
-                ),
-                child: Column(
-                  children: sort.map((map) {
-                    // Model
-                    final PostEntity post = PostEntity.fromMap(
-                        (map["doc"] as DocumentSnapshot).data()
-                            as Map<String, dynamic>);
+            return (sort.isEmpty)
+                ? Center(
+                    child: Text(
+                      "Empty",
+                      style: fontStyle(size: 13, theme: theme),
+                    ),
+                  )
+                : SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                      ),
+                      child: Column(
+                        children: sort.map((map) {
+                          // Model
+                          final PostEntity post = PostEntity.fromMap(
+                              (map["doc"] as DocumentSnapshot).data()
+                                  as Map<String, dynamic>);
 
-                    final NoteEntity? note = (post.note == null)
-                        ? null
-                        : NoteEntity.fromMap(post.note!);
+                          final NoteEntity? note = (post.note == null)
+                              ? null
+                              : NoteEntity.fromMap(post.note!);
 
-                    final RatingEntity? rating = (post.rating == null)
-                        ? null
-                        : RatingEntity.fromMap(post.rating!);
+                          final RatingEntity? rating = (post.rating == null)
+                              ? null
+                              : RatingEntity.fromMap(post.rating!);
 
-                    final UserPollEntity? userPoll = (post.userPoll == null)
-                        ? null
-                        : UserPollEntity.fromMap(post.userPoll!);
+                          final UserPollEntity? userPoll =
+                              (post.userPoll == null)
+                                  ? null
+                                  : UserPollEntity.fromMap(post.userPoll!);
 
-                    return PostCardWidget(
-                      enableClick: true,
-                      post: post,
-                      userId: userId,
-                      postId: (map['doc'] as DocumentSnapshot).id,
-                      note: note,
-                      rating: rating,
-                      userPoll: userPoll,
-                      theme: theme,
-                    );
-                  }).toList(),
-                ),
-              ),
-            );
+                          return PostCardWidget(
+                            enableClick: true,
+                            post: post,
+                            userId: userId,
+                            postId: (map['doc'] as DocumentSnapshot).id,
+                            note: note,
+                            rating: rating,
+                            userPoll: userPoll,
+                            theme: theme,
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  );
           },
         );
       },
