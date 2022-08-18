@@ -94,36 +94,53 @@ class PostNearbyWidget extends StatelessWidget {
                         horizontal: 16,
                       ),
                       child: Column(
-                        children: sort.map((map) {
-                          // Model
-                          final PostEntity post = PostEntity.fromMap(
-                              (map["doc"] as DocumentSnapshot).data()
-                                  as Map<String, dynamic>);
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 16),
+                          // Total
+                          Text(
+                            "Total notes: ${sort.length}",
+                            style: fontStyle(
+                              size: 13,
+                              theme: theme,
+                              weight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          // Notes
+                          Column(
+                            children: sort.map((map) {
+                              // Model
+                              final PostEntity post = PostEntity.fromMap(
+                                  (map["doc"] as DocumentSnapshot).data()
+                                      as Map<String, dynamic>);
 
-                          final NoteEntity? note = (post.note == null)
-                              ? null
-                              : NoteEntity.fromMap(post.note!);
-
-                          final RatingEntity? rating = (post.rating == null)
-                              ? null
-                              : RatingEntity.fromMap(post.rating!);
-
-                          final UserPollEntity? userPoll =
-                              (post.userPoll == null)
+                              final NoteEntity? note = (post.note == null)
                                   ? null
-                                  : UserPollEntity.fromMap(post.userPoll!);
+                                  : NoteEntity.fromMap(post.note!);
 
-                          return PostCardWidget(
-                            enableClick: true,
-                            post: post,
-                            userId: userId,
-                            postId: (map['doc'] as DocumentSnapshot).id,
-                            note: note,
-                            rating: rating,
-                            userPoll: userPoll,
-                            theme: theme,
-                          );
-                        }).toList(),
+                              final RatingEntity? rating = (post.rating == null)
+                                  ? null
+                                  : RatingEntity.fromMap(post.rating!);
+
+                              final UserPollEntity? userPoll =
+                                  (post.userPoll == null)
+                                      ? null
+                                      : UserPollEntity.fromMap(post.userPoll!);
+
+                              return PostCardWidget(
+                                enableClick: true,
+                                post: post,
+                                userId: userId,
+                                postId: (map['doc'] as DocumentSnapshot).id,
+                                note: note,
+                                rating: rating,
+                                userPoll: userPoll,
+                                theme: theme,
+                              );
+                            }).toList(),
+                          ),
+                        ],
                       ),
                     ),
                   );

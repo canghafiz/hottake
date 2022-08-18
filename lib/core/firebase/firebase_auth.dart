@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:hottake/core/core.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -110,11 +111,12 @@ class FirebaseAuthImpl implements AuthService {
         idToken: googleAuth.idToken,
       );
 
-      final userCredential =
+      var userCredential =
           await FirebaseAuth.instance.signInWithCredential(credential);
 
       return AuthResponse(
         userCredential: userCredential,
+        userId: userCredential.user!.uid,
       );
     } catch (e) {
       debugPrint("Login with google error on $e");

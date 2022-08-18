@@ -22,6 +22,7 @@ export 'package:hottake/features/presentation/pages/post/post_choose_page.dart';
 export 'package:hottake/features/presentation/pages/post/post_creator_page.dart';
 export 'package:hottake/features/presentation/pages/post/post_location_page.dart';
 export 'package:hottake/features/presentation/pages/comments_page.dart';
+export 'package:hottake/features/presentation/pages/image_detail_page.dart';
 
 // Widgets
 export 'package:hottake/features/presentation/widgets/navbar_widget.dart';

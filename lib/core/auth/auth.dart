@@ -193,23 +193,7 @@ class AuthImpl {
               align: TextAlign.center,
             ),
           );
-        } else if (response.userCredential != null) {
-          // Update Data
-          await dI<UserFirestore>().checkIsUserAvailable(
-            userId: response.userCredential!.user!.uid,
-            not: () {
-              // Call Data
-              dI<UserCreateAccount>().call(
-                userId: response.userCredential!.user!.uid,
-                email: response.userCredential!.user!.email!,
-                username: response.userCredential!.user!.displayName!,
-                photo: response.userCredential!.user!.photoURL,
-                bio: null,
-                socialMedia: null,
-                theme: dI<ThemeCubitEvent>().read(context).state,
-              );
-            },
-          );
+          return;
         }
       },
     );

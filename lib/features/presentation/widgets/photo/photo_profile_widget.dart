@@ -16,18 +16,27 @@ class PhotoProfileWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CircleAvatar(
-      backgroundImage: (url == null) ? null : CachedNetworkImageProvider(url!),
-      child: (url == null)
-          ? Icon(
-              Icons.person,
-              color: convertTheme(theme.secondary),
-              size: size - (size * 1 / 8),
-            )
-          : null,
-      minRadius: size,
-      maxRadius: size,
-      backgroundColor: convertTheme(theme.secondary).withOpacity(0.5),
+    return GestureDetector(
+      onTap: () {
+        if (url != null) {
+          // Navigate
+          toImageDetailPage(context: context, url: url!);
+        }
+      },
+      child: CircleAvatar(
+        backgroundImage:
+            (url == null) ? null : CachedNetworkImageProvider(url!),
+        child: (url == null)
+            ? Icon(
+                Icons.person,
+                color: convertTheme(theme.secondary),
+                size: size - (size * 1 / 8),
+              )
+            : null,
+        minRadius: size,
+        maxRadius: size,
+        backgroundColor: convertTheme(theme.secondary).withOpacity(0.5),
+      ),
     );
   }
 }

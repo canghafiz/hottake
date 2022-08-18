@@ -99,3 +99,15 @@ void toCommentsPage({
     ),
   );
 }
+
+void toImageDetailPage({
+  required BuildContext context,
+  required String url,
+}) {
+  Navigator.push(
+    context,
+    _route(
+      ImageDetailPage(url: url),
+    ),
+  );
+}

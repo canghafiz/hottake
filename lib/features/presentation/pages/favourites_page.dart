@@ -19,7 +19,7 @@ class FavouritesPage extends StatelessWidget {
       selector: (state) => state,
       builder: (_, theme) => Scaffold(
         body: StreamBuilder<QuerySnapshot>(
-          stream: dI<PostFirestore>().getFavoriteNotes(userId),
+          stream: dI<PostFirestore>().getNotes(),
           builder: (_, snapshot) {
             if (!snapshot.hasData) {
               return Center(
@@ -28,7 +28,16 @@ class FavouritesPage extends StatelessWidget {
                 ),
               );
             }
-            return (snapshot.data!.docs.isEmpty)
+
+            var filter = snapshot.data!.docs.where((doc) {
+              // Model
+              final PostEntity post =
+                  PostEntity.fromMap(doc.data() as Map<String, dynamic>);
+
+              return post.favorites.contains(userId);
+            }).toList();
+
+            return (filter.isEmpty)
                 ? Center(
                     child: Text(
                       "Empty",
@@ -42,37 +51,56 @@ class FavouritesPage extends StatelessWidget {
                         horizontal: 16,
                       ),
                       child: Column(
-                        children: snapshot.data!.docs.map(
-                          (doc) {
-                            // Model
-                            final PostEntity post = PostEntity.fromMap(
-                                doc.data() as Map<String, dynamic>);
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 16),
+                          // Total
+                          Text(
+                            "Total notes: ${filter.length}",
+                            style: fontStyle(
+                              size: 13,
+                              theme: theme,
+                              weight: FontWeight.w500,
+                            ),
+                          ),
+                          // Notes
+                          const SizedBox(height: 12),
+                          Column(
+                            children: filter.map(
+                              (doc) {
+                                // Model
+                                final PostEntity post = PostEntity.fromMap(
+                                    doc.data() as Map<String, dynamic>);
 
-                            final NoteEntity? note = (post.note == null)
-                                ? null
-                                : NoteEntity.fromMap(post.note!);
+                                final NoteEntity? note = (post.note == null)
+                                    ? null
+                                    : NoteEntity.fromMap(post.note!);
 
-                            final RatingEntity? rating = (post.rating == null)
-                                ? null
-                                : RatingEntity.fromMap(post.rating!);
+                                final RatingEntity? rating =
+                                    (post.rating == null)
+                                        ? null
+                                        : RatingEntity.fromMap(post.rating!);
 
-                            final UserPollEntity? userPoll =
-                                (post.userPoll == null)
+                                final UserPollEntity? userPoll = (post
+                                            .userPoll ==
+                                        null)
                                     ? null
                                     : UserPollEntity.fromMap(post.userPoll!);
 
-                            return PostCardWidget(
-                              enableClick: true,
-                              post: post,
-                              userId: userId,
-                              postId: doc.id,
-                              note: note,
-                              rating: rating,
-                              userPoll: userPoll,
-                              theme: theme,
-                            );
-                          },
-                        ).toList(),
+                                return PostCardWidget(
+                                  enableClick: true,
+                                  post: post,
+                                  userId: userId,
+                                  postId: doc.id,
+                                  note: note,
+                                  rating: rating,
+                                  userPoll: userPoll,
+                                  theme: theme,
+                                );
+                              },
+                            ).toList(),
+                          ),
+                        ],
                       ),
                     ),
                   );
