@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hottake/features/domain/domain.dart';
+import 'package:hottake/features/presentation/presentation.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({
@@ -9,6 +12,22 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold();
+    List<Widget> components(ThemeEntity theme) {
+      return [
+        PostNearbyWidget(userId: userId, theme: theme),
+        MapPage(userId: userId, postId: null, theme: theme),
+        FavouritesPage(userId: userId),
+      ];
+    }
+
+    return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
+      selector: (state) => state,
+      builder: (_, theme) => Scaffold(
+        body: BlocSelector<NavbarCubit, NavbarState, int>(
+          selector: (state) => state.topNav,
+          builder: (_, state) => components(theme).elementAt(state),
+        ),
+      ),
+    );
   }
 }

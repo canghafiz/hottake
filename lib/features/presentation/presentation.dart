@@ -41,3 +41,4 @@ export 'package:hottake/features/presentation/widgets/post/card/user_poll_card_w
 export 'package:hottake/features/presentation/widgets/comment/textfield_comments_widget.dart';
 export 'package:hottake/features/presentation/widgets/comment/comment_card_widget.dart';
 export 'package:hottake/features/presentation/widgets/post/post_detail_widget.dart';
+export 'package:hottake/features/presentation/widgets/post_nearby_widget.dart';

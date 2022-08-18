@@ -194,7 +194,7 @@ class _MapPageState extends State<MapPage> {
                             ? double.parse(post.longitude)
                             : snapshot.data!.longitude,
                       ),
-                      zoom: 20,
+                      zoom: (widget.postId != null) ? 50 : 10,
                     ),
                     onMapCreated: (value) {
                       _controller.complete(value);
