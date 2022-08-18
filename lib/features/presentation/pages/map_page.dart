@@ -9,14 +9,17 @@ import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
-import 'package:hottake/main.dart';
 
 class MapPage extends StatefulWidget {
   const MapPage({
     Key? key,
     required this.userId,
+    required this.postId,
+    required this.theme,
   }) : super(key: key);
   final String userId;
+  final String? postId;
+  final ThemeEntity theme;
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -31,6 +34,10 @@ class _MapPageState extends State<MapPage> {
     required bool onRadius,
     required LatLng position,
     required String id,
+    required PostEntity post,
+    required NoteEntity? note,
+    required RatingEntity? rating,
+    required UserPollEntity? userPoll,
   }) async {
     BitmapDescriptor icon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(),
@@ -41,9 +48,31 @@ class _MapPageState extends State<MapPage> {
       () {
         _markers.add(
           Marker(
+            onTap: () {
+              // Show Modal Bottom
+              showModalBottom(
+                context: context,
+                content: postDetailWidget(
+                    userId: widget.userId,
+                    postId: id,
+                    post: post,
+                    note: note,
+                    rating: rating,
+                    userPoll: userPoll,
+                    theme: widget.theme),
+                theme: widget.theme,
+              );
+            },
             markerId: MarkerId(id),
             position: position,
             icon: icon,
+            infoWindow: (widget.postId == null)
+                ? InfoWindow.noText
+                : (id != widget.postId)
+                    ? InfoWindow.noText
+                    : const InfoWindow(
+                        title: "The Post Is Here",
+                      ),
           ),
         );
       },
@@ -83,15 +112,26 @@ class _MapPageState extends State<MapPage> {
                     final PostEntity post =
                         PostEntity.fromMap(doc.data() as Map<String, dynamic>);
 
-                    if (distance(
-                          current: LatLng(snapshot.data!.latitude,
-                              snapshot.data!.longitude),
-                          postLoc: LatLng(
-                            double.parse(post.latitude),
-                            double.parse(post.longitude),
-                          ),
-                        ) <=
-                        radiusMap) {
+                    final NoteEntity? note = (post.note == null)
+                        ? null
+                        : NoteEntity.fromMap(post.note!);
+
+                    final RatingEntity? rating = (post.rating == null)
+                        ? null
+                        : RatingEntity.fromMap(post.rating!);
+
+                    final UserPollEntity? userPoll = (post.userPoll == null)
+                        ? null
+                        : UserPollEntity.fromMap(post.userPoll!);
+
+                    if (locationOnRadius(
+                      current: LatLng(
+                          snapshot.data!.latitude, snapshot.data!.longitude),
+                      postLoc: LatLng(
+                        double.parse(post.latitude),
+                        double.parse(post.longitude),
+                      ),
+                    )) {
                       updateMarkers(
                         onRadius: true,
                         position: LatLng(
@@ -99,6 +139,10 @@ class _MapPageState extends State<MapPage> {
                           double.parse(post.longitude),
                         ),
                         id: doc.id,
+                        note: note,
+                        post: post,
+                        rating: rating,
+                        userPoll: userPoll,
                       );
                     } else {
                       updateMarkers(
@@ -108,9 +152,21 @@ class _MapPageState extends State<MapPage> {
                           double.parse(post.longitude),
                         ),
                         id: doc.id,
+                        note: note,
+                        post: post,
+                        rating: rating,
+                        userPoll: userPoll,
                       );
                     }
                   }
+
+                  final PostEntity? post = (widget.postId == null)
+                      ? null
+                      : PostEntity.fromMap(all
+                          .data!
+                          .docs[all.data!.docs
+                              .indexWhere((doc) => doc.id == widget.postId!)]
+                          .data() as Map<String, dynamic>);
 
                   return GoogleMap(
                     markers: _markers,
@@ -122,15 +178,21 @@ class _MapPageState extends State<MapPage> {
                           snapshot.data!.longitude,
                         ),
                         radius: radiusMap,
-                        fillColor: const Color(0xffFF5B58).withOpacity(0.3),
+                        fillColor:
+                            convertTheme((themes[3] as ThemeEntity).primary)
+                                .withOpacity(0.3),
                         strokeColor: Colors.transparent,
                       ),
                     },
                     myLocationEnabled: true,
                     initialCameraPosition: CameraPosition(
                       target: LatLng(
-                        snapshot.data!.latitude,
-                        snapshot.data!.longitude,
+                        (post != null)
+                            ? double.parse(post.latitude)
+                            : snapshot.data!.latitude,
+                        (post != null)
+                            ? double.parse(post.longitude)
+                            : snapshot.data!.longitude,
                       ),
                       zoom: 20,
                     ),

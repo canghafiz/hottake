@@ -1,5 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
@@ -8,6 +10,7 @@ import 'package:hottake/features/presentation/presentation.dart';
 class PostCardWidget extends StatelessWidget {
   const PostCardWidget({
     Key? key,
+    required this.enableClick,
     required this.post,
     required this.userId,
     required this.postId,
@@ -16,6 +19,7 @@ class PostCardWidget extends StatelessWidget {
     required this.userPoll,
     required this.theme,
   }) : super(key: key);
+  final bool enableClick;
   final String userId, postId;
   final PostEntity post;
   final NoteEntity? note;
@@ -26,7 +30,9 @@ class PostCardWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {},
+      onTap: () {
+        if (enableClick) {}
+      },
       child: Container(
         width: double.infinity,
         margin: const EdgeInsets.only(bottom: 16),
@@ -314,13 +320,28 @@ class PostCardWidget extends StatelessWidget {
             ),
             const SizedBox(height: 12),
             // Location Away | Date Created
-            Text(
-              "away - ${time(post.dateCreated)}",
-              style: fontStyle(
-                size: 10,
-                theme: theme,
-                color: convertTheme(theme.third).withOpacity(0.5),
-              ),
+            FutureBuilder<Position>(
+              future: getCurrentLocationAndReturn(),
+              builder: (_, snapshot) {
+                if (!snapshot.hasData) {
+                  return Text(
+                    "Loading...",
+                    style: fontStyle(
+                      size: 10,
+                      theme: theme,
+                      color: convertTheme(theme.third).withOpacity(0.5),
+                    ),
+                  );
+                }
+                return Text(
+                  "${distanceAway(firstPosition: LatLng(snapshot.data!.latitude, snapshot.data!.longitude), secondPosition: LatLng(double.parse(post.latitude), double.parse(post.longitude)))}m away - ${time(post.dateCreated)}",
+                  style: fontStyle(
+                    size: 10,
+                    theme: theme,
+                    color: convertTheme(theme.third).withOpacity(0.5),
+                  ),
+                );
+              },
             ),
           ],
         ),

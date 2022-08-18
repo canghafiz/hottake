@@ -75,6 +75,7 @@ class UserNotesWidget extends StatelessWidget {
                                   : UserPollEntity.fromMap(post.userPoll!);
 
                           return PostCardWidget(
+                            enableClick: true,
                             post: post,
                             userId: userId,
                             postId: doc.id,

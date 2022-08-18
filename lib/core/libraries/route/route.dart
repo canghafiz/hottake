@@ -68,6 +68,20 @@ void toPostLocationPage({
   );
 }
 
+void toMapPage({
+  required BuildContext context,
+  required String userId,
+  required String? postId,
+  required ThemeEntity theme,
+}) {
+  Navigator.push(
+    context,
+    _route(
+      MapPage(userId: userId, postId: postId, theme: theme),
+    ),
+  );
+}
+
 void toCommentsPage({
   required BuildContext context,
   required String userId,

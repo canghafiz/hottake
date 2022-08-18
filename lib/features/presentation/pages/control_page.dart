@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
 class ControlPage extends StatelessWidget {
@@ -17,7 +18,11 @@ class ControlPage extends StatelessWidget {
 
     final pages = [
       HomePage(userId: userId),
-      MapPage(userId: userId),
+      MapPage(
+        userId: userId,
+        postId: null,
+        theme: dI<ThemeCubitEvent>().read(context).state,
+      ),
       PostChoosePage(userId: userId),
       FavouritesPage(userId: userId),
       UserPage(userId: userId),

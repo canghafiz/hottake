@@ -63,11 +63,28 @@ String timeDuration(String value) {
 
 const double radiusMap = 100;
 
-double distance({required LatLng current, required LatLng postLoc}) {
-  return Geolocator.distanceBetween(
+bool locationOnRadius({required LatLng current, required LatLng postLoc}) {
+  final double location = Geolocator.distanceBetween(
     current.latitude,
     current.longitude,
     postLoc.latitude,
     postLoc.longitude,
   );
+
+  if (location <= radiusMap) {
+    return true;
+  }
+  return false;
+}
+
+int distanceAway({
+  required LatLng firstPosition,
+  required LatLng secondPosition,
+}) {
+  return Geolocator.distanceBetween(
+    firstPosition.latitude,
+    firstPosition.longitude,
+    secondPosition.latitude,
+    secondPosition.longitude,
+  ).toInt();
 }
