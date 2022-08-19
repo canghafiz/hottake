@@ -244,7 +244,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return (widget.subCommentId == null)
+    return (widget.subCommentId != null)
         ? replyAndDate()
         : StreamBuilder<QuerySnapshot>(
             stream: dI<CommentFirestore>().getSubComments(
