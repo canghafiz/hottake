@@ -115,7 +115,7 @@ class CommentsPage extends StatelessWidget {
 
                                             return CommentCardWidget(
                                               userId: userId,
-                                              mainComment: true,
+                                              subCommentId: null,
                                               comment: comment,
                                               theme: theme,
                                               commentId: doc.id,

@@ -11,12 +11,12 @@ class CommentCardWidget extends StatelessWidget {
     required this.userId,
     required this.postId,
     required this.commentId,
-    required this.mainComment,
+    required this.subCommentId,
     required this.comment,
     required this.theme,
   }) : super(key: key);
   final String userId, postId, commentId;
-  final bool mainComment;
+  final String? subCommentId;
   final CommentEntity comment;
   final ThemeEntity theme;
 
@@ -88,7 +88,7 @@ class CommentCardWidget extends StatelessWidget {
                       const SizedBox(height: 8),
                       // Sub
                       SubCommentWidget(
-                        mainComment: mainComment,
+                        subCommentId: subCommentId,
                         commentId: commentId,
                         postId: postId,
                         userId: userId,
@@ -106,10 +106,19 @@ class CommentCardWidget extends StatelessWidget {
                     if (!comment.favorites.contains(userId)) {
                       // Add
                       // Main
-                      if (mainComment) {
+                      if (subCommentId == null) {
                         dI<UpdateFavoriteComment>().call(
                           postId: postId,
                           commentId: commentId,
+                          userId: userId,
+                          isAdd: true,
+                        );
+                      } else {
+                        // Sub
+                        dI<UpdateFavoriteSubComment>().call(
+                          postId: postId,
+                          commentId: commentId,
+                          subCommentId: subCommentId!,
                           userId: userId,
                           isAdd: true,
                         );
@@ -117,10 +126,19 @@ class CommentCardWidget extends StatelessWidget {
                     } else {
                       // Min
                       // Main
-                      if (mainComment) {
+                      if (subCommentId == null) {
                         dI<UpdateFavoriteComment>().call(
                           postId: postId,
                           commentId: commentId,
+                          userId: userId,
+                          isAdd: false,
+                        );
+                      } else {
+                        // Sub
+                        dI<UpdateFavoriteSubComment>().call(
+                          postId: postId,
+                          commentId: commentId,
+                          subCommentId: subCommentId!,
                           userId: userId,
                           isAdd: false,
                         );
@@ -166,9 +184,9 @@ class SubCommentWidget extends StatefulWidget {
     required this.userId,
     required this.comment,
     required this.theme,
-    required this.mainComment,
+    required this.subCommentId,
   }) : super(key: key);
-  final bool mainComment;
+  final String? subCommentId;
   final String userId, postId, commentId;
   final CommentEntity comment;
   final ThemeEntity theme;
@@ -226,11 +244,13 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return !widget.mainComment
+    return (widget.subCommentId == null)
         ? replyAndDate()
         : StreamBuilder<QuerySnapshot>(
             stream: dI<CommentFirestore>().getSubComments(
-                postId: widget.postId, commentId: widget.commentId),
+              postId: widget.postId,
+              commentId: widget.commentId,
+            ),
             builder: (_, snapshot) {
               if (!snapshot.hasData) {
                 return Center(
@@ -288,7 +308,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
                                     userId: widget.userId,
                                     postId: widget.postId,
                                     commentId: widget.commentId,
-                                    mainComment: false,
+                                    subCommentId: doc.id,
                                     comment: comment,
                                     theme: widget.theme,
                                   );
