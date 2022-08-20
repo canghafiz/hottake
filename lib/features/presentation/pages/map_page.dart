@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:geolocator/geolocator.dart';
@@ -16,10 +17,12 @@ class MapPage extends StatefulWidget {
     required this.userId,
     required this.postId,
     required this.theme,
+    required this.user,
   }) : super(key: key);
   final String userId;
   final String? postId;
   final ThemeEntity theme;
+  final User user;
 
   @override
   State<MapPage> createState() => _MapPageState();
@@ -53,13 +56,15 @@ class _MapPageState extends State<MapPage> {
               showModalBottom(
                 context: context,
                 content: postDetailWidget(
-                    userId: widget.userId,
-                    postId: id,
-                    post: post,
-                    note: note,
-                    rating: rating,
-                    userPoll: userPoll,
-                    theme: widget.theme),
+                  userId: widget.userId,
+                  postId: id,
+                  post: post,
+                  note: note,
+                  rating: rating,
+                  userPoll: userPoll,
+                  theme: widget.theme,
+                  user: widget.user,
+                ),
                 theme: widget.theme,
               );
             },
@@ -198,6 +203,22 @@ class _MapPageState extends State<MapPage> {
                     ),
                     onMapCreated: (value) {
                       _controller.complete(value);
+
+                      if (widget.postId != null) {
+                        value
+                            .isMarkerInfoWindowShown(MarkerId(widget.postId!))
+                            .then(
+                          (show) {
+                            if (!show) {
+                              value.showMarkerInfoWindow(
+                                MarkerId(
+                                  widget.postId!,
+                                ),
+                              );
+                            }
+                          },
+                        );
+                      }
                     },
                   );
                 },

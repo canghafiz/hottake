@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hottake/core/core.dart';
@@ -10,9 +11,14 @@ class UserPage extends StatelessWidget {
     Key? key,
     this.initialTab,
     required this.userId,
+    required this.user,
+    required this.forOwn,
+    required this.initPage,
   }) : super(key: key);
   final int? initialTab;
   final String userId;
+  final User user;
+  final bool forOwn, initPage;
 
   @override
   Widget build(BuildContext context) {
@@ -24,36 +30,49 @@ class UserPage extends StatelessWidget {
         child: Scaffold(
           appBar: AppBar(
             automaticallyImplyLeading: false,
-            actions: [
-              PopupMenuButton(
-                color: convertTheme(theme.primary),
-                icon: Icon(
-                  Icons.more_vert_outlined,
-                  color: convertTheme(theme.secondary),
-                ),
-                onSelected: (value) {
-                  if (value == 0) {
-                    dI<AuthImpl>().logout(
-                      context: context,
-                      theme: theme,
-                    );
-                  }
-                },
-                itemBuilder: (context) => [
-                  PopupMenuItem(
-                    value: 0,
-                    child: Text(
-                      "Sign Out",
-                      style: fontStyle(
-                        size: 11,
-                        theme: theme,
+            leading: initPage
+                ? const SizedBox()
+                : IconButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    icon: Icon(
+                      Icons.arrow_back_ios,
+                      color: convertTheme(theme.secondary),
+                    ),
+                  ),
+            actions: !forOwn
+                ? null
+                : [
+                    PopupMenuButton(
+                      color: convertTheme(theme.primary),
+                      icon: Icon(
+                        Icons.more_vert_outlined,
                         color: convertTheme(theme.secondary),
                       ),
+                      onSelected: (value) {
+                        if (value == 0) {
+                          dI<AuthImpl>().logout(
+                            context: context,
+                            theme: theme,
+                          );
+                        }
+                      },
+                      itemBuilder: (context) => [
+                        PopupMenuItem(
+                          value: 0,
+                          child: Text(
+                            "Sign Out",
+                            style: fontStyle(
+                              size: 11,
+                              theme: theme,
+                              color: convertTheme(theme.secondary),
+                            ),
+                          ),
+                        )
+                      ],
                     ),
-                  )
-                ],
-              ),
-            ],
+                  ],
             bottom: TabBar(
               labelStyle: fontStyle(
                 size: 13,
@@ -66,9 +85,9 @@ class UserPage extends StatelessWidget {
               indicatorColor: convertTheme(theme.secondary),
               indicatorWeight: 5,
               labelPadding: const EdgeInsets.symmetric(horizontal: 2.0),
-              tabs: const [
-                Tab(text: "My Profile"),
-                Tab(text: "My Notes"),
+              tabs: [
+                Tab(text: forOwn ? "My Profile" : "User Profile"),
+                Tab(text: forOwn ? "My Notes" : "User Notes"),
               ],
             ),
             backgroundColor: convertTheme(theme.primary),
@@ -77,8 +96,8 @@ class UserPage extends StatelessWidget {
           ),
           body: TabBarView(
             children: [
-              UserProfileWidget(userId: userId, theme: theme),
-              UserNotesWidget(userId: userId, theme: theme),
+              UserProfileWidget(userId: userId, theme: theme, forOwn: forOwn),
+              UserNotesWidget(userId: userId, theme: theme, user: user),
             ],
           ),
         ),

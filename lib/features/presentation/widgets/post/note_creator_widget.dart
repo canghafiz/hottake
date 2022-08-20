@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hottake/dependency_injection.dart';
@@ -10,10 +11,12 @@ class NoteCreatorwidget extends StatefulWidget {
     required this.postId,
     required this.theme,
     required this.userId,
+    required this.user,
   }) : super(key: key);
   final String? postId;
   final String userId;
   final ThemeEntity theme;
+  final User user;
 
   @override
   State<NoteCreatorwidget> createState() => _NoteCreatorwidgetState();
@@ -86,6 +89,7 @@ class _NoteCreatorwidgetState extends State<NoteCreatorwidget> {
                           userPoll: null,
                           rating: null,
                           context: context,
+                          user: widget.user,
                         );
                       } else {
                         // Update
@@ -99,6 +103,7 @@ class _NoteCreatorwidgetState extends State<NoteCreatorwidget> {
                           userPoll: null,
                           rating: null,
                           context: context,
+                          user: widget.user,
                         );
                       }
                     }

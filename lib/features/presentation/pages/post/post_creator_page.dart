@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hottake/core/core.dart';
+import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
@@ -9,120 +11,135 @@ class PostCreatorPage extends StatelessWidget {
     Key? key,
     required this.postId,
     required this.userId,
+    required this.user,
   }) : super(key: key);
   final String? postId;
   final String userId;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
     return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
       selector: (state) => state,
       builder: (_, theme) => Scaffold(
-        body: SafeArea(
-          child: Center(
-            child: Container(
-              margin: const EdgeInsets.all(16),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 24,
-              ),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                color: convertTheme(theme.primary),
-                borderRadius: const BorderRadius.all(
-                  Radius.circular(10),
+        backgroundColor: convertTheme(theme.primary).withOpacity(0.7),
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: convertTheme(theme.secondary),
+            ),
+          ),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+        ),
+        body: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                // Title
+                Text(
+                  "Post a HotTake",
+                  style: fontStyle(size: 17, theme: theme),
                 ),
-                boxShadow: [
-                  BoxShadow(
-                    blurRadius: 16,
-                    color: Colors.black.withOpacity(0.5),
-                    offset: const Offset(0, 0),
-                  ),
-                ],
-              ),
-              child: SingleChildScrollView(
-                physics: const BouncingScrollPhysics(),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Top
-                    Row(
+                const SizedBox(height: 24),
+                // Btn Choose Type
+                BlocSelector<PostCubit, PostState, PostState>(
+                  selector: (state) => state,
+                  builder: (_, state) => Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: convertTheme(theme.primary),
+                      borderRadius: const BorderRadius.all(Radius.circular(20)),
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        // Back
-                        GestureDetector(
+                        // Note
+                        btnTypePostCreatorWidget(
                           onTap: () {
-                            Navigator.pop(context);
+                            // Update State
+                            dI<PostCubitEvent>().read(context).updateNote(
+                                  title: "",
+                                  note: "",
+                                );
                           },
-                          child: Icon(
-                            Icons.arrow_back_ios,
-                            color: convertTheme(theme.secondary),
-                            size: 18,
-                          ),
+                          theme: theme,
+                          title: 'Note',
+                          isActive: state.note != null,
                         ),
-                        const SizedBox(width: 16),
-                        // Title
-                        Flexible(
-                          child: Text(
-                            "Post a HotTake",
-                            style: fontStyle(
-                              size: 13,
-                              theme: theme,
-                              weight: FontWeight.w500,
-                            ),
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                          ),
+                        // Poll
+                        btnTypePostCreatorWidget(
+                          onTap: () {
+                            // Update State
+                            dI<PostCubitEvent>().read(context).updatePolling(
+                                  index: null,
+                                  pollCubit: null,
+                                  initial: true,
+                                );
+                          },
+                          theme: theme,
+                          title: 'Poll',
+                          isActive: state.userPoll != null,
+                        ),
+                        // Rating
+                        btnTypePostCreatorWidget(
+                          onTap: () {
+                            // Update State
+                            dI<PostCubitEvent>().read(context).updateRating(
+                                  description: "",
+                                  value: 0,
+                                );
+                          },
+                          theme: theme,
+                          title: 'Rating',
+                          isActive: state.rating != null,
                         ),
                       ],
                     ),
-                    const SizedBox(height: 16),
-                    // Content
-                    BlocSelector<PostCubit, PostState, PostState>(
-                      selector: (state) => state,
-                      builder: (_, state) => SizedBox(
-                        width: double.infinity,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Title
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16,
-                                vertical: 4,
-                              ),
-                              decoration: BoxDecoration(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(20)),
-                                border: Border.all(
-                                  color: convertTheme(theme.third),
-                                ),
-                              ),
-                              child: Text(
-                                postCreatorTitleDefine(
-                                  note: state.note,
-                                  polling: state.userPoll,
-                                  rating: state.rating,
-                                ),
-                                style: fontStyle(size: 11, theme: theme),
-                              ),
-                            ),
-                            const SizedBox(height: 16),
-                            // Content
-                            postCreatorContentDefine(
-                              postId: postId,
-                              userId: userId,
-                              note: state.note,
-                              polling: state.userPoll,
-                              rating: state.rating,
-                              theme: theme,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
-              ),
+                const SizedBox(height: 12),
+                // Content
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 24,
+                  ),
+                  width: double.infinity,
+                  decoration: BoxDecoration(
+                    color: convertTheme(theme.primary),
+                    borderRadius: const BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        blurRadius: 16,
+                        color: Colors.black.withOpacity(0.5),
+                        offset: const Offset(0, 0),
+                      ),
+                    ],
+                  ),
+                  child: BlocSelector<PostCubit, PostState, PostState>(
+                    selector: (state) => state,
+                    builder: (_, state) => postCreatorContentDefine(
+                      postId: postId,
+                      userId: userId,
+                      note: state.note,
+                      polling: state.userPoll,
+                      rating: state.rating,
+                      theme: theme,
+                      user: user,
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
         ),
@@ -131,20 +148,38 @@ class PostCreatorPage extends StatelessWidget {
   }
 }
 
-String postCreatorTitleDefine({
-  required NoteEntity? note,
-  required UserPollEntity? polling,
-  required RatingEntity? rating,
+Widget btnTypePostCreatorWidget({
+  required Function onTap,
+  required ThemeEntity theme,
+  required String title,
+  required bool isActive,
 }) {
-  // Note
-  if (note != null) {
-    return "Note";
-  }
-  // Polling
-  if (polling != null) {
-    return "User Poll";
-  }
-  return "Rating";
+  return Expanded(
+    child: GestureDetector(
+      onTap: () => onTap(),
+      child: Container(
+        width: double.infinity,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 8,
+        ),
+        decoration: BoxDecoration(
+          color: convertTheme(isActive ? theme.secondary : theme.primary),
+          borderRadius: const BorderRadius.all(Radius.circular(20)),
+        ),
+        child: Center(
+          child: Text(
+            title,
+            style: fontStyle(
+              size: 13,
+              theme: theme,
+              color: isActive ? convertTheme(theme.primary) : null,
+            ),
+          ),
+        ),
+      ),
+    ),
+  );
 }
 
 Widget postCreatorContentDefine({
@@ -154,6 +189,7 @@ Widget postCreatorContentDefine({
   required UserPollEntity? polling,
   required RatingEntity? rating,
   required ThemeEntity theme,
+  required User user,
 }) {
   // Note
   if (note != null) {
@@ -161,11 +197,22 @@ Widget postCreatorContentDefine({
       theme: theme,
       userId: userId,
       postId: postId,
+      user: user,
     );
   }
   // Polling
   if (polling != null) {
-    return PollingCreatorWidget(theme: theme, userId: userId, postId: postId);
+    return PollingCreatorWidget(
+      theme: theme,
+      userId: userId,
+      postId: postId,
+      user: user,
+    );
   }
-  return RatingCreatorWidget(theme: theme, userId: userId, postId: postId);
+  return RatingCreatorWidget(
+    theme: theme,
+    userId: userId,
+    postId: postId,
+    user: user,
+  );
 }

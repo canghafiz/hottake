@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -12,9 +13,11 @@ class PostNearbyWidget extends StatelessWidget {
     Key? key,
     required this.userId,
     required this.theme,
+    required this.user,
   }) : super(key: key);
   final String userId;
   final ThemeEntity theme;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -137,6 +140,7 @@ class PostNearbyWidget extends StatelessWidget {
                                 rating: rating,
                                 userPoll: userPoll,
                                 theme: theme,
+                                userAuth: user,
                               );
                             }).toList(),
                           ),

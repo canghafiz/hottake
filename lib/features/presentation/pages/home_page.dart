@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hottake/features/domain/domain.dart';
@@ -7,16 +8,18 @@ class HomePage extends StatelessWidget {
   const HomePage({
     Key? key,
     required this.userId,
+    required this.user,
   }) : super(key: key);
   final String userId;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
     List<Widget> components(ThemeEntity theme) {
       return [
-        PostNearbyWidget(userId: userId, theme: theme),
-        MapPage(userId: userId, postId: null, theme: theme),
-        FavouritesPage(userId: userId),
+        PostNearbyWidget(userId: userId, theme: theme, user: user),
+        MapPage(userId: userId, postId: null, theme: theme, user: user),
+        FavouritesPage(userId: userId, user: user),
       ];
     }
 

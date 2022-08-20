@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -18,6 +19,7 @@ class PostCardWidget extends StatelessWidget {
     required this.rating,
     required this.userPoll,
     required this.theme,
+    required this.userAuth,
   }) : super(key: key);
   final bool enableClick;
   final String userId, postId;
@@ -26,333 +28,355 @@ class PostCardWidget extends StatelessWidget {
   final RatingEntity? rating;
   final UserPollEntity? userPoll;
   final ThemeEntity theme;
+  final User userAuth;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        if (enableClick) {
-          // Navigate
-          toMapPage(
-            context: context,
-            userId: userId,
-            postId: postId,
-            theme: theme,
-          );
-        }
-      },
-      child: Container(
-        width: double.infinity,
-        margin: const EdgeInsets.only(bottom: 16),
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
-        decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(16)),
-          color: convertTheme(theme.secondary),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 8,
-              offset: const Offset(0, 0),
-              color: convertTheme(theme.secondary).withOpacity(0.5),
-            ),
-          ],
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Type | From | Pop Btn (Only for yours)
-            Row(
-              children: [
-                // Type | From
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // Type
-                      Text(
-                        (note != null)
-                            ? "Note"
-                            : (rating != null)
-                                ? "Rating"
-                                : "User Poll",
-                        style: fontStyle(
-                          size: 13,
-                          theme: theme,
-                          weight: FontWeight.bold,
-                          color: convertTheme(theme.third),
-                        ),
+    return Container(
+      width: double.infinity,
+      margin: const EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
+      decoration: BoxDecoration(
+        borderRadius: const BorderRadius.all(Radius.circular(16)),
+        color: convertTheme(theme.secondary),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 8,
+            offset: const Offset(0, 0),
+            color: convertTheme(theme.secondary).withOpacity(0.5),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          // Type | From | Pop Btn (Only for yours)
+          Row(
+            children: [
+              // Type | From
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Type
+                    Text(
+                      (note != null)
+                          ? "Note"
+                          : (rating != null)
+                              ? "Rating"
+                              : "User Poll",
+                      style: fontStyle(
+                        size: 13,
+                        theme: theme,
+                        weight: FontWeight.bold,
+                        color: convertTheme(theme.third),
                       ),
-                      // From
-                      FutureBuilder<DocumentSnapshot>(
-                        future: dI<UserFirestore>().getOneTimeUser(post.userId),
-                        builder: (_, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Text(
-                              "Loading...",
-                              style: fontStyle(
-                                size: 13,
-                                theme: theme,
-                                weight: FontWeight.bold,
-                                color:
-                                    convertTheme(theme.third).withOpacity(0.5),
-                              ),
-                              overflow: TextOverflow.ellipsis,
-                            );
-                          }
-                          // Model
-                          final UserEntity user = UserEntity.fromMap(
-                              snapshot.data!.data() as Map<String, dynamic>);
-
-                          return GestureDetector(
-                            onTap: () {
-                              // Navigate
-                              toUserPage(
-                                context: context,
-                                userId: userId,
-                                initialTab: 0,
-                              );
-                            },
-                            child: Text(
-                              "@${user.username}",
-                              style: fontStyle(
-                                size: 13,
-                                theme: theme,
-                                weight: FontWeight.bold,
-                                color:
-                                    convertTheme(theme.third).withOpacity(0.5),
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                    ),
+                    // From
+                    FutureBuilder<DocumentSnapshot>(
+                      future: dI<UserFirestore>().getOneTimeUser(post.userId),
+                      builder: (_, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Text(
+                            "Loading...",
+                            style: fontStyle(
+                              size: 13,
+                              theme: theme,
+                              weight: FontWeight.bold,
+                              color: convertTheme(theme.third).withOpacity(0.5),
                             ),
+                            overflow: TextOverflow.ellipsis,
                           );
-                        },
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 16),
-                // Pop Btn (Only for yours)
-                (userId == post.userId)
-                    ? PopupMenuButton(
-                        color: convertTheme(theme.primary),
-                        icon: Icon(
-                          Icons.more_vert_outlined,
-                          color: convertTheme(theme.third),
-                        ),
-                        onSelected: (value) {
-                          if (value == 0) {
-                            // Update State
-                            dI<PostCubitEvent>().read(context).updateLocation(
-                                  latitude: post.latitude,
-                                  longitude: post.longitude,
-                                );
-                            // Note
-                            if (note != null) {
-                              dI<PostCubitEvent>().read(context).updateNote(
-                                    title: note!.title,
-                                    note: note!.note,
-                                  );
-                            }
-                            // Rating
-                            else if (rating != null) {
-                              dI<PostCubitEvent>().read(context).updateRating(
-                                    description: rating!.description,
-                                    value: rating!.rating,
-                                  );
-                            }
-                            // Poll
-                            else {
-                              dI<PostCubitEvent>().read(context).updatePolling(
-                                    index: null,
-                                    pollCubit: null,
-                                    initial: true,
-                                  );
+                        }
+                        // Model
+                        final UserEntity user = UserEntity.fromMap(
+                            snapshot.data!.data() as Map<String, dynamic>);
 
-                              for (int i = 0;
-                                  i < userPoll!.polls.length - 1;
-                                  i++) {
-                                dI<PostCubitEvent>()
-                                    .read(context)
-                                    .updatePolling(
-                                      index: null,
-                                      pollCubit: null,
-                                      initial: false,
-                                    );
-                              }
-
-                              for (int i = 0; i < userPoll!.polls.length; i++) {
-                                final PollEntity poll =
-                                    PollEntity.fromMap(userPoll!.polls[i]);
-
-                                dI<PostCubitEvent>()
-                                    .read(context)
-                                    .updatePolling(
-                                      index: i,
-                                      pollCubit: PollCubit(
-                                        controller: TextEditingController(),
-                                        poll: poll,
-                                      ),
-                                      initial: false,
-                                    );
-                              }
-                            }
-
+                        return GestureDetector(
+                          onTap: () {
                             // Navigate
-                            toPostLocationPage(
+                            toUserPage(
                               context: context,
                               userId: userId,
-                              postId: postId,
+                              initialTab: 0,
+                              user: userAuth,
+                              forOwn: (userId == post.userId),
                             );
-
-                            return;
-                          }
-
-                          // Show Dialog
-                          showDialog(
-                            context: context,
-                            builder: (context) => alertDialogTextWith2Button(
-                              text: "Are you sure wanna delete this post?",
-                              fontSize: 13,
-                              fontColor: convertTheme(theme.third),
-                              onfalse: () {
-                                Navigator.pop(context);
-                              },
-                              onTrue: () {
-                                dI<DeletePost>().call(postId);
-                                Navigator.pop(context);
-                              },
-                              onFalseText: "Cancel",
-                              onTrueText: "Yes",
-                            ),
-                          );
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(
-                            value: 0,
-                            child: Text(
-                              "Edit",
-                              style: fontStyle(
-                                size: 11,
-                                theme: theme,
-                              ),
-                            ),
-                          ),
-                          PopupMenuItem(
-                            value: 1,
-                            child: Text(
-                              "Delete",
-                              style: fontStyle(
-                                size: 11,
-                                theme: theme,
-                              ),
-                            ),
-                          ),
-                        ],
-                      )
-                    : const SizedBox(),
-              ],
-            ),
-            const SizedBox(height: 12),
-            // Content | Btn Favorite & Comment
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // Content
-                Expanded(
-                  child: (note != null)
-                      ? NoteCardWidget(
-                          userId: userId,
-                          note: note!,
-                          theme: theme,
-                        )
-                      : (rating != null)
-                          ? RatingCardWidget(
-                              userId: userId,
-                              rating: rating!,
+                          },
+                          child: Text(
+                            "@${user.username}",
+                            style: fontStyle(
+                              size: 13,
                               theme: theme,
-                            )
-                          : UserPollCardWidget(
-                              userId: userId,
-                              userPoll: userPoll!,
-                              theme: theme,
+                              weight: FontWeight.bold,
+                              color: convertTheme(theme.third).withOpacity(0.5),
                             ),
-                ),
-                const SizedBox(width: 24),
-                // Btn Favorite & Comment
-                Column(
-                  children: [
-                    // Btn Favorite
-                    btnFavoriteWidget(
-                      userId: userId,
-                      postId: postId,
-                      contain: post.favorites.contains(userId),
-                      theme: theme,
-                      total: post.favorites.length,
-                    ),
-                    const SizedBox(height: 8),
-                    // Btn Comment
-                    GestureDetector(
-                      onTap: () {
-                        // Navigate
-                        toCommentsPage(
-                          context: context,
-                          userId: userId,
-                          postId: postId,
-                          post: post,
+                            overflow: TextOverflow.ellipsis,
+                          ),
                         );
                       },
-                      child: Column(
-                        children: [
-                          // Icon
-                          Icon(
-                            Icons.chat_bubble_outlined,
-                            color: convertTheme(theme.primary),
-                          ),
-                          // Total
-                          Baseline(
-                            baselineType: TextBaseline.alphabetic,
-                            baseline: 8,
-                            child: Text(
-                              post.totalComments.toString(),
-                              style: fontStyle(
-                                size: 11,
-                                theme: theme,
-                                color: convertTheme(theme.primary),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                     ),
                   ],
                 ),
-              ],
-            ),
-            const SizedBox(height: 12),
-            // Location Away | Date Created
-            FutureBuilder<Position>(
-              future: getCurrentLocationAndReturn(),
-              builder: (_, snapshot) {
-                if (!snapshot.hasData) {
-                  return Text(
-                    "Loading...",
-                    style: fontStyle(
-                      size: 10,
-                      theme: theme,
-                      color: convertTheme(theme.third).withOpacity(0.5),
+              ),
+              const SizedBox(width: 16),
+              // Pop Btn (Only for yours)
+              PopupMenuButton(
+                color: convertTheme(theme.primary),
+                icon: Icon(
+                  Icons.more_vert_outlined,
+                  color: convertTheme(theme.third),
+                ),
+                onSelected: (value) {
+                  // Open Location
+                  if (value == 0) {
+                    if (enableClick) {
+                      // Navigate
+                      toMapPage(
+                        context: context,
+                        userId: userId,
+                        postId: postId,
+                        theme: theme,
+                        user: userAuth,
+                      );
+                    }
+                  }
+                  // Edit
+                  if (value == 1 && (userId == post.userId)) {
+                    // Update State
+                    dI<PostCubitEvent>().read(context).updateLocation(
+                          latitude: post.latitude,
+                          longitude: post.longitude,
+                        );
+                    // Note
+                    if (note != null) {
+                      dI<PostCubitEvent>().read(context).updateNote(
+                            title: note!.title,
+                            note: note!.note,
+                          );
+                    }
+                    // Rating
+                    else if (rating != null) {
+                      dI<PostCubitEvent>().read(context).updateRating(
+                            description: rating!.description,
+                            value: rating!.rating,
+                          );
+                    }
+                    // Poll
+                    else {
+                      dI<PostCubitEvent>().read(context).updatePolling(
+                            index: null,
+                            pollCubit: null,
+                            initial: true,
+                          );
+
+                      for (int i = 0; i < userPoll!.polls.length - 1; i++) {
+                        dI<PostCubitEvent>().read(context).updatePolling(
+                              index: null,
+                              pollCubit: null,
+                              initial: false,
+                            );
+                      }
+
+                      for (int i = 0; i < userPoll!.polls.length; i++) {
+                        final PollEntity poll =
+                            PollEntity.fromMap(userPoll!.polls[i]);
+
+                        dI<PostCubitEvent>().read(context).updatePolling(
+                              index: i,
+                              pollCubit: PollCubit(
+                                controller: TextEditingController(),
+                                poll: poll,
+                              ),
+                              initial: false,
+                            );
+                      }
+                    }
+
+                    // Navigate
+                    toPostLocationPage(
+                      context: context,
+                      userId: userId,
+                      postId: postId,
+                      user: userAuth,
+                    );
+
+                    return;
+                  }
+
+                  // Delete
+                  if (value == 2 && (userId == post.userId)) {
+                    // Show Dialog
+                    showDialog(
+                      context: context,
+                      builder: (context) => alertDialogTextWith2Button(
+                        text: "Are you sure wanna delete this post?",
+                        fontSize: 13,
+                        fontColor: convertTheme(theme.third),
+                        onfalse: () {
+                          Navigator.pop(context);
+                        },
+                        onTrue: () {
+                          dI<DeletePost>().call(postId);
+                          Navigator.pop(context);
+                        },
+                        onFalseText: "Cancel",
+                        onTrueText: "Yes",
+                      ),
+                    );
+                  }
+                },
+                itemBuilder: (context) => (userId == post.userId)
+                    ? [
+                        PopupMenuItem(
+                          value: 0,
+                          child: Text(
+                            "Open Location In Google Maps",
+                            style: fontStyle(
+                              size: 11,
+                              theme: theme,
+                            ),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 1,
+                          child: Text(
+                            "Edit",
+                            style: fontStyle(
+                              size: 11,
+                              theme: theme,
+                            ),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 2,
+                          child: Text(
+                            "Delete",
+                            style: fontStyle(
+                              size: 11,
+                              theme: theme,
+                            ),
+                          ),
+                        ),
+                      ]
+                    : [
+                        PopupMenuItem(
+                          value: 0,
+                          child: Text(
+                            "Open Location In Google Maps",
+                            style: fontStyle(
+                              size: 11,
+                              theme: theme,
+                            ),
+                          ),
+                        ),
+                      ],
+              )
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Content | Btn Favorite & Comment
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Content
+              Expanded(
+                child: (note != null)
+                    ? NoteCardWidget(
+                        userId: userId,
+                        note: note!,
+                        theme: theme,
+                      )
+                    : (rating != null)
+                        ? RatingCardWidget(
+                            userId: userId,
+                            rating: rating!,
+                            theme: theme,
+                          )
+                        : UserPollCardWidget(
+                            userId: userId,
+                            userPoll: userPoll!,
+                            theme: theme,
+                          ),
+              ),
+              const SizedBox(width: 24),
+              // Btn Favorite & Comment
+              Column(
+                children: [
+                  // Btn Favorite
+                  btnFavoriteWidget(
+                    userId: userId,
+                    postId: postId,
+                    contain: post.favorites.contains(userId),
+                    theme: theme,
+                    total: post.favorites.length,
+                  ),
+                  const SizedBox(height: 8),
+                  // Btn Comment
+                  GestureDetector(
+                    onTap: () {
+                      // Navigate
+                      toCommentsPage(
+                        context: context,
+                        userId: userId,
+                        postId: postId,
+                        post: post,
+                        user: userAuth,
+                      );
+                    },
+                    child: Column(
+                      children: [
+                        // Icon
+                        Icon(
+                          Icons.chat_bubble_outlined,
+                          color: convertTheme(theme.primary),
+                        ),
+                        // Total
+                        Baseline(
+                          baselineType: TextBaseline.alphabetic,
+                          baseline: 8,
+                          child: Text(
+                            post.totalComments.toString(),
+                            style: fontStyle(
+                              size: 11,
+                              theme: theme,
+                              color: convertTheme(theme.primary),
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  );
-                }
+                  ),
+                ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Location Away | Date Created
+          FutureBuilder<Position>(
+            future: getCurrentLocationAndReturn(),
+            builder: (_, snapshot) {
+              if (!snapshot.hasData) {
                 return Text(
-                  "${distanceAway(firstPosition: LatLng(snapshot.data!.latitude, snapshot.data!.longitude), secondPosition: LatLng(double.parse(post.latitude), double.parse(post.longitude)))}m away - ${time(post.dateCreated)}",
+                  "Loading...",
                   style: fontStyle(
                     size: 10,
                     theme: theme,
                     color: convertTheme(theme.third).withOpacity(0.5),
                   ),
                 );
-              },
-            ),
-          ],
-        ),
+              }
+              return Text(
+                "${distanceAway(firstPosition: LatLng(snapshot.data!.latitude, snapshot.data!.longitude), secondPosition: LatLng(double.parse(post.latitude), double.parse(post.longitude)))}m away - ${time(post.dateCreated)}",
+                style: fontStyle(
+                  size: 10,
+                  theme: theme,
+                  color: convertTheme(theme.third).withOpacity(0.5),
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

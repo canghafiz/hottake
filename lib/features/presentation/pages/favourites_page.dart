@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hottake/core/core.dart';
@@ -10,8 +11,10 @@ class FavouritesPage extends StatelessWidget {
   const FavouritesPage({
     Key? key,
     required this.userId,
+    required this.user,
   }) : super(key: key);
   final String userId;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -96,6 +99,7 @@ class FavouritesPage extends StatelessWidget {
                                   rating: rating,
                                   userPoll: userPoll,
                                   theme: theme,
+                                  userAuth: user,
                                 );
                               },
                             ).toList(),

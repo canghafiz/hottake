@@ -18,7 +18,6 @@ export 'package:hottake/features/presentation/pages/main_page.dart';
 export 'package:hottake/features/presentation/pages/map_page.dart';
 export 'package:hottake/features/presentation/pages/user/user_page.dart';
 export 'package:hottake/features/presentation/pages/user/edit_user_page.dart';
-export 'package:hottake/features/presentation/pages/post/post_choose_page.dart';
 export 'package:hottake/features/presentation/pages/post/post_creator_page.dart';
 export 'package:hottake/features/presentation/pages/post/post_location_page.dart';
 export 'package:hottake/features/presentation/pages/comments_page.dart';

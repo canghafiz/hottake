@@ -13,10 +13,4 @@ class PostFirestore {
   Stream<QuerySnapshot> getNotes() {
     return Firestore.instance.collection(Firestore.postCollection).snapshots();
   }
-
-  Stream<QuerySnapshot> getFavoriteNotes(String userId) {
-    return Firestore.instance
-        .collection(Firestore.postCollection)
-        .where("favorites", arrayContains: [userId]).snapshots();
-  }
 }

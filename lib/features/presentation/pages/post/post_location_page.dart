@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
@@ -13,9 +15,11 @@ class PostLocationPage extends StatefulWidget {
     Key? key,
     required this.postId,
     required this.userId,
+    required this.user,
   }) : super(key: key);
   final String? postId;
   final String userId;
+  final User user;
 
   @override
   State<PostLocationPage> createState() => _PostLocationPageState();
@@ -46,99 +50,186 @@ class _PostLocationPageState extends State<PostLocationPage> {
     return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
       selector: (state) => state,
       builder: (_, theme) => Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            onPressed: () {
-              Navigator.pop(context);
-            },
-            icon: Icon(
-              Icons.arrow_back_ios,
-              color: convertTheme(theme.secondary),
-            ),
-          ),
-          title: Text(
-            "Select Location",
-            style: fontStyle(size: 15, theme: theme),
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          shadowColor: Colors.transparent,
-        ),
-        body: Column(
-          children: [
-            // Map
-            Expanded(
-              child: BlocSelector<PostCubit, PostState, PostState>(
-                selector: (state) => state,
-                builder: (_, state) => (state.latitude == null &&
-                        state.longitude == null)
-                    ? Center(
-                        child: CircularProgressIndicator(
-                          color: convertTheme(theme.secondary),
-                        ),
-                      )
-                    : FutureBuilder<BitmapDescriptor>(
-                        future: BitmapDescriptor.fromAssetImage(
-                          const ImageConfiguration(),
-                          redCardImage,
-                        ),
-                        builder: (_, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Center(
+        body: SafeArea(
+          child: Column(
+            children: [
+              // Top | Map
+              Expanded(
+                child: Stack(
+                  children: [
+                    // Map
+                    BlocSelector<PostCubit, PostState, PostState>(
+                      selector: (state) => state,
+                      builder: (_, state) => (state.latitude == null &&
+                              state.longitude == null)
+                          ? Center(
                               child: CircularProgressIndicator(
                                 color: convertTheme(theme.secondary),
                               ),
-                            );
-                          }
-                          return GoogleMap(
-                            markers: {
-                              Marker(
-                                markerId: const MarkerId('1'),
-                                position: LatLng(double.parse(state.latitude!),
-                                    double.parse(state.longitude!)),
-                                icon: snapshot.data!,
+                            )
+                          : FutureBuilder<BitmapDescriptor>(
+                              future: BitmapDescriptor.fromAssetImage(
+                                const ImageConfiguration(),
+                                redCardImage,
                               ),
-                            },
-                            myLocationEnabled: true,
-                            initialCameraPosition: CameraPosition(
-                              target: LatLng(
-                                double.parse(state.latitude!),
-                                double.parse(state.longitude!),
-                              ),
-                              zoom: 20,
-                            ),
-                            onMapCreated: (value) {
-                              _controller.complete(value);
-                            },
-                            onCameraMove: (value) {
-                              // Update State
-                              dI<PostCubitEvent>().read(context).updateLocation(
-                                    latitude: value.target.latitude.toString(),
-                                    longitude:
-                                        value.target.longitude.toString(),
+                              builder: (_, snapshot) {
+                                if (!snapshot.hasData) {
+                                  return Center(
+                                    child: CircularProgressIndicator(
+                                      color: convertTheme(theme.secondary),
+                                    ),
                                   );
-                            },
-                          );
-                        },
+                                }
+                                return FutureBuilder<Position>(
+                                  future: getCurrentLocationAndReturn(),
+                                  builder: (_, yourLocation) {
+                                    if (!yourLocation.hasData) {
+                                      return Center(
+                                        child: CircularProgressIndicator(
+                                          color: convertTheme(theme.secondary),
+                                        ),
+                                      );
+                                    }
+                                    return GoogleMap(
+                                      markers: {
+                                        Marker(
+                                          markerId: const MarkerId('1'),
+                                          position: LatLng(
+                                            double.parse(state.latitude!),
+                                            double.parse(state.longitude!),
+                                          ),
+                                          icon: snapshot.data!,
+                                        ),
+                                      },
+                                      circles: {
+                                        Circle(
+                                          circleId: const CircleId("Radius"),
+                                          center: LatLng(
+                                            yourLocation.data!.latitude,
+                                            yourLocation.data!.longitude,
+                                          ),
+                                          radius: 50,
+                                          fillColor: convertTheme(
+                                                  (themes[3] as ThemeEntity)
+                                                      .primary)
+                                              .withOpacity(0.3),
+                                          strokeColor: Colors.transparent,
+                                        ),
+                                      },
+                                      myLocationEnabled: true,
+                                      initialCameraPosition: CameraPosition(
+                                        target: LatLng(
+                                          double.parse(state.latitude!),
+                                          double.parse(state.longitude!),
+                                        ),
+                                        zoom: 20,
+                                      ),
+                                      onMapCreated: (value) {
+                                        _controller.complete(value);
+                                      },
+                                      onCameraMove: (value) {
+                                        if (locationOnRadius(
+                                          current: LatLng(
+                                            yourLocation.data!.latitude,
+                                            yourLocation.data!.longitude,
+                                          ),
+                                          postLoc: LatLng(
+                                            value.target.latitude,
+                                            value.target.longitude,
+                                          ),
+                                          radius: 50,
+                                        )) {
+                                          // Update State
+                                          dI<PostCubitEvent>()
+                                              .read(context)
+                                              .updateLocation(
+                                                latitude: value.target.latitude
+                                                    .toString(),
+                                                longitude: value
+                                                    .target.longitude
+                                                    .toString(),
+                                              );
+                                        }
+                                      },
+                                    );
+                                  },
+                                );
+                              },
+                            ),
+                    ),
+                    // Top
+                    Align(
+                      alignment: Alignment.topCenter,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16),
+                        child: Row(
+                          children: [
+                            // Back Btn
+                            (widget.postId == null)
+                                ? const SizedBox()
+                                : GestureDetector(
+                                    onTap: () {
+                                      Navigator.pop(context);
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: convertTheme(theme.primary),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: Icon(
+                                        Icons.arrow_back_ios,
+                                        color: convertTheme(theme.secondary),
+                                      ),
+                                    ),
+                                  ),
+                            SizedBox(width: (widget.postId == null) ? 0 : 12),
+                            // Title
+                            Expanded(
+                              child: Container(
+                                width: double.infinity,
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  borderRadius: const BorderRadius.all(
+                                      Radius.circular(20)),
+                                  color: convertTheme(theme.third),
+                                ),
+                                child: Text(
+                                  "Place the marker inside the circle area and create a post",
+                                  style: fontStyle(size: 13, theme: theme),
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            const SizedBox(height: 16),
-            // Btn Next
-            ButtonCreatorWidget(
-                onTap: () {
-                  // Navigate
-                  toPostCreatorPage(
-                    context: context,
-                    userId: widget.userId,
-                    postId: widget.postId,
-                  );
-                },
-                title: "Next",
-                theme: theme),
-            const SizedBox(height: 16),
-          ],
+              // Btn Select Location
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: ElevatedButtonText(
+                  onTap: () {
+                    // Navigate
+                    toPostCreatorPage(
+                      context: context,
+                      userId: widget.userId,
+                      postId: widget.postId,
+                      user: widget.user,
+                    );
+                  },
+                  themeEntity: theme,
+                  text: "Select Location",
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );

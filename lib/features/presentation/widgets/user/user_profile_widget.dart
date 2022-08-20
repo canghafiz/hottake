@@ -15,9 +15,11 @@ class UserProfileWidget extends StatelessWidget {
     Key? key,
     required this.userId,
     required this.theme,
+    required this.forOwn,
   }) : super(key: key);
   final String userId;
   final ThemeEntity theme;
+  final bool forOwn;
 
   @override
   Widget build(BuildContext context) {
@@ -50,23 +52,25 @@ class UserProfileWidget extends StatelessWidget {
               children: [
                 const SizedBox(height: 12),
                 // Btn Edit
-                Align(
-                  alignment: Alignment.topRight,
-                  child: TextButton(
-                    onPressed: () {
-                      // Navigate
-                      toEditUserPage(
-                        context: context,
-                        userId: userId,
-                        user: user,
-                      );
-                    },
-                    child: Text(
-                      "Edit Profile",
-                      style: fontStyle(size: 11, theme: theme),
-                    ),
-                  ),
-                ),
+                !forOwn
+                    ? const SizedBox()
+                    : Align(
+                        alignment: Alignment.topRight,
+                        child: TextButton(
+                          onPressed: () {
+                            // Navigate
+                            toEditUserPage(
+                              context: context,
+                              userId: userId,
+                              user: user,
+                            );
+                          },
+                          child: Text(
+                            "Edit Profile",
+                            style: fontStyle(size: 11, theme: theme),
+                          ),
+                        ),
+                      ),
                 // Photo Profile
                 PhotoProfileWidget(
                   url: user.photo,

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
@@ -10,9 +11,11 @@ class UserNotesWidget extends StatelessWidget {
     Key? key,
     required this.theme,
     required this.userId,
+    required this.user,
   }) : super(key: key);
   final ThemeEntity theme;
   final String userId;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -83,6 +86,7 @@ class UserNotesWidget extends StatelessWidget {
                             rating: rating,
                             userPoll: userPoll,
                             theme: theme,
+                            userAuth: user,
                           );
                         }).toList(),
                       ),

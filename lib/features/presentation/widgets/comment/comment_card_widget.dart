@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
@@ -14,11 +15,13 @@ class CommentCardWidget extends StatelessWidget {
     required this.subCommentId,
     required this.comment,
     required this.theme,
+    required this.userAuth,
   }) : super(key: key);
   final String userId, postId, commentId;
   final String? subCommentId;
   final CommentEntity comment;
   final ThemeEntity theme;
+  final User userAuth;
 
   @override
   Widget build(BuildContext context) {
@@ -61,6 +64,8 @@ class CommentCardWidget extends StatelessWidget {
                             context: context,
                             userId: comment.userId,
                             initialTab: 0,
+                            user: userAuth,
+                            forOwn: (userId == comment.userId),
                           );
                         },
                         child: Text(
@@ -94,6 +99,7 @@ class CommentCardWidget extends StatelessWidget {
                         userId: userId,
                         comment: comment,
                         theme: theme,
+                        userAuth: userAuth,
                       ),
                     ],
                   ),
@@ -185,11 +191,13 @@ class SubCommentWidget extends StatefulWidget {
     required this.comment,
     required this.theme,
     required this.subCommentId,
+    required this.userAuth,
   }) : super(key: key);
   final String? subCommentId;
   final String userId, postId, commentId;
   final CommentEntity comment;
   final ThemeEntity theme;
+  final User userAuth;
 
   @override
   State<SubCommentWidget> createState() => _SubCommentWidgetState();
@@ -311,6 +319,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
                                     subCommentId: doc.id,
                                     comment: comment,
                                     theme: widget.theme,
+                                    userAuth: widget.userAuth,
                                   );
                                 },
                               ).toList(),

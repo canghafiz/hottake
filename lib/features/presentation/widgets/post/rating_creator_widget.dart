@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -12,10 +13,12 @@ class RatingCreatorWidget extends StatefulWidget {
     required this.postId,
     required this.userId,
     required this.theme,
+    required this.user,
   }) : super(key: key);
   final String? postId;
   final String userId;
   final ThemeEntity theme;
+  final User user;
 
   @override
   State<RatingCreatorWidget> createState() => _RatingCreatorWidgetState();
@@ -115,6 +118,7 @@ class _RatingCreatorWidgetState extends State<RatingCreatorWidget> {
                           description: description.text,
                         ),
                         context: context,
+                        user: widget.user,
                       );
                     } else {
                       // Update
@@ -130,6 +134,7 @@ class _RatingCreatorWidgetState extends State<RatingCreatorWidget> {
                           description: description.text,
                         ),
                         context: context,
+                        user: widget.user,
                       );
                     }
                   }

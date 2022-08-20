@@ -36,7 +36,7 @@ class PostCubit extends Cubit<PostState> {
   static final _default = PostState(
     latitude: null,
     longitude: null,
-    note: null,
+    note: NoteEntity(note: "", title: ""),
     rating: null,
     userPoll: null,
   );
@@ -87,7 +87,7 @@ class PostCubit extends Cubit<PostState> {
       PostState(
         latitude: state.latitude,
         longitude: state.longitude,
-        note: _default.note,
+        note: null,
         rating: RatingEntity(
           description: description,
           rating: value,
@@ -125,7 +125,7 @@ class PostCubit extends Cubit<PostState> {
         PostState(
           latitude: state.latitude,
           longitude: state.longitude,
-          note: _default.note,
+          note: null,
           rating: _default.rating,
           userPoll: state.userPoll, // Update
         ),
@@ -135,7 +135,7 @@ class PostCubit extends Cubit<PostState> {
         PostState(
           latitude: state.latitude,
           longitude: state.longitude,
-          note: _default.note,
+          note: null,
           rating: _default.rating,
           userPoll: UserPollEntity(
             [

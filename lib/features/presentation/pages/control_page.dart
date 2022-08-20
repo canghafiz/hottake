@@ -37,15 +37,22 @@ class ControlPage extends StatelessWidget {
     );
 
     final pages = [
-      HomePage(userId: userId),
+      HomePage(userId: userId, user: user),
       MapPage(
         userId: userId,
         postId: null,
         theme: dI<ThemeCubitEvent>().read(context).state,
+        user: user,
       ),
-      PostChoosePage(userId: userId),
-      FavouritesPage(userId: userId),
-      UserPage(userId: userId),
+      PostLocationPage(postId: null, userId: userId, user: user),
+      FavouritesPage(userId: userId, user: user),
+      UserPage(
+        userId: userId,
+        initialTab: 1,
+        user: user,
+        forOwn: true,
+        initPage: true,
+      ),
     ];
     return Scaffold(
       body: SafeArea(

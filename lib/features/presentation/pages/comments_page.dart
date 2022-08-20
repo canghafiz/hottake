@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hottake/core/core.dart';
@@ -12,9 +13,11 @@ class CommentsPage extends StatelessWidget {
     required this.post,
     required this.postId,
     required this.userId,
+    required this.user,
   }) : super(key: key);
   final PostEntity post;
   final String userId, postId;
+  final User user;
 
   @override
   Widget build(BuildContext context) {
@@ -120,6 +123,7 @@ class CommentsPage extends StatelessWidget {
                                               theme: theme,
                                               commentId: doc.id,
                                               postId: postId,
+                                              userAuth: user,
                                             );
                                           },
                                         ).toList(),

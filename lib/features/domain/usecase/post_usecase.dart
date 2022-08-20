@@ -1,8 +1,11 @@
 import 'dart:async';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:hottake/core/core.dart';
+import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
+import 'package:hottake/features/presentation/cubits/navbar/navbar_cubit.dart';
 
 class CreatePost {
   final PostRepository repository;
@@ -17,6 +20,7 @@ class CreatePost {
     required Map<String, dynamic>? userPoll,
     required Map<String, dynamic>? rating,
     required BuildContext context,
+    required User user,
   }) {
     repository.createPost(
       userId: userId,
@@ -27,8 +31,11 @@ class CreatePost {
       rating: rating,
     );
 
+    // Update State
+    dI<NavbarCubitEvent>().read(context).updateBottom(4);
+
     // Navigate
-    toUserPage(context: context, userId: userId, initialTab: 1);
+    toControlPage(context: context, user: user);
   }
 }
 
@@ -46,6 +53,7 @@ class UpdatePost {
     required Map<String, dynamic>? userPoll,
     required Map<String, dynamic>? rating,
     required BuildContext context,
+    required User user,
   }) {
     repository.updatePost(
       postId: postId,
@@ -56,8 +64,11 @@ class UpdatePost {
       rating: rating,
     );
 
+    // Update State
+    dI<NavbarCubitEvent>().read(context).updateBottom(4);
+
     // Navigate
-    toUserPage(context: context, userId: userId, initialTab: 1);
+    toControlPage(context: context, user: user);
   }
 }
 

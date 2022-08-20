@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/features/domain/domain.dart';
@@ -11,6 +12,7 @@ Widget postDetailWidget({
   required RatingEntity? rating,
   required UserPollEntity? userPoll,
   required ThemeEntity theme,
+  required User user,
 }) {
   return Column(
     mainAxisSize: MainAxisSize.min,
@@ -57,6 +59,7 @@ Widget postDetailWidget({
                 userPoll: userPoll,
                 theme: theme,
                 enableClick: false,
+                userAuth: user,
               ),
               const SizedBox(height: 16),
             ],

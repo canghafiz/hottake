@@ -61,9 +61,13 @@ String timeDuration(String value) {
   return Jiffy(value, "yyyy-MM-dd hh:mm:ss").fromNow();
 }
 
-const double radiusMap = 100;
+const double radiusMap = 5000;
 
-bool locationOnRadius({required LatLng current, required LatLng postLoc}) {
+bool locationOnRadius({
+  required LatLng current,
+  required LatLng postLoc,
+  double? radius,
+}) {
   final double location = Geolocator.distanceBetween(
     current.latitude,
     current.longitude,
@@ -71,7 +75,9 @@ bool locationOnRadius({required LatLng current, required LatLng postLoc}) {
     postLoc.longitude,
   );
 
-  if (location <= radiusMap) {
+  final radiusTemp = radius ?? radiusMap;
+
+  if (location <= radiusTemp) {
     return true;
   }
   return false;
