@@ -63,4 +63,38 @@ class PostRepositoryImpl implements PostRepository {
   Future<void> deletePost(String postId) async {
     await remoteDataSource.deletePost(postId);
   }
+
+  @override
+  Future<void> updateLike({
+    required String postId,
+    required String userId,
+    required bool isAdd,
+  }) async {
+    await remoteDataSource.updateLike(
+      postId: postId,
+      userId: userId,
+      isAdd: isAdd,
+    );
+  }
+
+  @override
+  Future<void> updateUnLike({
+    required String postId,
+    required String userId,
+    required bool isAdd,
+  }) async {
+    await remoteDataSource.updateUnLike(
+      postId: postId,
+      userId: userId,
+      isAdd: isAdd,
+    );
+  }
+
+  @override
+  Future<void> updateRead({
+    required String postId,
+    required String userId,
+  }) async {
+    await remoteDataSource.updateRead(postId: postId, userId: userId);
+  }
 }

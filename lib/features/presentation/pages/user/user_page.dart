@@ -51,7 +51,13 @@ class UserPage extends StatelessWidget {
                         color: convertTheme(theme.secondary),
                       ),
                       onSelected: (value) {
+                        // App Setting
                         if (value == 0) {
+                          // Navigate
+                          toAppSettingPage(context: context, userId: userId);
+                        }
+                        // Sign Out
+                        if (value == 1) {
                           dI<AuthImpl>().logout(
                             context: context,
                             theme: theme,
@@ -62,6 +68,17 @@ class UserPage extends StatelessWidget {
                         PopupMenuItem(
                           value: 0,
                           child: Text(
+                            "App Setting",
+                            style: fontStyle(
+                              size: 11,
+                              theme: theme,
+                              color: convertTheme(theme.secondary),
+                            ),
+                          ),
+                        ),
+                        PopupMenuItem(
+                          value: 1,
+                          child: Text(
                             "Sign Out",
                             style: fontStyle(
                               size: 11,
@@ -69,7 +86,7 @@ class UserPage extends StatelessWidget {
                               color: convertTheme(theme.secondary),
                             ),
                           ),
-                        )
+                        ),
                       ],
                     ),
                   ],

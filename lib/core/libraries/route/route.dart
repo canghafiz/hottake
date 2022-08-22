@@ -143,7 +143,40 @@ void toControlPage({
 }) {
   Navigator.pushAndRemoveUntil(
     context,
-    _route(ControlPage(userId: user.uid, user: user)),
+    _route(ControlPage(user: user)),
     (route) => false,
+  );
+}
+
+void toCreateAccountPage({
+  required BuildContext context,
+  required User user,
+}) {
+  Navigator.pushAndRemoveUntil(
+    context,
+    _route(CreateAccountPage(user: user)),
+    (route) => false,
+  );
+}
+
+void toMainPage({
+  required BuildContext context,
+}) {
+  Navigator.pushAndRemoveUntil(
+    context,
+    _route(const MainPage()),
+    (route) => false,
+  );
+}
+
+void toAppSettingPage({
+  required BuildContext context,
+  required String userId,
+}) {
+  Navigator.push(
+    context,
+    _route(
+      AppSettingPage(userId: userId),
+    ),
   );
 }

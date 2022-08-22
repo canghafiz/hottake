@@ -4,6 +4,7 @@ class UserEntity {
   final String email, username;
   final String? photo, bio, socialMedia;
   final Map<String, dynamic> theme;
+  final double gender;
 
   UserEntity({
     required this.bio,
@@ -12,6 +13,7 @@ class UserEntity {
     required this.socialMedia,
     required this.theme,
     required this.username,
+    required this.gender,
   });
 
   // Map
@@ -23,6 +25,7 @@ class UserEntity {
       socialMedia: data['socialMedia'],
       theme: data['theme'],
       username: data['username'],
+      gender: data['gender'],
     );
   }
 
@@ -33,6 +36,7 @@ class UserEntity {
     required String? bio,
     required String? socialMedia,
     required ThemeEntity theme,
+    required double gender,
   }) {
     return {
       "email": email,
@@ -45,6 +49,7 @@ class UserEntity {
         secondary: theme.secondary,
         third: theme.third,
       ),
+      "gender": gender,
     };
   }
 }

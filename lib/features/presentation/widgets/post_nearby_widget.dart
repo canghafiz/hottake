@@ -8,7 +8,7 @@ import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
-class PostNearbyWidget extends StatelessWidget {
+class PostNearbyWidget extends StatefulWidget {
   const PostNearbyWidget({
     Key? key,
     required this.userId,
@@ -20,24 +20,68 @@ class PostNearbyWidget extends StatelessWidget {
   final User user;
 
   @override
+  State<PostNearbyWidget> createState() => _PostNearbyWidgetState();
+}
+
+class _PostNearbyWidgetState extends State<PostNearbyWidget> {
+  var orderType = PostOrderType.nearest;
+
+  void updateOrderType(PostOrderType value) {
+    setState(() {
+      orderType = value;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
+    Widget dropDownSort() {
+      return DropdownButton<PostOrderType>(
+        value: orderType,
+        underline: const SizedBox(),
+        items: const [
+          DropdownMenuItem(
+            value: PostOrderType.nearest,
+            child: Text("Nearest"),
+          ),
+          DropdownMenuItem(
+            value: PostOrderType.latest,
+            child: Text("Latest"),
+          ),
+          DropdownMenuItem(
+            value: PostOrderType.popular,
+            child: Text("Most Popular"),
+          ),
+          DropdownMenuItem(
+            value: PostOrderType.controversial,
+            child: Text("Most Controversial"),
+          ),
+        ],
+        onChanged: (value) {
+          if (value != null) {
+            updateOrderType(value);
+          }
+        },
+      );
+    }
+
     return FutureBuilder<Position>(
       future: getCurrentLocationAndReturn(),
       builder: (_, snapshotLoc) {
         if (!snapshotLoc.hasData) {
           return Center(
             child: CircularProgressIndicator(
-              color: convertTheme(theme.primary),
+              color: convertTheme(widget.theme.primary),
             ),
           );
         }
+
         return StreamBuilder<QuerySnapshot>(
-          stream: dI<PostFirestore>().getNotes(),
+          stream: dI<PostFirestore>().orderType(orderType),
           builder: (_, snapshot) {
             if (!snapshot.hasData) {
               return Center(
                 child: CircularProgressIndicator(
-                  color: convertTheme(theme.primary),
+                  color: convertTheme(widget.theme.primary),
                 ),
               );
             }
@@ -57,37 +101,115 @@ class PostNearbyWidget extends StatelessWidget {
               );
             }).toList();
 
-            List<Map<String, dynamic>> sort = [];
+            List<Map<String, dynamic>>? sort =
+                (orderType == PostOrderType.nearest) ? [] : null;
 
-            for (DocumentSnapshot doc in data) {
-              // Model
-              final PostEntity post =
-                  PostEntity.fromMap(doc.data() as Map<String, dynamic>);
+            // Nearest
+            if (sort != null) {
+              for (DocumentSnapshot doc in data) {
+                // Model
+                final PostEntity post =
+                    PostEntity.fromMap(doc.data() as Map<String, dynamic>);
 
-              sort.add(
-                {
-                  "doc": doc,
-                  "weight": distanceAway(
-                    firstPosition: LatLng(snapshotLoc.data!.latitude,
-                        snapshotLoc.data!.longitude),
-                    secondPosition: LatLng(
-                      double.parse(post.latitude),
-                      double.parse(post.longitude),
+                sort.add(
+                  {
+                    "doc": doc,
+                    "weight": distanceAway(
+                      firstPosition: LatLng(snapshotLoc.data!.latitude,
+                          snapshotLoc.data!.longitude),
+                      secondPosition: LatLng(
+                        double.parse(post.latitude),
+                        double.parse(post.longitude),
+                      ),
                     ),
-                  ),
-                },
-              );
+                  },
+                );
+              }
+
+              sort.sort((a, b) {
+                return a['weight'].compareTo(b['weight']);
+              });
             }
 
-            sort.sort((a, b) {
-              return a['weight'].compareTo(b['weight']);
-            });
+            return (sort != null)
+                ? SingleChildScrollView(
+                    physics: const BouncingScrollPhysics(),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 16,
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 16),
+                          // Total
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  "Total notes: ${sort.length}",
+                                  style: fontStyle(
+                                    size: 13,
+                                    theme: widget.theme,
+                                    weight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              // Dropdown
+                              dropDownSort(),
+                            ],
+                          ),
+                          const SizedBox(height: 12),
+                          // Notes
+                          (sort.isEmpty)
+                              ? Center(
+                                  child: Text(
+                                    "Empty",
+                                    style: fontStyle(
+                                        size: 13, theme: widget.theme),
+                                  ),
+                                )
+                              : Column(
+                                  children: sort.map((map) {
+                                    // Model
+                                    final PostEntity post = PostEntity.fromMap(
+                                        (map["doc"] as DocumentSnapshot).data()
+                                            as Map<String, dynamic>);
 
-            return (sort.isEmpty)
-                ? Center(
-                    child: Text(
-                      "Empty",
-                      style: fontStyle(size: 13, theme: theme),
+                                    final NoteEntity? note = (post.note == null)
+                                        ? null
+                                        : NoteEntity.fromMap(post.note!);
+
+                                    final RatingEntity? rating = (post.rating ==
+                                            null)
+                                        ? null
+                                        : RatingEntity.fromMap(post.rating!);
+
+                                    final UserPollEntity? userPoll =
+                                        (post.userPoll == null)
+                                            ? null
+                                            : UserPollEntity.fromMap(
+                                                post.userPoll!);
+
+                                    return PostCardWidget(
+                                      enableClick: true,
+                                      post: post,
+                                      userId: widget.userId,
+                                      postId:
+                                          (map['doc'] as DocumentSnapshot).id,
+                                      note: note,
+                                      rating: rating,
+                                      userPoll: userPoll,
+                                      theme: widget.theme,
+                                      userAuth: widget.user,
+                                    );
+                                  }).toList(),
+                                ),
+                        ],
+                      ),
                     ),
                   )
                 : SingleChildScrollView(
@@ -101,49 +223,69 @@ class PostNearbyWidget extends StatelessWidget {
                         children: [
                           const SizedBox(height: 16),
                           // Total
-                          Text(
-                            "Total notes: ${sort.length}",
-                            style: fontStyle(
-                              size: 13,
-                              theme: theme,
-                              weight: FontWeight.w500,
-                            ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Flexible(
+                                child: Text(
+                                  "Total notes: ${data.length}",
+                                  style: fontStyle(
+                                    size: 13,
+                                    theme: widget.theme,
+                                    weight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              // Dropdown
+                              dropDownSort(),
+                            ],
                           ),
                           const SizedBox(height: 12),
                           // Notes
-                          Column(
-                            children: sort.map((map) {
-                              // Model
-                              final PostEntity post = PostEntity.fromMap(
-                                  (map["doc"] as DocumentSnapshot).data()
-                                      as Map<String, dynamic>);
+                          (data.isEmpty)
+                              ? Center(
+                                  child: Text(
+                                    "Empty",
+                                    style: fontStyle(
+                                        size: 13, theme: widget.theme),
+                                  ),
+                                )
+                              : Column(
+                                  children: data.map((map) {
+                                    // Model
+                                    final PostEntity post = PostEntity.fromMap(
+                                        map.data() as Map<String, dynamic>);
 
-                              final NoteEntity? note = (post.note == null)
-                                  ? null
-                                  : NoteEntity.fromMap(post.note!);
+                                    final NoteEntity? note = (post.note == null)
+                                        ? null
+                                        : NoteEntity.fromMap(post.note!);
 
-                              final RatingEntity? rating = (post.rating == null)
-                                  ? null
-                                  : RatingEntity.fromMap(post.rating!);
+                                    final RatingEntity? rating = (post.rating ==
+                                            null)
+                                        ? null
+                                        : RatingEntity.fromMap(post.rating!);
 
-                              final UserPollEntity? userPoll =
-                                  (post.userPoll == null)
-                                      ? null
-                                      : UserPollEntity.fromMap(post.userPoll!);
+                                    final UserPollEntity? userPoll =
+                                        (post.userPoll == null)
+                                            ? null
+                                            : UserPollEntity.fromMap(
+                                                post.userPoll!);
 
-                              return PostCardWidget(
-                                enableClick: true,
-                                post: post,
-                                userId: userId,
-                                postId: (map['doc'] as DocumentSnapshot).id,
-                                note: note,
-                                rating: rating,
-                                userPoll: userPoll,
-                                theme: theme,
-                                userAuth: user,
-                              );
-                            }).toList(),
-                          ),
+                                    return PostCardWidget(
+                                      enableClick: true,
+                                      post: post,
+                                      userId: widget.userId,
+                                      postId: map.id,
+                                      note: note,
+                                      rating: rating,
+                                      userPoll: userPoll,
+                                      theme: widget.theme,
+                                      userAuth: widget.user,
+                                    );
+                                  }).toList(),
+                                ),
                         ],
                       ),
                     ),

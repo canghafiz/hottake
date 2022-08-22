@@ -8,20 +8,10 @@ class UserModel extends UserEntity {
     required super.socialMedia,
     required super.theme,
     required super.username,
+    required super.gender,
   });
 
   // Map
-  static UserModel fromMap(Map<String, dynamic> data) {
-    return UserModel(
-      bio: data['bio'],
-      email: data['email'],
-      photo: data['photo'],
-      socialMedia: data['socialMedia'],
-      theme: data['theme'],
-      username: data['username'],
-    );
-  }
-
   static Map<String, dynamic> toMap({
     required String email,
     required String username,
@@ -29,6 +19,7 @@ class UserModel extends UserEntity {
     required String? bio,
     required String? socialMedia,
     required ThemeEntity theme,
+    required double gender,
   }) {
     return {
       "email": email,
@@ -41,6 +32,7 @@ class UserModel extends UserEntity {
         secondary: theme.secondary,
         third: theme.third,
       ),
+      "gender": gender,
     };
   }
 }

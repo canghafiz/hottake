@@ -26,6 +26,7 @@ class UserFirestore {
   Future<void> checkIsUserAvailable({
     required String userId,
     required Function not,
+    required Function yes,
   }) async {
     await getOneTimeUsers().then(
       (query) {
@@ -33,6 +34,8 @@ class UserFirestore {
 
         if (check.isEmpty) {
           not.call();
+        } else {
+          yes.call();
         }
       },
     );
@@ -82,17 +85,21 @@ class UserFirestore {
   // Update Data
   Future<void> updateData({
     required String userId,
+    required String email,
     required String username,
     required String? bio,
     required String? socialMedia,
+    required double gender,
     required ThemeEntity theme,
     required BuildContext context,
   }) async {
     await dI<UserUpdateData>().call(
       userId: userId,
+      email: email,
       username: username,
       bio: bio,
       socialMedia: socialMedia,
+      gender: gender,
       theme: theme,
     );
 

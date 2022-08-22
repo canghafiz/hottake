@@ -9,39 +9,22 @@ class UserRepositoryImpl implements UserRepository {
   UserRepositoryImpl({required this.remoteDataSource});
 
   @override
-  FutureOr<void> createAccount({
+  FutureOr<void> updateData({
     required String userId,
     required String email,
     required String username,
-    required String? photo,
     required String? bio,
     required String? socialMedia,
-    required ThemeEntity theme,
-  }) {
-    remoteDataSource.createAccount(
-      userId: userId,
-      email: email,
-      username: username,
-      photo: photo,
-      bio: bio,
-      socialMedia: socialMedia,
-      theme: theme,
-    );
-  }
-
-  @override
-  FutureOr<void> updateData({
-    required String userId,
-    required String username,
-    required String? bio,
-    required String? socialMedia,
+    required double gender,
     required ThemeEntity theme,
   }) {
     remoteDataSource.updateData(
       userId: userId,
+      email: email,
       username: username,
       bio: bio,
       socialMedia: socialMedia,
+      gender: gender,
       theme: theme,
     );
   }
@@ -52,5 +35,13 @@ class UserRepositoryImpl implements UserRepository {
     required String? url,
   }) {
     remoteDataSource.updatePhoto(userId: userId, url: url);
+  }
+
+  @override
+  FutureOr<void> updateTheme({
+    required String userId,
+    required ThemeEntity theme,
+  }) {
+    remoteDataSource.updateTheme(userId: userId, theme: theme);
   }
 }

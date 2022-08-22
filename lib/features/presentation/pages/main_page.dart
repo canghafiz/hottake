@@ -17,10 +17,7 @@ class MainPage extends StatelessWidget {
         }
         return (snapshot.data == null)
             ? const SignInPage()
-            : ControlPage(
-                userId: snapshot.data!.uid,
-                user: snapshot.data!,
-              );
+            : ControlPage(user: snapshot.data!);
       },
     );
   }

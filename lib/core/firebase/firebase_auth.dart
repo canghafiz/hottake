@@ -38,7 +38,7 @@ class FirebaseAuthImpl implements AuthService {
       // Return Value
       return AuthResponse(
         successMessage: "Your account has been created",
-        userId: user.user?.uid,
+        userCredential: user,
       );
     } on FirebaseAuthException catch (e) {
       // Call State
@@ -116,7 +116,6 @@ class FirebaseAuthImpl implements AuthService {
 
       return AuthResponse(
         userCredential: userCredential,
-        userId: userCredential.user!.uid,
       );
     } catch (e) {
       debugPrint("Login with google error on $e");

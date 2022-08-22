@@ -64,7 +64,7 @@ class CommentsPage extends StatelessWidget {
                                 },
                                 child: Icon(
                                   Icons.arrow_back_ios,
-                                  color: convertTheme(theme.third),
+                                  color: convertTheme(theme.primary),
                                 ),
                               ),
                               // Total
@@ -75,7 +75,7 @@ class CommentsPage extends StatelessWidget {
                                     style: fontStyle(
                                       size: 13,
                                       theme: theme,
-                                      color: convertTheme(theme.third),
+                                      color: convertTheme(theme.primary),
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),

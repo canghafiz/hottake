@@ -13,6 +13,7 @@ void init() {
   dI.registerFactory(() => NavbarCubit());
   dI.registerFactory(() => PostCubit());
   dI.registerFactory(() => CommentCubit());
+  dI.registerFactory(() => CreateAccountCubit());
 
   // Cubits Event
   dI.registerLazySingleton(() => ThemeCubitEvent());
@@ -20,15 +21,19 @@ void init() {
   dI.registerLazySingleton(() => NavbarCubitEvent());
   dI.registerLazySingleton(() => PostCubitEvent());
   dI.registerLazySingleton(() => CommentCubitEvent());
+  dI.registerLazySingleton(() => CreateAccountCubitEvent());
 
   // Usecases
   dI.registerLazySingleton(() => GetTheme(dI()));
-  dI.registerLazySingleton(() => UserCreateAccount(dI()));
   dI.registerLazySingleton(() => UserUpdateData(dI()));
   dI.registerLazySingleton(() => UserUpdatePhoto(dI()));
+  dI.registerLazySingleton(() => UserUpdateTheme(dI()));
   dI.registerLazySingleton(() => CreatePost(dI()));
   dI.registerLazySingleton(() => UpdatePost(dI()));
   dI.registerLazySingleton(() => UpdateFavoritePost(dI()));
+  dI.registerLazySingleton(() => UpdateLikePost(dI()));
+  dI.registerLazySingleton(() => UpdateUnLikePost(dI()));
+  dI.registerLazySingleton(() => UpdateReadPost(dI()));
   dI.registerLazySingleton(() => DeletePost(dI()));
   dI.registerLazySingleton(() => AddComment(dI()));
   dI.registerLazySingleton(() => AddSubComment(dI()));

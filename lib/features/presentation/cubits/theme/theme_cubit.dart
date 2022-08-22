@@ -13,7 +13,7 @@ class ThemeCubit extends Cubit<ThemeEntity> {
   ThemeCubit() : super(_default.call());
 
   static ThemeEntity _default() {
-    return dI<GetTheme>().call(3) as ThemeEntity;
+    return dI<GetTheme>().call(0) as ThemeEntity;
   }
 
   // Function

@@ -30,164 +30,168 @@ class _SignInPageState extends State<SignInPage> {
     // Clear State
     clearState(context);
     return Scaffold(
-      body: SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
-          selector: (state) => state,
-          builder: (_, themeEntity) => Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-            ),
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 48),
-                  // Logo
-                  Center(
-                    child: Image.asset(
-                      emoji1Image,
-                      height: MediaQuery.of(context).size.height * 1 / 7,
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Title
-                  Text(
-                    "Sign In for HotTake",
-                    style: fontStyle(
-                      size: 19,
-                      theme: themeEntity,
-                      weight: FontWeight.bold,
-                    ),
-                  ),
-                  // Subtitle
-                  Text(
-                    "Post notes around your city, and find others",
-                    style: fontStyle(
-                      size: 11,
-                      theme: themeEntity,
-                      weight: FontWeight.w300,
-                    ),
-                  ),
-                  const SizedBox(height: 36),
-                  // Email
-                  TextFormFieldCustom(
-                    controller: email,
-                    inputType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Must Be Filled";
-                      }
-                    },
-                    hintText: "Email",
-                    themeEntity: themeEntity,
-                  ),
-                  const SizedBox(height: 16),
-                  // Password
-                  TextFormFieldCustom(
-                    controller: password,
-                    inputType: TextInputType.visiblePassword,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Must Be Filled";
-                      }
-                    },
-                    hintText: "Password",
-                    themeEntity: themeEntity,
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 16),
-                  // Forgot Password
-                  GestureDetector(
-                    onTap: () {
-                      // Navigate
-                      toPasswordPage(context);
-                    },
-                    child: Text(
-                      "Forgot Password ? Change Here",
-                      style: fontStyle(
-                        size: 10,
-                        theme: themeEntity,
+      body: backgroundWidget(
+        context: context,
+        urlAsset: smileEmojiImage,
+        mainContent: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
+            selector: (state) => state,
+            builder: (_, themeEntity) => Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 48),
+                    // Logo
+                    Center(
+                      child: Image.asset(
+                        emoji1Image,
+                        height: MediaQuery.of(context).size.height * 1 / 7,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 36),
-                  // Btn Sign In
-                  BlocSelector<BackendCubit, BackendStatus, BackendStatus>(
-                    selector: (state) => state,
-                    builder: (_, state) => ElevatedButtonText(
-                      onTap: () {
-                        if (formKey.currentState!.validate()) {
-                          dI<AuthImpl>().loginWithEmail(
-                            email: email.text,
-                            password: password.text,
-                            context: context,
-                          );
+                    const SizedBox(height: 16),
+                    // Title
+                    Text(
+                      "Sign In for HotTake",
+                      style: fontStyle(
+                        size: 19,
+                        theme: themeEntity,
+                        weight: FontWeight.bold,
+                      ),
+                    ),
+                    // Subtitle
+                    Text(
+                      "Post notes around your city, and find others",
+                      style: fontStyle(
+                        size: 11,
+                        theme: themeEntity,
+                        weight: FontWeight.w300,
+                      ),
+                    ),
+                    const SizedBox(height: 36),
+                    // Email
+                    TextFormFieldCustom(
+                      controller: email,
+                      inputType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Must Be Filled";
                         }
                       },
+                      hintText: "Email",
                       themeEntity: themeEntity,
-                      text: (state == BackendStatus.doing)
-                          ? "Loading..."
-                          : "Sign In",
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Btn Sign Up
-                  ElevatedButtonText(
-                    onTap: () {
-                      // Navigate
-                      toSignUpPage(context);
-                    },
-                    themeEntity: themeEntity,
-                    text: "Sign Up",
-                    btnColor: convertTheme(themeEntity.secondary),
-                    textColor: convertTheme(themeEntity.third),
-                  ),
-                  // Or Divider
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16,
+                    const SizedBox(height: 16),
+                    // Password
+                    TextFormFieldCustom(
+                      controller: password,
+                      inputType: TextInputType.visiblePassword,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Must Be Filled";
+                        }
+                      },
+                      hintText: "Password",
+                      themeEntity: themeEntity,
+                      obscureText: true,
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            color: convertTheme(themeEntity.secondary),
+                    const SizedBox(height: 16),
+                    // Forgot Password
+                    GestureDetector(
+                      onTap: () {
+                        // Navigate
+                        toPasswordPage(context);
+                      },
+                      child: Text(
+                        "Forgot Password ? Change Here",
+                        style: fontStyle(
+                          size: 10,
+                          theme: themeEntity,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(height: 36),
+                    // Btn Sign In
+                    BlocSelector<BackendCubit, BackendStatus, BackendStatus>(
+                      selector: (state) => state,
+                      builder: (_, state) => ElevatedButtonText(
+                        onTap: () {
+                          if (formKey.currentState!.validate()) {
+                            dI<AuthImpl>().loginWithEmail(
+                              email: email.text,
+                              password: password.text,
+                              context: context,
+                            );
+                          }
+                        },
+                        themeEntity: themeEntity,
+                        text: (state == BackendStatus.doing)
+                            ? "Loading..."
+                            : "Sign In",
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    // Btn Sign Up
+                    ElevatedButtonText(
+                      onTap: () {
+                        // Navigate
+                        toSignUpPage(context);
+                      },
+                      themeEntity: themeEntity,
+                      text: "Sign Up",
+                      btnColor: convertTheme(themeEntity.secondary),
+                      textColor: convertTheme(themeEntity.third),
+                    ),
+                    // Or Divider
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: convertTheme(themeEntity.secondary),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "OR",
-                          style: fontStyle(size: 9, theme: themeEntity),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Divider(
-                            color: convertTheme(themeEntity.secondary),
+                          const SizedBox(width: 8),
+                          Text(
+                            "OR",
+                            style: fontStyle(size: 9, theme: themeEntity),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Divider(
+                              color: convertTheme(themeEntity.secondary),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  // Btn Login With Google
-                  ElevatedButtonTextWithIcon(
-                    onTap: () {
-                      dI<AuthImpl>().loginWithGoogle(context);
-                    },
-                    themeEntity: themeEntity,
-                    text: "Sign In With Google",
-                    icon: Image.asset(
-                      googleImage,
-                      width: 24,
-                      height: 24,
+                    // Btn Login With Google
+                    ElevatedButtonTextWithIcon(
+                      onTap: () {
+                        dI<AuthImpl>().loginWithGoogle(context);
+                      },
+                      themeEntity: themeEntity,
+                      text: "Sign In With Google",
+                      icon: Image.asset(
+                        googleImage,
+                        width: 24,
+                        height: 24,
+                      ),
+                      btnColor: convertTheme(themeEntity.secondary),
+                      textColor: convertTheme(themeEntity.third),
                     ),
-                    btnColor: convertTheme(themeEntity.secondary),
-                    textColor: convertTheme(themeEntity.third),
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
           ),

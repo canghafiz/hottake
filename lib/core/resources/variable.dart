@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/services.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hottake/features/data/data.dart';
@@ -8,12 +9,8 @@ import 'package:jiffy/jiffy.dart';
 const keyTheme = "Theme";
 
 List themes = [
-  ThemeModel(primary: "2EB9B0", secondary: "FFFFFF", third: "000000"),
-  ThemeModel(primary: "1E97CB", secondary: "FFFFFF", third: "000000"),
-  ThemeModel(primary: "260F53", secondary: "FFFFFF", third: "FF5B58"),
-  ThemeModel(primary: "FF5B58", secondary: "FFFFFF", third: "000000"),
-  ThemeModel(primary: "424242", secondary: "FFFFFF", third: "FF5B58"),
-  ThemeModel(primary: "DDDDDD", secondary: "000000", third: "FF5B58"),
+  ThemeModel(primary: "242424", secondary: "FFFFFF", third: "FF5B58"),
+  ThemeModel(primary: "FFFFFF", secondary: "242424", third: "FF5B58"),
 ];
 
 Color convertTheme(String value) {
@@ -94,3 +91,13 @@ int distanceAway({
     secondPosition.longitude,
   ).toInt();
 }
+
+mapStyle({required Function(String value) style, required bool isDark}) {
+  if (isDark) {
+    rootBundle.loadString('assets/map_style_dark.txt').then(
+          (load) => style(load),
+        );
+  }
+}
+
+enum PostOrderType { nearest, latest, popular, controversial }

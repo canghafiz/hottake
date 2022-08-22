@@ -8,6 +8,7 @@ import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
+import 'package:hottake/features/data/data.dart';
 import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
@@ -41,10 +42,15 @@ class _MapPageState extends State<MapPage> {
     required NoteEntity? note,
     required RatingEntity? rating,
     required UserPollEntity? userPoll,
+    required ThemeEntity theme,
   }) async {
     BitmapDescriptor icon = await BitmapDescriptor.fromAssetImage(
       const ImageConfiguration(),
-      onRadius ? redCardImage : greyCardImage,
+      onRadius
+          ? (post.reads.contains(widget.userId))
+              ? greyCardImage
+              : redCardImage
+          : outlineCardImage,
     );
 
     setState(
@@ -52,32 +58,50 @@ class _MapPageState extends State<MapPage> {
         _markers.add(
           Marker(
             onTap: () {
-              // Show Modal Bottom
-              showModalBottom(
-                context: context,
-                content: postDetailWidget(
-                  userId: widget.userId,
+              if (onRadius) {
+                // Update Data
+                dI<UpdateReadPost>().call(
                   postId: id,
-                  post: post,
-                  note: note,
-                  rating: rating,
-                  userPoll: userPoll,
+                  userId: widget.userId,
+                );
+
+                // Show Modal Bottom
+                showModalBottom(
+                  context: context,
+                  content: postDetailWidget(
+                    userId: widget.userId,
+                    postId: id,
+                    post: post,
+                    note: note,
+                    rating: rating,
+                    userPoll: userPoll,
+                    theme: widget.theme,
+                    user: widget.user,
+                  ),
                   theme: widget.theme,
-                  user: widget.user,
-                ),
-                theme: widget.theme,
-              );
+                );
+              } else {
+                // Show Dialog
+                showDialog(
+                  context: context,
+                  builder: (context) {
+                    return textDialog(
+                      text:
+                          "The note is outside your viewing radius.Try getting closer! (open in Google maps)",
+                      size: 13,
+                      color: convertTheme(theme.third),
+                      align: TextAlign.center,
+                    );
+                  },
+                );
+              }
             },
             markerId: MarkerId(id),
             position: position,
             icon: icon,
-            infoWindow: (widget.postId == null)
-                ? InfoWindow.noText
-                : (id != widget.postId)
-                    ? InfoWindow.noText
-                    : const InfoWindow(
-                        title: "The Post Is Here",
-                      ),
+            infoWindow: const InfoWindow(
+              title: "The Post Is Here",
+            ),
           ),
         );
       },
@@ -148,6 +172,7 @@ class _MapPageState extends State<MapPage> {
                         post: post,
                         rating: rating,
                         userPoll: userPoll,
+                        theme: theme,
                       );
                     } else {
                       updateMarkers(
@@ -161,6 +186,7 @@ class _MapPageState extends State<MapPage> {
                         post: post,
                         rating: rating,
                         userPoll: userPoll,
+                        theme: theme,
                       );
                     }
                   }
@@ -174,6 +200,7 @@ class _MapPageState extends State<MapPage> {
                           .data() as Map<String, dynamic>);
 
                   return GoogleMap(
+                    zoomControlsEnabled: false,
                     markers: _markers,
                     circles: {
                       Circle(
@@ -184,7 +211,7 @@ class _MapPageState extends State<MapPage> {
                         ),
                         radius: radiusMap,
                         fillColor:
-                            convertTheme((themes[3] as ThemeEntity).primary)
+                            convertTheme((themes[0] as ThemeEntity).third)
                                 .withOpacity(0.3),
                         strokeColor: Colors.transparent,
                       ),
@@ -205,20 +232,20 @@ class _MapPageState extends State<MapPage> {
                       _controller.complete(value);
 
                       if (widget.postId != null) {
-                        value
-                            .isMarkerInfoWindowShown(MarkerId(widget.postId!))
-                            .then(
-                          (show) {
-                            if (!show) {
-                              value.showMarkerInfoWindow(
-                                MarkerId(
-                                  widget.postId!,
-                                ),
-                              );
-                            }
-                          },
+                        value.showMarkerInfoWindow(
+                          MarkerId(
+                            widget.postId!,
+                          ),
                         );
                       }
+
+                      mapStyle(
+                        isDark: (theme.primary ==
+                            (themes[0] as ThemeModel).primary),
+                        style: (style) {
+                          value.setMapStyle(style);
+                        },
+                      );
                     },
                   );
                 },

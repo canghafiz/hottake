@@ -28,6 +28,23 @@ abstract class PostRemoteDataSource {
     required bool isAdd,
   });
 
+  Future<void> updateLike({
+    required String postId,
+    required String userId,
+    required bool isAdd,
+  });
+
+  Future<void> updateUnLike({
+    required String postId,
+    required String userId,
+    required bool isAdd,
+  });
+
+  Future<void> updateRead({
+    required String postId,
+    required String userId,
+  });
+
   Future<void> deletePost(String postId);
 }
 
@@ -199,5 +216,108 @@ class PostRemoteDataSourceFirebase implements PostRemoteDataSource {
         }
       },
     );
+  }
+
+  @override
+  Future<void> updateLike({
+    required String postId,
+    required String userId,
+    required bool isAdd,
+  }) async {
+    await Firestore.instance
+        .collection(
+          Firestore.postCollection,
+        )
+        .doc(postId)
+        .update({
+      "likes": isAdd
+          ? FieldValue.arrayUnion([userId])
+          : FieldValue.arrayRemove([userId]),
+      "unLikes": FieldValue.arrayRemove([userId]),
+    });
+
+    // Transaction
+    DocumentReference documentReference =
+        Firestore.instance.collection(Firestore.postCollection).doc(postId);
+
+    Firestore.instance.runTransaction(
+      (transaction) async {
+        // Get the document
+        DocumentSnapshot snapshot = await transaction.get(documentReference);
+
+        if (snapshot.exists) {
+          // Model
+          final PostEntity post =
+              PostEntity.fromMap(snapshot.data() as Map<String, dynamic>);
+
+          transaction.update(
+            documentReference,
+            {
+              "totalUnLikes": post.unlikes.length,
+              "totalLikes": post.likes.length
+            },
+          );
+        }
+      },
+    );
+  }
+
+  @override
+  Future<void> updateUnLike({
+    required String postId,
+    required String userId,
+    required bool isAdd,
+  }) async {
+    await Firestore.instance
+        .collection(
+          Firestore.postCollection,
+        )
+        .doc(postId)
+        .update({
+      "unLikes": isAdd
+          ? FieldValue.arrayUnion([userId])
+          : FieldValue.arrayRemove([userId]),
+      "likes": FieldValue.arrayRemove([userId]),
+    });
+
+    // Transaction
+    DocumentReference documentReference =
+        Firestore.instance.collection(Firestore.postCollection).doc(postId);
+
+    Firestore.instance.runTransaction(
+      (transaction) async {
+        // Get the document
+        DocumentSnapshot snapshot = await transaction.get(documentReference);
+
+        if (snapshot.exists) {
+          // Model
+          final PostEntity post =
+              PostEntity.fromMap(snapshot.data() as Map<String, dynamic>);
+
+          transaction.update(
+            documentReference,
+            {
+              "totalUnLikes": post.unlikes.length,
+              "totalLikes": post.likes.length,
+            },
+          );
+        }
+      },
+    );
+  }
+
+  @override
+  Future<void> updateRead({
+    required String postId,
+    required String userId,
+  }) async {
+    await Firestore.instance
+        .collection(
+          Firestore.postCollection,
+        )
+        .doc(postId)
+        .update({
+      "reads": FieldValue.arrayUnion([userId])
+    });
   }
 }

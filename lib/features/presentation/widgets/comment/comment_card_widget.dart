@@ -73,7 +73,7 @@ class CommentCardWidget extends StatelessWidget {
                           style: fontStyle(
                             size: 13,
                             theme: theme,
-                            color: convertTheme(theme.third).withOpacity(0.5),
+                            color: convertTheme(theme.primary).withOpacity(0.5),
                             weight: FontWeight.bold,
                           ),
                           overflow: TextOverflow.ellipsis,
@@ -85,7 +85,7 @@ class CommentCardWidget extends StatelessWidget {
                         style: fontStyle(
                           size: 13,
                           theme: theme,
-                          color: convertTheme(theme.third),
+                          color: convertTheme(theme.primary),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -229,7 +229,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
             style: fontStyle(
               size: 9,
               theme: widget.theme,
-              color: convertTheme(widget.theme.third).withOpacity(0.5),
+              color: convertTheme(widget.theme.primary).withOpacity(0.5),
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -241,7 +241,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
             style: fontStyle(
               size: 9,
               theme: widget.theme,
-              color: convertTheme(widget.theme.third).withOpacity(0.5),
+              color: convertTheme(widget.theme.primary).withOpacity(0.5),
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -284,7 +284,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
                                 style: fontStyle(
                                   size: 11,
                                   theme: widget.theme,
-                                  color: convertTheme(widget.theme.third)
+                                  color: convertTheme(widget.theme.primary)
                                       .withOpacity(0.5),
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -292,7 +292,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
                               // Icon
                               Icon(
                                 Icons.arrow_drop_down,
-                                color: convertTheme(widget.theme.third)
+                                color: convertTheme(widget.theme.primary)
                                     .withOpacity(0.5),
                               ),
                             ],
@@ -334,7 +334,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
                                 style: fontStyle(
                                   size: 11,
                                   theme: widget.theme,
-                                  color: convertTheme(widget.theme.third)
+                                  color: convertTheme(widget.theme.primary)
                                       .withOpacity(0.5),
                                 ),
                                 overflow: TextOverflow.ellipsis,

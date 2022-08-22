@@ -42,83 +42,88 @@ class UserProfileWidget extends StatelessWidget {
                   ),
                 ),
               );
-            }
-            // Model
-            final UserEntity user = UserEntity.fromMap(
-                snapshot.data!.data() as Map<String, dynamic>);
+            } else {
+              if (snapshot.data!.data() != null) {
+                // Model
+                final UserEntity user = UserEntity.fromMap(
+                    snapshot.data!.data() as Map<String, dynamic>);
 
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const SizedBox(height: 12),
-                // Btn Edit
-                !forOwn
-                    ? const SizedBox()
-                    : Align(
-                        alignment: Alignment.topRight,
-                        child: TextButton(
-                          onPressed: () {
-                            // Navigate
-                            toEditUserPage(
-                              context: context,
-                              userId: userId,
-                              user: user,
-                            );
-                          },
-                          child: Text(
-                            "Edit Profile",
-                            style: fontStyle(size: 11, theme: theme),
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 12),
+                    // Btn Edit
+                    !forOwn
+                        ? const SizedBox()
+                        : Align(
+                            alignment: Alignment.topRight,
+                            child: TextButton(
+                              onPressed: () {
+                                // Navigate
+                                toEditUserPage(
+                                  context: context,
+                                  userId: userId,
+                                  user: user,
+                                );
+                              },
+                              child: Text(
+                                "Edit Profile",
+                                style: fontStyle(size: 11, theme: theme),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                // Photo Profile
-                PhotoProfileWidget(
-                  url: user.photo,
-                  size: 56,
-                  theme: theme,
-                ),
-                const SizedBox(height: 16),
-                // Username
-                Text(
-                  "@" + user.username,
-                  style: fontStyle(
-                    size: 13,
-                    theme: theme,
-                    weight: FontWeight.bold,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 4),
-                // Bio
-                Text(
-                  user.bio ?? "YOUR BIO IS EMPTY!",
-                  style: fontStyle(size: 9, theme: theme),
-                  textAlign: TextAlign.center,
-                ),
-                const SizedBox(height: 4),
-                // Social Media Link
-                ActionChip(
-                  backgroundColor: convertTheme(theme.secondary),
-                  label: Text(
-                    user.socialMedia ?? "YOUR SOCIAL MEDIA LINK IS EMPTY!",
-                    style: TextStyle(
-                      fontSize: 9.sp,
-                      color: convertTheme(theme.primary),
-                      decoration: (user.socialMedia != null)
-                          ? TextDecoration.underline
-                          : null,
+                    // Photo Profile
+                    PhotoProfileWidget(
+                      url: user.photo,
+                      size: 56,
+                      theme: theme,
                     ),
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  onPressed: () {
-                    if (user.socialMedia != null) {
-                      launchUrlString(user.socialMedia!);
-                    }
-                  },
-                ),
-                const SizedBox(height: 24),
-              ],
-            );
+                    const SizedBox(height: 16),
+                    // Username
+                    Text(
+                      "@" + user.username,
+                      style: fontStyle(
+                        size: 13,
+                        theme: theme,
+                        weight: FontWeight.bold,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    // Bio
+                    Text(
+                      user.bio ?? "YOUR BIO IS EMPTY!",
+                      style: fontStyle(size: 9, theme: theme),
+                      textAlign: TextAlign.center,
+                    ),
+                    const SizedBox(height: 4),
+                    // Social Media Link
+                    ActionChip(
+                      backgroundColor: convertTheme(theme.secondary),
+                      label: Text(
+                        user.socialMedia ?? "YOUR SOCIAL MEDIA LINK IS EMPTY!",
+                        style: TextStyle(
+                          fontSize: 9.sp,
+                          color: convertTheme(theme.primary),
+                          decoration: (user.socialMedia != null)
+                              ? TextDecoration.underline
+                              : null,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      onPressed: () {
+                        if (user.socialMedia != null) {
+                          launchUrlString(user.socialMedia!);
+                        }
+                      },
+                    ),
+                    const SizedBox(height: 24),
+                  ],
+                );
+              } else {
+                return const SizedBox();
+              }
+            }
           },
         ),
       ),

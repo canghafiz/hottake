@@ -2,32 +2,6 @@ import 'dart:async';
 
 import 'package:hottake/features/domain/domain.dart';
 
-class UserCreateAccount {
-  final UserRepository repository;
-
-  UserCreateAccount(this.repository);
-
-  FutureOr<void> call({
-    required String userId,
-    required String email,
-    required String username,
-    required String? photo,
-    required String? bio,
-    required String? socialMedia,
-    required ThemeEntity theme,
-  }) {
-    repository.createAccount(
-      userId: userId,
-      email: email,
-      username: username,
-      photo: photo,
-      bio: bio,
-      socialMedia: socialMedia,
-      theme: theme,
-    );
-  }
-}
-
 class UserUpdateData {
   final UserRepository repository;
 
@@ -35,16 +9,20 @@ class UserUpdateData {
 
   FutureOr<void> call({
     required String userId,
+    required String email,
     required String username,
     required String? bio,
     required String? socialMedia,
+    required double gender,
     required ThemeEntity theme,
   }) {
     repository.updateData(
+      email: email,
       userId: userId,
       username: username,
       bio: bio,
       socialMedia: socialMedia,
+      gender: gender,
       theme: theme,
     );
   }
@@ -60,5 +38,18 @@ class UserUpdatePhoto {
     required String? url,
   }) {
     repository.updatePhoto(userId: userId, url: url);
+  }
+}
+
+class UserUpdateTheme {
+  final UserRepository repository;
+
+  UserUpdateTheme(this.repository);
+
+  FutureOr<void> call({
+    required String userId,
+    required ThemeEntity theme,
+  }) {
+    repository.updateTheme(userId: userId, theme: theme);
   }
 }

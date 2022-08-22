@@ -68,7 +68,7 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
                   style: fontStyle(
                     size: 13,
                     theme: widget.theme,
-                    color: convertTheme(widget.theme.third),
+                    color: convertTheme(widget.theme.primary),
                   ),
                   maxLines: null,
                   decoration: InputDecoration(
@@ -83,7 +83,7 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
                     hintStyle: fontStyle(
                       size: 13,
                       theme: widget.theme,
-                      color: convertTheme(widget.theme.third),
+                      color: convertTheme(widget.theme.primary),
                     ),
                   ),
                 ),
@@ -127,7 +127,7 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
                 },
                 child: Icon(
                   Icons.send_outlined,
-                  color: convertTheme(widget.theme.third),
+                  color: convertTheme(widget.theme.primary),
                 ),
               ),
             ],

@@ -28,6 +28,15 @@ class _EditUserPageState extends State<EditUserPage> {
   final socialMedia = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    // Update State
+    dI<CreateAccountCubitEvent>()
+        .read(context)
+        .updateGender(widget.user.gender);
+  }
+
+  @override
   void dispose() {
     super.dispose();
     username.dispose();
@@ -145,77 +154,54 @@ class _EditUserPageState extends State<EditUserPage> {
                       ),
                     ),
                     const SizedBox(height: 24),
-                    // App Theme
+                    // Gender Input
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         // Title
                         Text(
-                          "App Theme",
+                          "Gender Selection",
                           style: fontStyle(
                             size: 11,
                             theme: theme,
                             weight: FontWeight.w300,
                           ),
                         ),
-                        const SizedBox(height: 12),
-                        // Data
-                        SingleChildScrollView(
-                          physics: const BouncingScrollPhysics(),
-                          scrollDirection: Axis.horizontal,
-                          child: Row(
-                            children: themes
-                                .map(
-                                  (data) => GestureDetector(
-                                    onTap: () {
-                                      // Update State
-                                      dI<ThemeCubitEvent>()
-                                          .read(context)
-                                          .update(data);
-                                    },
-                                    child: Container(
-                                      margin: const EdgeInsets.only(right: 16),
-                                      width: 48,
-                                      height: 48,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: convertTheme(data.primary),
-                                        border: Border.all(
-                                          color: (theme == data)
-                                              ? convertTheme(data.secondary)
-                                              : Colors.transparent,
-                                          width: 3,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                )
-                                .toList(),
-                          ),
-                        ),
+                        // Input
+                        GenderInput(theme: theme),
                       ],
                     ),
                     const SizedBox(height: 36),
                     // Btn Save
-                    ElevatedButtonText(
-                      onTap: () {
-                        if (formKey.currentState!.validate()) {
-                          dI<UserFirestore>().updateData(
-                            userId: widget.userId,
-                            username: username.text,
-                            bio: (bio.text.isEmpty) ? null : bio.text,
-                            socialMedia: (socialMedia.text.isEmpty)
-                                ? null
-                                : socialMedia.text,
-                            theme: theme,
-                            context: context,
-                          );
-                        }
+                    BlocSelector<CreateAccountCubit, CreateAccountState,
+                        double>(
+                      selector: (state) {
+                        return state.genderValue;
                       },
-                      themeEntity: theme,
-                      text: "Save",
-                      btnColor: convertTheme(theme.secondary),
-                      textColor: convertTheme(theme.third),
+                      builder: (context, gender) {
+                        return ElevatedButtonText(
+                          onTap: () {
+                            if (formKey.currentState!.validate()) {
+                              dI<UserFirestore>().updateData(
+                                email: widget.user.email,
+                                userId: widget.userId,
+                                username: username.text,
+                                bio: (bio.text.isEmpty) ? null : bio.text,
+                                socialMedia: (socialMedia.text.isEmpty)
+                                    ? null
+                                    : socialMedia.text,
+                                gender: gender,
+                                theme: theme,
+                                context: context,
+                              );
+                            }
+                          },
+                          themeEntity: theme,
+                          text: "Save",
+                          btnColor: convertTheme(theme.secondary),
+                          textColor: convertTheme(theme.third),
+                        );
+                      },
                     ),
                     const SizedBox(height: 24),
                   ],
@@ -241,8 +227,8 @@ class EditUserPhotoProfileWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     Widget photo(String? url) {
       return SizedBox(
-        height: 84,
-        width: 84,
+        height: 128,
+        width: 128,
         child: Stack(
           children: [
             Container(
@@ -257,7 +243,7 @@ class EditUserPhotoProfileWidget extends StatelessWidget {
               ),
               child: Stack(
                 children: [
-                  PhotoProfileWidget(url: url, size: 84, theme: theme),
+                  PhotoProfileWidget(url: url, size: 128, theme: theme),
                   Container(
                     width: double.infinity,
                     height: double.infinity,
@@ -307,7 +293,6 @@ class EditUserPhotoProfileWidget extends StatelessWidget {
                   child: Icon(
                     Icons.add,
                     color: convertTheme(theme.secondary),
-                    size: 12,
                   ),
                 ),
               ),
@@ -322,12 +307,14 @@ class EditUserPhotoProfileWidget extends StatelessWidget {
       builder: (_, snapshot) {
         if (!snapshot.hasData) {
           return photo(null);
-        }
-        // Model
-        final UserEntity user =
-            UserEntity.fromMap(snapshot.data!.data() as Map<String, dynamic>);
+        } else {
+          if (snapshot.data!.data() != null) {
+            final data = snapshot.data!.data() as Map<String, dynamic>;
 
-        return photo(user.photo);
+            return photo(data['photo']);
+          }
+        }
+        return photo(null);
       },
     );
   }

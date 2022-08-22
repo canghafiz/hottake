@@ -8,12 +8,11 @@ import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
 class AuthResponse {
-  String? errorMessage, userId, successMessage;
+  String? errorMessage, successMessage;
   UserCredential? userCredential;
 
   AuthResponse({
     this.errorMessage,
-    this.userId,
     this.successMessage,
     this.userCredential,
   });
@@ -51,89 +50,41 @@ class AuthImpl {
   Future<void> createAccount({
     required String email,
     required String password,
-    required String username,
     required BuildContext context,
   }) async {
-    // Chcek Username
-    await dI<UserFirestore>().checkUsername(
-      username: username,
-      valid: () async {
-        await _impl
-            .createAccount(
-          email: email,
-          password: password,
-          updateStateOnLoad: () {
-            dI<BackendCubitEvent>()
-                .read(context)
-                .updateStatus(BackendStatus.doing);
-          },
-          updateStateOnDone: () {
-            dI<BackendCubitEvent>()
-                .read(context)
-                .updateStatus(BackendStatus.undoing);
-          },
-        )
-            .then(
-          (response) {
-            // When Success
-            if (response.userId != null) {
-              // Update Data
-              dI<UserFirestore>().checkIsUserAvailable(
-                userId: response.userId!,
-                not: () {
-                  // Call Data
-                  dI<UserCreateAccount>().call(
-                    userId: response.userId!,
-                    email: email,
-                    username: username,
-                    photo: null,
-                    bio: null,
-                    socialMedia: null,
-                    theme: dI<ThemeCubitEvent>().read(context).state,
-                  );
-                },
-              );
-
-              // Check Message Status
-              if (response.successMessage != null) {
-                // Call Dialog
-                showDialog(
-                  context: context,
-                  builder: (_) => textDialog(
-                    text: response.successMessage!,
-                    size: 15,
-                    color: Colors.green,
-                    align: TextAlign.center,
-                  ),
-                );
-
-                return;
-              }
-            }
-            // Call Dialog
-            showDialog(
-              context: context,
-              builder: (_) => textDialog(
-                text: response.errorMessage!,
-                size: 15,
-                color: Colors.red,
-                align: TextAlign.center,
-              ),
-            );
-          },
-        );
+    await _impl
+        .createAccount(
+      email: email,
+      password: password,
+      updateStateOnLoad: () {
+        dI<BackendCubitEvent>().read(context).updateStatus(BackendStatus.doing);
       },
-      notValid: () {
-        // Call Dialog
-        showDialog(
-          context: context,
-          builder: (_) => textDialog(
-            text: "Username has been used by other account",
-            size: 15,
-            color: Colors.red,
-            align: TextAlign.center,
-          ),
-        );
+      updateStateOnDone: () {
+        dI<BackendCubitEvent>()
+            .read(context)
+            .updateStatus(BackendStatus.undoing);
+      },
+    )
+        .then(
+      (response) {
+        //  Error
+        if (response.errorMessage != null) {
+          // Call Dialog
+          showDialog(
+            context: context,
+            builder: (_) => textDialog(
+              text: response.errorMessage!,
+              size: 15,
+              color: Colors.red,
+              align: TextAlign.center,
+            ),
+          );
+          return;
+        }
+
+        // Navigate
+        toCreateAccountPage(
+            context: context, user: response.userCredential!.user!);
       },
     );
   }
@@ -195,6 +146,12 @@ class AuthImpl {
           );
           return;
         }
+
+        // Navigate
+        toControlPage(
+          context: context,
+          user: response.userCredential!.user!,
+        );
       },
     );
   }
@@ -261,7 +218,9 @@ class AuthImpl {
           // Update State
           clearState(context);
           dI<ThemeCubitEvent>().read(context).clear();
-          Navigator.pop(context);
+
+          // Navigate
+          toMainPage(context: context);
         },
         onFalseText: "Cancel",
         onTrueText: "Yes",

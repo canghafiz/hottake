@@ -41,6 +41,9 @@ class MainApp extends StatelessWidget {
         BlocProvider<CommentCubit>(
           create: (_) => dI<CommentCubit>(),
         ),
+        BlocProvider<CreateAccountCubit>(
+          create: (_) => dI<CreateAccountCubit>(),
+        ),
       ],
       child: BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
         selector: (state) => state,

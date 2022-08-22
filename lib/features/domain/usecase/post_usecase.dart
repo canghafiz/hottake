@@ -90,6 +90,55 @@ class UpdateFavoritePost {
   }
 }
 
+class UpdateLikePost {
+  final PostRepository repository;
+
+  UpdateLikePost(this.repository);
+
+  FutureOr<void> call({
+    required String postId,
+    required String userId,
+    required bool isAdd,
+  }) {
+    repository.updateLike(
+      postId: postId,
+      userId: userId,
+      isAdd: isAdd,
+    );
+  }
+}
+
+class UpdateUnLikePost {
+  final PostRepository repository;
+
+  UpdateUnLikePost(this.repository);
+
+  FutureOr<void> call({
+    required String postId,
+    required String userId,
+    required bool isAdd,
+  }) {
+    repository.updateUnLike(
+      postId: postId,
+      userId: userId,
+      isAdd: isAdd,
+    );
+  }
+}
+
+class UpdateReadPost {
+  final PostRepository repository;
+
+  UpdateReadPost(this.repository);
+
+  FutureOr<void> call({
+    required String postId,
+    required String userId,
+  }) {
+    repository.updateRead(postId: postId, userId: userId);
+  }
+}
+
 class DeletePost {
   final PostRepository repository;
 

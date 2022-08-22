@@ -29,13 +29,13 @@ class PhotoProfileWidget extends StatelessWidget {
         child: (url == null)
             ? Icon(
                 Icons.person,
-                color: convertTheme(theme.secondary),
+                color: convertTheme(theme.third),
                 size: size - (size * 1 / 8),
               )
             : null,
         minRadius: size,
         maxRadius: size,
-        backgroundColor: convertTheme(theme.secondary).withOpacity(0.5),
+        backgroundColor: convertTheme(theme.third).withOpacity(0.5),
       ),
     );
   }

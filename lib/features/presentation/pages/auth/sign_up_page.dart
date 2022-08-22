@@ -15,14 +15,12 @@ class SignUpPage extends StatefulWidget {
 class _SignUpPageState extends State<SignUpPage> {
   final formKey = GlobalKey<FormState>();
 
-  final username = TextEditingController();
   final email = TextEditingController();
   final password = TextEditingController();
 
   @override
   void dispose() {
     super.dispose();
-    username.dispose();
     email.dispose();
     password.dispose();
   }
@@ -50,156 +48,139 @@ class _SignUpPageState extends State<SignUpPage> {
           shadowColor: Colors.transparent,
           backgroundColor: Colors.transparent,
         ),
-        body: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: Padding(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 16,
-            ),
-            child: Form(
-              key: formKey,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  const SizedBox(height: 48),
-                  // Logo
-                  Center(
-                    child: Image.asset(
-                      emoji1Image,
-                      height: MediaQuery.of(context).size.height * 1 / 7,
+        body: backgroundWidget(
+          context: context,
+          urlAsset: smileEmojiImage,
+          mainContent: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16,
+              ),
+              child: Form(
+                key: formKey,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 48),
+                    // Logo
+                    Center(
+                      child: Image.asset(
+                        emoji1Image,
+                        height: MediaQuery.of(context).size.height * 1 / 7,
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Title
-                  Text(
-                    "Sign Up for HotTake",
-                    style: fontStyle(
-                      size: 19,
-                      theme: themeEntity,
-                      weight: FontWeight.bold,
+                    const SizedBox(height: 16),
+                    // Title
+                    Text(
+                      "Sign Up for HotTake",
+                      style: fontStyle(
+                        size: 19,
+                        theme: themeEntity,
+                        weight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  // Subtitle
-                  Text(
-                    "Post notes around your city, and find others",
-                    style: fontStyle(
-                      size: 11,
-                      theme: themeEntity,
-                      weight: FontWeight.w300,
-                    ),
-                  ),
-                  const SizedBox(height: 36),
-                  // Username
-                  TextFormFieldCustom(
-                    controller: username,
-                    inputType: TextInputType.name,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Must Be Filled";
-                      }
-                    },
-                    hintText: "Username",
-                    themeEntity: themeEntity,
-                    prefix: Text(
-                      "@ ",
+                    // Subtitle
+                    Text(
+                      "Post notes around your city, and find others",
                       style: fontStyle(
                         size: 11,
                         theme: themeEntity,
+                        weight: FontWeight.w300,
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 16),
-                  // Email
-                  TextFormFieldCustom(
-                    controller: email,
-                    inputType: TextInputType.emailAddress,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Must Be Filled";
-                      }
-                    },
-                    hintText: "Email",
-                    themeEntity: themeEntity,
-                  ),
-                  const SizedBox(height: 16),
-                  // Password
-                  TextFormFieldCustom(
-                    controller: password,
-                    inputType: TextInputType.visiblePassword,
-                    validator: (value) {
-                      if (value!.isEmpty) {
-                        return "Must Be Filled";
-                      }
-                    },
-                    hintText: "Password",
-                    themeEntity: themeEntity,
-                    obscureText: true,
-                  ),
-                  const SizedBox(height: 36),
-                  // Btn Sign Up
-                  BlocSelector<BackendCubit, BackendStatus, BackendStatus>(
-                    selector: (state) => state,
-                    builder: (_, state) => ElevatedButtonText(
-                      onTap: () {
-                        if (formKey.currentState!.validate()) {
-                          dI<AuthImpl>().createAccount(
-                            email: email.text,
-                            password: password.text,
-                            username: username.text,
-                            context: context,
-                          );
+                    const SizedBox(height: 36),
+                    // Email
+                    TextFormFieldCustom(
+                      controller: email,
+                      inputType: TextInputType.emailAddress,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Must Be Filled";
                         }
                       },
+                      hintText: "Email",
                       themeEntity: themeEntity,
-                      text: (state == BackendStatus.doing)
-                          ? "Loading..."
-                          : "Sign Up",
                     ),
-                  ),
-                  // Or Divider
-                  Padding(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 16,
+                    const SizedBox(height: 16),
+                    // Password
+                    TextFormFieldCustom(
+                      controller: password,
+                      inputType: TextInputType.visiblePassword,
+                      validator: (value) {
+                        if (value!.isEmpty) {
+                          return "Must Be Filled";
+                        }
+                      },
+                      hintText: "Password",
+                      themeEntity: themeEntity,
+                      obscureText: true,
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Divider(
-                            color: convertTheme(themeEntity.secondary),
+                    const SizedBox(height: 36),
+                    // Btn Sign Up
+                    BlocSelector<BackendCubit, BackendStatus, BackendStatus>(
+                      selector: (state) => state,
+                      builder: (_, state) => ElevatedButtonText(
+                        onTap: () {
+                          if (formKey.currentState!.validate()) {
+                            dI<AuthImpl>().createAccount(
+                              email: email.text,
+                              password: password.text,
+                              context: context,
+                            );
+                          }
+                        },
+                        themeEntity: themeEntity,
+                        text: (state == BackendStatus.doing)
+                            ? "Loading..."
+                            : "Sign Up",
+                      ),
+                    ),
+                    // Or Divider
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 16,
+                      ),
+                      child: Row(
+                        children: [
+                          Expanded(
+                            child: Divider(
+                              color: convertTheme(themeEntity.secondary),
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8),
-                        Text(
-                          "OR",
-                          style: fontStyle(size: 9, theme: themeEntity),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: Divider(
-                            color: convertTheme(themeEntity.secondary),
+                          const SizedBox(width: 8),
+                          Text(
+                            "OR",
+                            style: fontStyle(size: 9, theme: themeEntity),
                           ),
-                        ),
-                      ],
+                          const SizedBox(width: 8),
+                          Expanded(
+                            child: Divider(
+                              color: convertTheme(themeEntity.secondary),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                  // Btn Login With Google
-                  ElevatedButtonTextWithIcon(
-                    onTap: () {
-                      dI<AuthImpl>().loginWithGoogle(context);
-                    },
-                    themeEntity: themeEntity,
-                    text: "Sign In With Google",
-                    icon: Image.asset(
-                      googleImage,
-                      width: 24,
-                      height: 24,
+                    // Btn Login With Google
+                    ElevatedButtonTextWithIcon(
+                      onTap: () {
+                        dI<AuthImpl>().loginWithGoogle(context);
+                      },
+                      themeEntity: themeEntity,
+                      text: "Sign In With Google",
+                      icon: Image.asset(
+                        googleImage,
+                        width: 24,
+                        height: 24,
+                      ),
+                      btnColor: convertTheme(themeEntity.secondary),
+                      textColor: convertTheme(themeEntity.third),
                     ),
-                    btnColor: convertTheme(themeEntity.secondary),
-                    textColor: convertTheme(themeEntity.third),
-                  ),
-                  const SizedBox(height: 16),
-                ],
+                    const SizedBox(height: 16),
+                  ],
+                ),
               ),
             ),
           ),

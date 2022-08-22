@@ -25,5 +25,22 @@ abstract class PostRepository {
     required bool isAdd,
   });
 
+  FutureOr<void> updateLike({
+    required String postId,
+    required String userId,
+    required bool isAdd,
+  });
+
+  FutureOr<void> updateUnLike({
+    required String postId,
+    required String userId,
+    required bool isAdd,
+  });
+
+  FutureOr<void> updateRead({
+    required String postId,
+    required String userId,
+  });
+
   FutureOr<void> deletePost(String postId);
 }
