@@ -38,6 +38,10 @@ class _UserNotesWidgetState extends State<UserNotesWidget> {
       return DropdownButton<PostOrderType>(
         value: orderType,
         underline: const SizedBox(),
+        style: fontStyle(
+          size: 13,
+          theme: widget.theme,
+        ),
         items: const [
           DropdownMenuItem(
             value: PostOrderType.nearest,
