@@ -42,6 +42,7 @@ class _UserNotesWidgetState extends State<UserNotesWidget> {
           size: 13,
           theme: widget.theme,
         ),
+        dropdownColor: convertTheme(widget.theme.primary),
         items: const [
           DropdownMenuItem(
             value: PostOrderType.nearest,

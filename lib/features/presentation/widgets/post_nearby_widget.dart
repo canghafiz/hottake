@@ -39,6 +39,7 @@ class _PostNearbyWidgetState extends State<PostNearbyWidget> {
         value: orderType,
         underline: const SizedBox(),
         style: fontStyle(size: 13, theme: widget.theme),
+        dropdownColor: convertTheme(widget.theme.primary),
         items: const [
           DropdownMenuItem(
             value: PostOrderType.nearest,
