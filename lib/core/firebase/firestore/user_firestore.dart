@@ -50,10 +50,9 @@ class UserFirestore {
       (query) {
         List check = query.docs.where((doc) {
           // Model
-          final UserEntity user =
-              UserEntity.fromMap(doc.data() as Map<String, dynamic>);
+          final data = doc.data() as Map<String, dynamic>;
 
-          return user.username == username;
+          return data['username'] == username;
         }).toList();
 
         if (check.isEmpty) {
