@@ -31,6 +31,27 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   final Completer<GoogleMapController> _controller = Completer();
+
+  void _currentLocation() async {
+    await getCurrentLocationAndReturn().then(
+      (position) {
+        _controller.future.then(
+          (controller) {
+            controller.animateCamera(
+              CameraUpdate.newCameraPosition(
+                CameraPosition(
+                  bearing: 0,
+                  target: LatLng(position.latitude, position.longitude),
+                  zoom: 20,
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
+
   // ignore: prefer_final_fields
   Set<Marker> _markers = {};
 
@@ -199,54 +220,77 @@ class _MapPageState extends State<MapPage> {
                               .indexWhere((doc) => doc.id == widget.postId!)]
                           .data() as Map<String, dynamic>);
 
-                  return GoogleMap(
-                    zoomControlsEnabled: false,
-                    markers: _markers,
-                    circles: {
-                      Circle(
-                        circleId: const CircleId("Radius"),
-                        center: LatLng(
-                          snapshot.data!.latitude,
-                          snapshot.data!.longitude,
-                        ),
-                        radius: radiusMap,
-                        fillColor:
-                            convertTheme((themes[0] as ThemeEntity).third)
-                                .withOpacity(0.3),
-                        strokeColor: Colors.transparent,
-                      ),
-                    },
-                    myLocationEnabled: true,
-                    initialCameraPosition: CameraPosition(
-                      target: LatLng(
-                        (post != null)
-                            ? double.parse(post.latitude)
-                            : snapshot.data!.latitude,
-                        (post != null)
-                            ? double.parse(post.longitude)
-                            : snapshot.data!.longitude,
-                      ),
-                      zoom: (widget.postId != null) ? 50 : 10,
-                    ),
-                    onMapCreated: (value) {
-                      _controller.complete(value);
-
-                      if (widget.postId != null) {
-                        value.showMarkerInfoWindow(
-                          MarkerId(
-                            widget.postId!,
+                  return Stack(
+                    children: [
+                      GoogleMap(
+                        zoomControlsEnabled: false,
+                        myLocationButtonEnabled: false,
+                        markers: _markers,
+                        circles: {
+                          Circle(
+                            circleId: const CircleId("Radius"),
+                            center: LatLng(
+                              snapshot.data!.latitude,
+                              snapshot.data!.longitude,
+                            ),
+                            radius: radiusMap,
+                            fillColor:
+                                convertTheme((themes[0] as ThemeEntity).third)
+                                    .withOpacity(0.3),
+                            strokeColor: Colors.transparent,
                           ),
-                        );
-                      }
-
-                      mapStyle(
-                        isDark: (theme.primary ==
-                            (themes[0] as ThemeModel).primary),
-                        style: (style) {
-                          value.setMapStyle(style);
                         },
-                      );
-                    },
+                        myLocationEnabled: true,
+                        initialCameraPosition: CameraPosition(
+                          target: LatLng(
+                            (post != null)
+                                ? double.parse(post.latitude)
+                                : snapshot.data!.latitude,
+                            (post != null)
+                                ? double.parse(post.longitude)
+                                : snapshot.data!.longitude,
+                          ),
+                          zoom: (widget.postId != null) ? 50 : 10,
+                        ),
+                        onMapCreated: (value) {
+                          _controller.complete(value);
+
+                          if (widget.postId != null) {
+                            value.showMarkerInfoWindow(
+                              MarkerId(
+                                widget.postId!,
+                              ),
+                            );
+                          }
+
+                          mapStyle(
+                            isDark: (theme.primary ==
+                                (themes[0] as ThemeModel).primary),
+                            style: (style) {
+                              value.setMapStyle(style);
+                            },
+                          );
+                        },
+                      ),
+                      Align(
+                        alignment: Alignment.bottomRight,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            bottom: 16,
+                            right: 16,
+                          ),
+                          child: FloatingActionButton(
+                            onPressed: () {
+                              _currentLocation();
+                            },
+                            child: Icon(
+                              Icons.location_on,
+                              color: convertTheme(theme.primary),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   );
                 },
               );

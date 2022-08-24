@@ -30,8 +30,6 @@ class _PostLocationPageState extends State<PostLocationPage> {
   final Completer<GoogleMapController> _controller = Completer();
 
   void _currentLocation() async {
-    ;
-
     await getCurrentLocationAndReturn().then(
       (position) {
         _controller.future.then(
@@ -41,7 +39,7 @@ class _PostLocationPageState extends State<PostLocationPage> {
                 CameraPosition(
                   bearing: 0,
                   target: LatLng(position.latitude, position.longitude),
-                  zoom: 17.0,
+                  zoom: 20,
                 ),
               ),
             );
