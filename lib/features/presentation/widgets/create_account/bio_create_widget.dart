@@ -1,6 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
@@ -22,25 +21,11 @@ class BioCreateWidget extends StatefulWidget {
 class _BioCreateWidgetState extends State<BioCreateWidget> {
   final controller = TextEditingController();
 
-  void updateData(CreateAccountState state) {
-    // Update State
-    dI<BackendCubitEvent>().read(context).updateStatus(BackendStatus.doing);
-
-    dI<UserUpdateData>().call(
-      userId: widget.user.uid,
-      email: widget.user.email!,
-      username: state.username!,
-      bio: (controller.text.isEmpty) ? null : controller.text,
-      socialMedia: null,
-      gender: state.genderValue,
-      theme: dI<ThemeCubitEvent>().read(context).state,
-    );
-
-    // Update State
-    dI<BackendCubitEvent>().read(context).updateStatus(BackendStatus.undoing);
-
-    // Navigate
-    toControlPage(context: context, user: widget.user);
+  @override
+  void initState() {
+    super.initState();
+    controller.text =
+        dI<CreateAccountCubitEvent>().read(context).state.bio ?? '';
   }
 
   @override
@@ -61,7 +46,7 @@ class _BioCreateWidgetState extends State<BioCreateWidget> {
             const SizedBox(height: 36),
             // Title
             Text(
-              "Last step\nWrite a short bio or show off your social media!!",
+              "Write a short bio or show off your social media!!",
               style: fontStyle(
                 size: 17,
                 theme: widget.theme,
@@ -78,33 +63,24 @@ class _BioCreateWidgetState extends State<BioCreateWidget> {
             ),
             const SizedBox(height: 16),
             // Bio
-            TextfieldCreateWidget(controller: controller, theme: widget.theme),
+            TextfieldCreateWidget(
+              controller: controller,
+              theme: widget.theme,
+            ),
             const SizedBox(height: 16),
             // Btn Ok
-            BlocSelector<CreateAccountCubit, CreateAccountState,
-                CreateAccountState>(
-              selector: (state) {
-                return state;
+            ElevatedButtonText(
+              onTap: () {
+                // Update State
+                dI<CreateAccountCubitEvent>()
+                    .read(context)
+                    .updateBio(controller.text);
+
+                // Update State
+                dI<CreateAccountCubitEvent>().read(context).updatePage(true);
               },
-              builder: (context, state) {
-                return BlocSelector<BackendCubit, BackendStatus, BackendStatus>(
-                  selector: (state) {
-                    return state;
-                  },
-                  builder: (context, bakcendStatus) {
-                    return ElevatedButtonText(
-                      onTap: () {
-                        // Update Data
-                        updateData(state);
-                      },
-                      themeEntity: widget.theme,
-                      text: (bakcendStatus == BackendStatus.doing)
-                          ? "Loading..."
-                          : "Ok",
-                    );
-                  },
-                );
-              },
+              themeEntity: widget.theme,
+              text: "Ok",
             ),
           ],
         ),

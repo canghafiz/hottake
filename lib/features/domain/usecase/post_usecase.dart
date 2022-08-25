@@ -72,6 +72,24 @@ class UpdatePost {
   }
 }
 
+class UpdateVotePost {
+  final PostRepository repository;
+
+  UpdateVotePost(this.repository);
+
+  FutureOr<void> call({
+    required String postId,
+    required String userId,
+    required int optionId,
+  }) {
+    repository.updateVote(
+      postId: postId,
+      userId: userId,
+      optionId: optionId,
+    );
+  }
+}
+
 class UpdateFavoritePost {
   final PostRepository repository;
 

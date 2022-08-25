@@ -148,10 +148,7 @@ class AuthImpl {
         }
 
         // Navigate
-        toControlPage(
-          context: context,
-          user: response.userCredential!.user!,
-        );
+        toMainPage(context: context);
       },
     );
   }

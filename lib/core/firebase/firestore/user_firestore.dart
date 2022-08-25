@@ -23,19 +23,43 @@ class UserFirestore {
     return Firestore.instance.collection(Firestore.userCollection).get();
   }
 
-  Future<void> checkIsUserAvailable({
-    required String userId,
-    required Function not,
-    required Function yes,
-  }) async {
-    await getOneTimeUsers().then(
-      (query) {
-        List check = query.docs.where((doc) => doc.id == userId).toList();
+  Future<bool> checkIsUserAvailable(String userId) async {
+    return await getOneTimeUser(userId).then(
+      (doc) {
+        if (doc.data() != null) {
+          // Map
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-        if (check.isEmpty) {
-          not.call();
+          if (data['username'] == null) {
+            return false;
+          } else {
+            return true;
+          }
         } else {
-          yes.call();
+          return false;
+        }
+      },
+    );
+  }
+
+  Future<void> checkPhotoProfile({
+    required String userId,
+    required Function empty,
+    required Function notEmpty,
+  }) async {
+    await getOneTimeUser(userId).then(
+      (doc) {
+        if (doc.data() != null) {
+          // Map
+          final Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
+
+          if (data['photo'] == null) {
+            empty.call();
+          } else {
+            notEmpty.call();
+          }
+        } else {
+          empty.call();
         }
       },
     );

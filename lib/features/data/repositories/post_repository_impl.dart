@@ -47,6 +47,19 @@ class PostRepositoryImpl implements PostRepository {
   }
 
   @override
+  Future<void> updateVote({
+    required String postId,
+    required String userId,
+    required int optionId,
+  }) async {
+    await remoteDataSource.updateVote(
+      postId: postId,
+      userId: userId,
+      optionId: optionId,
+    );
+  }
+
+  @override
   Future<void> updateFavorite({
     required String postId,
     required String userId,

@@ -82,6 +82,7 @@ class PostCreatorPage extends StatelessWidget {
                                   index: null,
                                   pollCubit: null,
                                   initial: true,
+                                  question: null,
                                 );
                           },
                           theme: theme,

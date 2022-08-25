@@ -26,6 +26,14 @@ class PollingCreatorWidget extends StatefulWidget {
 class _PollingCreatorWidgetState extends State<PollingCreatorWidget> {
   final formKey = GlobalKey<FormState>();
 
+  final controller = TextEditingController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocSelector<PostCubit, PostState, PostState>(
@@ -37,24 +45,42 @@ class _PollingCreatorWidgetState extends State<PollingCreatorWidget> {
           Form(
             key: formKey,
             child: Column(
-              children: state.userPoll!.polls.map((poll) {
-                final int index =
-                    state.userPoll!.polls.indexWhere((data) => data == poll);
-                return Column(
-                  children: [
-                    PollingInputCreatorWidget(
-                      hintText: "Question ${index + 1}",
-                      index: index,
-                      theme: widget.theme,
-                      poll: poll,
-                    ),
-                    SizedBox(
-                        height: (index == state.userPoll!.polls.length - 1)
-                            ? 0
-                            : 8),
-                  ],
-                );
-              }).toList(),
+              children: [
+                // Question
+                TextFormFieldCustom(
+                  controller: controller..text = state.userPoll!.question,
+                  inputType: TextInputType.text,
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return "Must be filled!";
+                    }
+                  },
+                  hintText: "Question",
+                  themeEntity: widget.theme,
+                ),
+                const SizedBox(height: 16),
+                // Options
+                Column(
+                  children: state.userPoll!.polls.map((poll) {
+                    final int index = state.userPoll!.polls
+                        .indexWhere((data) => data == poll);
+                    return Column(
+                      children: [
+                        PollingInputCreatorWidget(
+                          hintText: "Option ${index + 1}",
+                          index: index,
+                          theme: widget.theme,
+                          poll: poll,
+                        ),
+                        SizedBox(
+                            height: (index == state.userPoll!.polls.length - 1)
+                                ? 0
+                                : 8),
+                      ],
+                    );
+                  }).toList(),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 24),
@@ -69,8 +95,9 @@ class _PollingCreatorWidgetState extends State<PollingCreatorWidget> {
 
                     map.add(
                       PollEntity.toMap(
-                          question: pollCubit.controller.text,
-                          value: pollCubit.poll.value),
+                        option: pollCubit.controller.text,
+                        value: pollCubit.poll.value,
+                      ),
                     );
                   }
 
@@ -82,7 +109,10 @@ class _PollingCreatorWidgetState extends State<PollingCreatorWidget> {
                       longitude: state.longitude ?? "",
                       latitude: state.latitude ?? "",
                       note: null,
-                      userPoll: UserPollEntity.toMap(map),
+                      userPoll: UserPollEntity.toMap(
+                        polls: map,
+                        question: controller.text,
+                      ),
                       rating: null,
                       context: context,
                       user: widget.user,
@@ -95,7 +125,10 @@ class _PollingCreatorWidgetState extends State<PollingCreatorWidget> {
                       longitude: state.longitude ?? "",
                       latitude: state.latitude ?? "",
                       note: null,
-                      userPoll: UserPollEntity.toMap(map),
+                      userPoll: UserPollEntity.toMap(
+                        polls: map,
+                        question: controller.text,
+                      ),
                       rating: null,
                       context: context,
                       user: widget.user,
@@ -168,37 +201,13 @@ class _PollingInputCreatorWidgetState extends State<PollingInputCreatorWidget>
         // Textfield
         Expanded(
           child: TextFormFieldCustom(
-            controller: widget.poll.controller
-              ..text = widget.poll.poll.question,
+            controller: widget.poll.controller..text = widget.poll.poll.option,
             inputType: TextInputType.text,
             validator: (value) {
               if (value!.isEmpty) {
                 return "Must be filled!";
               }
             },
-            suffix: GestureDetector(
-              onTap: () {
-                // Show Dialog
-                showDialog(
-                  context: context,
-                  builder: (context) => alertDialogWithCustomContent(
-                    PickValuePollingCreatorWidget(
-                      theme: widget.theme,
-                      initValue: widget.poll.poll.value,
-                      index: widget.index,
-                      pollCubit: widget.poll,
-                    ),
-                  ),
-                );
-              },
-              child: Text(
-                " ${widget.poll.poll.value}%",
-                style: fontStyle(
-                  size: 13,
-                  theme: widget.theme,
-                ),
-              ),
-            ),
             hintText: widget.hintText,
             themeEntity: widget.theme,
           ),
@@ -212,6 +221,7 @@ class _PollingInputCreatorWidgetState extends State<PollingInputCreatorWidget>
                   index: null,
                   pollCubit: null,
                   initial: false,
+                  question: null,
                 );
           },
           child: Icon(
@@ -229,6 +239,7 @@ class _PollingInputCreatorWidgetState extends State<PollingInputCreatorWidget>
                         index: widget.index,
                         pollCubit: null,
                         initial: false,
+                        question: null,
                       );
                 },
                 child: Text(
@@ -242,67 +253,6 @@ class _PollingInputCreatorWidgetState extends State<PollingInputCreatorWidget>
               )
             : const SizedBox(),
       ],
-    );
-  }
-}
-
-class PickValuePollingCreatorWidget extends StatelessWidget {
-  const PickValuePollingCreatorWidget({
-    Key? key,
-    required this.index,
-    required this.theme,
-    required this.initValue,
-    required this.pollCubit,
-  }) : super(key: key);
-  final PollCubit pollCubit;
-  final ThemeEntity theme;
-  final int initValue, index;
-
-  @override
-  Widget build(BuildContext context) {
-    return BlocSelector<PostCubit, PostState, PostState>(
-      selector: (state) => state,
-      builder: (_, state) => Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Slider
-          Slider(
-            value: (state.userPoll!.polls[index] as PollCubit)
-                .poll
-                .value
-                .toDouble(),
-            onChanged: (value) {
-              // Update State
-              dI<PostCubitEvent>().read(context).updatePolling(
-                    index: index,
-                    pollCubit: PollCubit(
-                      controller: pollCubit.controller,
-                      poll: PollEntity(
-                        question: pollCubit.poll.question,
-                        value: value.toInt(),
-                      ),
-                    ),
-                    initial: false,
-                  );
-            },
-            activeColor: convertTheme(theme.third),
-            inactiveColor: convertTheme(theme.third).withOpacity(0.5),
-            min: 0,
-            max: 100,
-          ),
-          // Value
-          Center(
-            child: Text(
-              "${(state.userPoll!.polls[index] as PollCubit).poll.value}%",
-              style: fontStyle(
-                size: 13,
-                theme: theme,
-                color: convertTheme(theme.third),
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

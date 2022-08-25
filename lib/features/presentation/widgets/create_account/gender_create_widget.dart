@@ -47,7 +47,7 @@ class GenderCreateWidget extends StatelessWidget {
             ElevatedButtonText(
               onTap: () {
                 // Update State
-                dI<CreateAccountCubitEvent>().read(context).updatePage();
+                dI<CreateAccountCubitEvent>().read(context).updatePage(true);
               },
               themeEntity: theme,
               text: "Ok",

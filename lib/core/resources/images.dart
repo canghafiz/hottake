@@ -5,6 +5,7 @@ const redCardImage = "assets/images/red_card.png";
 const outlineCardImage = "assets/images/outline_card.png";
 const smileEmojiImage = "assets/images/smile_emoji.png";
 const writeEmojiImage = "assets/images/write_emoji.png";
+const locationEmojiImage = "assets/images/location_emoji.png";
 const awesomeEmojiImage = "assets/images/awesome_emoji.png";
 const patternWhiteImage = "assets/images/pattern_white.png";
 const patternBlackImage = "assets/images/pattern_black.png";

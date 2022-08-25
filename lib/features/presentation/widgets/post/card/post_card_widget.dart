@@ -186,6 +186,7 @@ class PostCardWidget extends StatelessWidget {
                               index: null,
                               pollCubit: null,
                               initial: true,
+                              question: null,
                             );
 
                         for (int i = 0; i < userPoll!.polls.length - 1; i++) {
@@ -193,6 +194,7 @@ class PostCardWidget extends StatelessWidget {
                                 index: null,
                                 pollCubit: null,
                                 initial: false,
+                                question: null,
                               );
                         }
 
@@ -207,6 +209,7 @@ class PostCardWidget extends StatelessWidget {
                                   poll: poll,
                                 ),
                                 initial: false,
+                                question: userPoll!.question,
                               );
                         }
                       }

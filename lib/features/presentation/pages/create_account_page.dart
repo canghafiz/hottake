@@ -33,6 +33,7 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
         GenderCreateWidget(theme: theme),
         PhotoCreateWidget(theme: theme, userId: widget.user.uid),
         BioCreateWidget(theme: theme, user: widget.user),
+        LocationCreateWidget(theme: theme, user: widget.user),
       ];
     }
 
@@ -41,24 +42,51 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
       writeEmojiImage,
       awesomeEmojiImage,
       writeEmojiImage,
+      locationEmojiImage,
     ];
+
+    void backFunction(int page) {
+      if (page > 0) {
+        // Update State
+        dI<CreateAccountCubitEvent>().read(context).updatePage(false);
+      }
+    }
 
     return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
       selector: (state) => state,
-      builder: (_, theme) => Scaffold(
-        body: BlocSelector<CreateAccountCubit, CreateAccountState, int>(
-            selector: (state) => state.currentPage,
-            builder: (_, currentPage) {
-              if (currentPage == 1) {
-                // Update Data
-                dI<UserUpdatePhoto>().call(userId: widget.user.uid, url: null);
-              }
-              return backgroundWidget(
-                context: context,
-                urlAsset: assetsImages.elementAt(currentPage),
-                mainContent: contents(theme).elementAt(currentPage),
-              );
-            }),
+      builder: (_, theme) =>
+          BlocSelector<CreateAccountCubit, CreateAccountState, int>(
+        selector: (state) => state.currentPage,
+        builder: (_, currentPage) => WillPopScope(
+          onWillPop: () async {
+            backFunction(currentPage);
+            return false;
+          },
+          child: Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              leading: (currentPage > 0)
+                  ? IconButton(
+                      onPressed: () {
+                        backFunction(currentPage);
+                      },
+                      icon: Icon(
+                        Icons.arrow_back_ios,
+                        color: convertTheme(theme.secondary),
+                      ),
+                    )
+                  : null,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              shadowColor: Colors.transparent,
+            ),
+            body: backgroundWidget(
+              context: context,
+              urlAsset: assetsImages.elementAt(currentPage),
+              mainContent: contents(theme).elementAt(currentPage),
+            ),
+          ),
+        ),
       ),
     );
   }

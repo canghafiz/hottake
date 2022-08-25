@@ -49,8 +49,40 @@ class PhotoCreateWidget extends StatelessWidget {
             // Btn Ok
             ElevatedButtonText(
               onTap: () {
-                // Update State
-                dI<CreateAccountCubitEvent>().read(context).updatePage();
+                dI<UserFirestore>().checkPhotoProfile(
+                  userId: userId,
+                  empty: () {
+                    // Show Dialog
+                    showDialog(
+                      context: context,
+                      builder: (context) => alertDialogTextWith2Button(
+                        text: "Are you sure leave your photo profile is blank?",
+                        fontSize: 13,
+                        fontColor: convertTheme(theme.third),
+                        onfalse: () {
+                          Navigator.pop(context);
+                        },
+                        onTrue: () {
+                          Navigator.pop(context);
+                          // Update Data
+                          dI<UserUpdatePhoto>().call(userId: userId, url: null);
+                          // Update State
+                          dI<CreateAccountCubitEvent>()
+                              .read(context)
+                              .updatePage(true);
+                        },
+                        onFalseText: "No",
+                        onTrueText: "Yes",
+                      ),
+                    );
+                  },
+                  notEmpty: () {
+                    // Update State
+                    dI<CreateAccountCubitEvent>()
+                        .read(context)
+                        .updatePage(true);
+                  },
+                );
               },
               themeEntity: theme,
               text: "Ok",

@@ -50,4 +50,6 @@ export 'package:hottake/features/presentation/widgets/create_account/gender_crea
 export 'package:hottake/features/presentation/widgets/create_account/photo_create_widget.dart';
 export 'package:hottake/features/presentation/widgets/create_account/username_create_widget.dart';
 export 'package:hottake/features/presentation/widgets/create_account/textfield_create_widget.dart';
+export 'package:hottake/features/presentation/widgets/create_account/location_create_widget.dart';
 export 'package:hottake/features/presentation/widgets/background_widget.dart';
+export 'package:hottake/features/presentation/widgets/post/post_vote_widget.dart';

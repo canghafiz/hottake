@@ -64,4 +64,11 @@ class PostFirestore {
             .snapshots();
     }
   }
+
+  Stream<DocumentSnapshot> getSingleNoteRealtime(String postId) {
+    return Firestore.instance
+        .collection(Firestore.postCollection)
+        .doc(postId)
+        .snapshots();
+  }
 }

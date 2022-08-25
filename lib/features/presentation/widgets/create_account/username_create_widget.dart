@@ -20,6 +20,13 @@ class _UsernameCreatewidgetState extends State<UsernameCreatewidget> {
   final controller = TextEditingController();
 
   @override
+  void initState() {
+    super.initState();
+    controller.text =
+        dI<CreateAccountCubitEvent>().read(context).state.username ?? '';
+  }
+
+  @override
   void dispose() {
     super.dispose();
     controller.dispose();
@@ -77,7 +84,7 @@ class _UsernameCreatewidgetState extends State<UsernameCreatewidget> {
 
                         dI<CreateAccountCubitEvent>()
                             .read(context)
-                            .updatePage();
+                            .updatePage(true);
                       },
                       notValid: () {
                         // Show Dialog

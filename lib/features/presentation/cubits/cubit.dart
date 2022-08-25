@@ -9,19 +9,9 @@ void initState({
   required User user,
 }) {
   // Theme
-  dI<UserFirestore>().checkIsUserAvailable(
+  dI<UserFirestore>().updateTheme(
     userId: user.uid,
-    not: () {
-      // Navigate
-      toCreateAccountPage(context: context, user: user);
-    },
-    yes: () {
-      dI<UserFirestore>().updateTheme(
-        userId: user.uid,
-        updateTheme: (value) =>
-            dI<ThemeCubitEvent>().read(context).update(value),
-      );
-    },
+    updateTheme: (value) => dI<ThemeCubitEvent>().read(context).update(value),
   );
 }
 

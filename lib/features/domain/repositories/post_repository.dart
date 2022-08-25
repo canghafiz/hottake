@@ -19,6 +19,12 @@ abstract class PostRepository {
     required Map<String, dynamic>? rating,
   });
 
+  FutureOr<void> updateVote({
+    required String postId,
+    required String userId,
+    required int optionId,
+  });
+
   FutureOr<void> updateFavorite({
     required String postId,
     required String userId,

@@ -23,6 +23,7 @@ class CommentsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     // Update State
     dI<CommentCubitEvent>().read(context).clear();
+
     return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
       selector: (state) => state,
       builder: (_, theme) => Scaffold(
@@ -30,6 +31,8 @@ class CommentsPage extends StatelessWidget {
           child: Center(
             child: Column(
               children: [
+                // Vote
+                PostVoteWidget(postId: postId, userId: userId, theme: theme),
                 // Contents
                 Expanded(
                   child: Container(

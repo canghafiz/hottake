@@ -1,36 +1,69 @@
 class UserPollEntity {
   final List polls;
+  String question;
+  final Map<String, dynamic> userVotes;
 
-  UserPollEntity(this.polls);
+  UserPollEntity({
+    required this.polls,
+    required this.question,
+    required this.userVotes,
+  });
 
   // Map
   static UserPollEntity fromMap(Map<String, dynamic> data) {
-    return UserPollEntity(data['polls']);
+    return UserPollEntity(
+      polls: data['polls'],
+      question: data['question'],
+      userVotes: data['userVotes'],
+    );
   }
 
-  static Map<String, dynamic> toMap(List<Map<String, dynamic>> polls) {
-    return {"polls": polls};
+  static Map<String, dynamic> toMap({
+    required List<Map<String, dynamic>> polls,
+    required String question,
+  }) {
+    return {"polls": polls, "question": question, "userVotes": {}};
   }
 }
 
 class PollEntity {
-  final String question;
-  final int value;
+  final String option;
+  final double value;
 
-  PollEntity({required this.question, required this.value});
+  PollEntity({required this.option, required this.value});
 
   // Map
   static PollEntity fromMap(Map<String, dynamic> data) {
     return PollEntity(
-      question: data['question'],
+      option: data['option'],
       value: data['value'],
     );
   }
 
   static Map<String, dynamic> toMap({
-    required String question,
-    required int value,
+    required String option,
+    required double value,
   }) {
-    return {"question": question, "value": value};
+    return {"option": option, "value": value};
+  }
+}
+
+class UserVoteEntity {
+  final String userId;
+  final int optionId;
+
+  UserVoteEntity({
+    required this.optionId,
+    required this.userId,
+  });
+
+  // Map
+  static Map<String, dynamic> toMap({
+    required String userId,
+    required int optionId,
+  }) {
+    return {
+      userId: optionId,
+    };
   }
 }

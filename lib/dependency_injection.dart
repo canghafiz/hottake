@@ -30,6 +30,7 @@ void init() {
   dI.registerLazySingleton(() => UserUpdateTheme(dI()));
   dI.registerLazySingleton(() => CreatePost(dI()));
   dI.registerLazySingleton(() => UpdatePost(dI()));
+  dI.registerLazySingleton(() => UpdateVotePost(dI()));
   dI.registerLazySingleton(() => UpdateFavoritePost(dI()));
   dI.registerLazySingleton(() => UpdateLikePost(dI()));
   dI.registerLazySingleton(() => UpdateUnLikePost(dI()));

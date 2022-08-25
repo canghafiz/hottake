@@ -25,11 +25,13 @@ class CreateAccountCubit extends Cubit<CreateAccountState> {
     emit(_default);
   }
 
-  void updatePage() {
+  void updatePage(bool increament) {
     emit(
       CreateAccountState(
         bio: state.bio,
-        currentPage: state.currentPage + 1, // Update
+        currentPage: increament
+            ? state.currentPage + 1
+            : state.currentPage - 1, // Update
         genderValue: state.genderValue,
         photoUrl: state.photoUrl,
         username: state.username,
@@ -61,10 +63,10 @@ class CreateAccountCubit extends Cubit<CreateAccountState> {
     );
   }
 
-  void updateBio(String? value) {
+  void updateBio(String value) {
     emit(
       CreateAccountState(
-        bio: value, // Update
+        bio: (value.isEmpty) ? null : value, // Update
         currentPage: state.currentPage,
         genderValue: state.genderValue,
         photoUrl: state.photoUrl,

@@ -99,6 +99,7 @@ class PostCubit extends Cubit<PostState> {
 
   void updatePolling({
     required int? index,
+    required String? question,
     required PollCubit? pollCubit,
     required bool initial,
   }) {
@@ -110,14 +111,15 @@ class PostCubit extends Cubit<PostState> {
           state.userPoll!.polls.add(
             PollCubit(
               controller: TextEditingController(),
-              poll: PollEntity(question: "", value: 0),
+              poll: PollEntity(option: "", value: 0),
             ),
           );
         } else {
           // Min
           state.userPoll!.polls.removeAt(index);
         }
-      } else if (index != null) {
+      } else if (index != null && question != null) {
+        state.userPoll!.question = question;
         state.userPoll!.polls[index] = pollCubit;
       }
 
@@ -138,12 +140,14 @@ class PostCubit extends Cubit<PostState> {
           note: null,
           rating: _default.rating,
           userPoll: UserPollEntity(
-            [
+            polls: [
               PollCubit(
                 controller: TextEditingController(),
-                poll: PollEntity(question: "", value: 0),
+                poll: PollEntity(option: "", value: 0),
               ),
             ],
+            question: "",
+            userVotes: {},
           ), // Update
         ),
       );

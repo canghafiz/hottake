@@ -64,6 +64,10 @@ class _PostLocationPageState extends State<PostLocationPage> {
         },
       );
     }
+    if (widget.postId == null) {
+      // Update State
+      dI<PostCubitEvent>().read(context).clear();
+    }
   }
 
   @override

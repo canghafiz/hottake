@@ -17,7 +17,18 @@ class MainPage extends StatelessWidget {
         }
         return (snapshot.data == null)
             ? const SignInPage()
-            : ControlPage(user: snapshot.data!);
+            : FutureBuilder<bool>(
+                future: dI<UserFirestore>()
+                    .checkIsUserAvailable(snapshot.data!.uid),
+                builder: (_, available) {
+                  if (!available.hasData) {
+                    return const SignInPage();
+                  }
+                  return (!available.data!)
+                      ? CreateAccountPage(user: snapshot.data!)
+                      : ControlPage(user: snapshot.data!);
+                },
+              );
       },
     );
   }

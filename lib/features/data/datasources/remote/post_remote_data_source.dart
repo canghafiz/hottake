@@ -22,6 +22,12 @@ abstract class PostRemoteDataSource {
     required Map<String, dynamic>? rating,
   });
 
+  Future<void> updateVote({
+    required String postId,
+    required String userId,
+    required int optionId,
+  });
+
   Future<void> updateFavorite({
     required String postId,
     required String userId,
@@ -95,6 +101,53 @@ class PostRemoteDataSourceFirebase implements PostRemoteDataSource {
       "userPoll": userPoll,
       "rating": rating,
     });
+  }
+
+  @override
+  Future<void> updateVote({
+    required String postId,
+    required String userId,
+    required int optionId,
+  }) async {
+    // Transaction
+    DocumentReference documentReference =
+        Firestore.instance.collection(Firestore.postCollection).doc(postId);
+
+    Firestore.instance.runTransaction(
+      (transaction) async {
+        // Get the document
+        DocumentSnapshot snapshot = await transaction.get(documentReference);
+
+        if (snapshot.exists) {
+          // Model
+          final PostEntity post =
+              PostEntity.fromMap(snapshot.data() as Map<String, dynamic>);
+          final UserPollEntity userPoll =
+              UserPollEntity.fromMap(post.userPoll!);
+          List polls = userPoll.polls;
+          polls[optionId] = PollEntity.toMap(
+            option: polls[optionId].option,
+            value: polls[optionId].value++,
+          );
+
+          transaction.update(
+            documentReference,
+            {
+              "userPoll": {
+                "polls": polls,
+                "question": userPoll.question,
+                "userVotes": {
+                  userPoll.userVotes
+                    ..addAll(
+                      UserVoteEntity.toMap(userId: userId, optionId: optionId),
+                    ),
+                },
+              },
+            },
+          );
+        }
+      },
+    );
   }
 
   @override
