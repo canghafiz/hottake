@@ -102,8 +102,5 @@ String userPollVoteValue({
 
   final vote = double.parse((voteValue * 100 / totalVote).toStringAsFixed(0));
 
-  final regex = RegExp(r'([.]*0)(?!.*\d)');
-  return (vote.toString() == "NaN")
-      ? "0"
-      : vote.toString().replaceAll(regex, "");
+  return (vote.toString() == "NaN") ? "0" : convertDoubleNumber(vote);
 }

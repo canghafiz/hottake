@@ -101,3 +101,9 @@ mapStyle({required Function(String value) style, required bool isDark}) {
 }
 
 enum PostOrderType { nearest, latest, popular, controversial }
+
+String convertDoubleNumber(double value) {
+  final regex = RegExp(r'([.]*0)(?!.*\d)');
+
+  return value.toString().replaceAll(regex, "");
+}
