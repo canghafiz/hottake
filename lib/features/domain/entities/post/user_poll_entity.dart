@@ -21,8 +21,9 @@ class UserPollEntity {
   static Map<String, dynamic> toMap({
     required List<Map<String, dynamic>> polls,
     required String question,
+    Map<String, dynamic>? userVotes,
   }) {
-    return {"polls": polls, "question": question, "userVotes": {}};
+    return {"polls": polls, "question": question, "userVotes": userVotes ?? {}};
   }
 }
 

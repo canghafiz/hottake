@@ -101,6 +101,7 @@ class PostCubit extends Cubit<PostState> {
     required int? index,
     required String? question,
     required PollCubit? pollCubit,
+    Map<String, dynamic>? userVotes,
     required bool initial,
   }) {
     // Not Initial
@@ -147,7 +148,7 @@ class PostCubit extends Cubit<PostState> {
               ),
             ],
             question: "",
-            userVotes: {},
+            userVotes: userVotes ?? {},
           ), // Update
         ),
       );

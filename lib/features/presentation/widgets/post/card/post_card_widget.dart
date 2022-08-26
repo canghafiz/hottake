@@ -187,6 +187,7 @@ class PostCardWidget extends StatelessWidget {
                               pollCubit: null,
                               initial: true,
                               question: null,
+                              userVotes: userPoll!.userVotes,
                             );
 
                         for (int i = 0; i < userPoll!.polls.length - 1; i++) {

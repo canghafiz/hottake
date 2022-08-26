@@ -125,10 +125,9 @@ class PostRemoteDataSourceFirebase implements PostRemoteDataSource {
           final UserPollEntity userPoll =
               UserPollEntity.fromMap(post.userPoll!);
           List polls = userPoll.polls;
-          final PollEntity poll = PollEntity.fromMap(polls[optionId]);
           polls[optionId] = PollEntity.toMap(
-            option: poll.option,
-            value: poll.value + 1,
+            option: polls[optionId].option,
+            value: polls[optionId].value++,
           );
 
           transaction.update(
@@ -137,10 +136,12 @@ class PostRemoteDataSourceFirebase implements PostRemoteDataSource {
               "userPoll": {
                 "polls": polls,
                 "question": userPoll.question,
-                "userVotes": userPoll.userVotes
-                  ..addAll(
-                    UserVoteEntity.toMap(userId: userId, optionId: optionId),
-                  ),
+                "userVotes": {
+                  userPoll.userVotes
+                    ..addAll(
+                      UserVoteEntity.toMap(userId: userId, optionId: optionId),
+                    ),
+                },
               },
             },
           );

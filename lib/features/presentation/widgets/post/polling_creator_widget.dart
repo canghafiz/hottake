@@ -128,6 +128,7 @@ class _PollingCreatorWidgetState extends State<PollingCreatorWidget> {
                       userPoll: UserPollEntity.toMap(
                         polls: map,
                         question: controller.text,
+                        userVotes: state.userPoll!.userVotes,
                       ),
                       rating: null,
                       context: context,
