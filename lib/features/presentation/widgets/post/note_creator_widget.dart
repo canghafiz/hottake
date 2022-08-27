@@ -81,6 +81,7 @@ class _NoteCreatorwidgetState extends State<NoteCreatorwidget> {
                       if (widget.postId == null) {
                         // Create
                         dI<CreatePost>().call(
+                          theme: widget.theme,
                           userId: widget.userId,
                           longitude: state.longitude ?? "",
                           latitude: state.latitude ?? "",
@@ -94,6 +95,7 @@ class _NoteCreatorwidgetState extends State<NoteCreatorwidget> {
                       } else {
                         // Update
                         dI<UpdatePost>().call(
+                          theme: widget.theme,
                           userId: widget.userId,
                           postId: widget.postId!,
                           longitude: state.longitude ?? "",

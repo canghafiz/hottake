@@ -50,12 +50,12 @@ class PostCardWidget extends StatelessWidget {
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 18),
         decoration: BoxDecoration(
           borderRadius: const BorderRadius.all(Radius.circular(16)),
-          color: convertTheme(theme.secondary),
+          color: convertTheme(theme.primary),
           boxShadow: [
             BoxShadow(
               blurRadius: 8,
               offset: const Offset(0, 0),
-              color: convertTheme(theme.secondary).withOpacity(0.5),
+              color: convertTheme(theme.secondary).withOpacity(0.2),
             ),
           ],
         ),
@@ -81,7 +81,6 @@ class PostCardWidget extends StatelessWidget {
                           size: 13,
                           theme: theme,
                           weight: FontWeight.bold,
-                          color: convertTheme(theme.primary),
                         ),
                       ),
                       // From
@@ -95,7 +94,7 @@ class PostCardWidget extends StatelessWidget {
                                 size: 13,
                                 theme: theme,
                                 weight: FontWeight.bold,
-                                color: convertTheme(theme.primary)
+                                color: convertTheme(theme.secondary)
                                     .withOpacity(0.5),
                               ),
                               overflow: TextOverflow.ellipsis,
@@ -105,28 +104,16 @@ class PostCardWidget extends StatelessWidget {
                           final UserEntity user = UserEntity.fromMap(
                               snapshot.data!.data() as Map<String, dynamic>);
 
-                          return GestureDetector(
-                            onTap: () {
-                              // Navigate
-                              toUserPage(
-                                context: context,
-                                userId: userId,
-                                initialTab: 0,
-                                user: userAuth,
-                                forOwn: (userId == post.userId),
-                              );
-                            },
-                            child: Text(
-                              "@${user.username}",
-                              style: fontStyle(
-                                size: 13,
-                                theme: theme,
-                                weight: FontWeight.bold,
-                                color: convertTheme(theme.primary)
-                                    .withOpacity(0.5),
-                              ),
-                              overflow: TextOverflow.ellipsis,
+                          return Text(
+                            "@${user.username}",
+                            style: fontStyle(
+                              size: 13,
+                              theme: theme,
+                              weight: FontWeight.bold,
+                              color: convertTheme(theme.secondary)
+                                  .withOpacity(0.5),
                             ),
+                            overflow: TextOverflow.ellipsis,
                           );
                         },
                       ),
@@ -139,7 +126,7 @@ class PostCardWidget extends StatelessWidget {
                   color: convertTheme(theme.primary),
                   icon: Icon(
                     Icons.more_vert_outlined,
-                    color: convertTheme(theme.primary),
+                    color: convertTheme(theme.secondary),
                   ),
                   onSelected: (value) {
                     // Open Location
@@ -388,7 +375,7 @@ class PostCardWidget extends StatelessWidget {
                           // Icon
                           Icon(
                             Icons.chat_bubble_outlined,
-                            color: convertTheme(theme.primary),
+                            color: convertTheme(theme.secondary),
                           ),
                           // Total
                           Baseline(
@@ -399,7 +386,6 @@ class PostCardWidget extends StatelessWidget {
                               style: fontStyle(
                                 size: 11,
                                 theme: theme,
-                                color: convertTheme(theme.primary),
                               ),
                             ),
                           ),
@@ -421,7 +407,6 @@ class PostCardWidget extends StatelessWidget {
                     style: fontStyle(
                       size: 10,
                       theme: theme,
-                      color: convertTheme(theme.primary).withOpacity(0.5),
                     ),
                   );
                 }
@@ -430,7 +415,6 @@ class PostCardWidget extends StatelessWidget {
                   style: fontStyle(
                     size: 10,
                     theme: theme,
-                    color: convertTheme(theme.primary).withOpacity(0.5),
                   ),
                 );
               },
@@ -473,7 +457,7 @@ Widget btnFavoriteWidget({
         // Icon
         Icon(
           contain ? Icons.bookmark : Icons.bookmark_border_outlined,
-          color: convertTheme(theme.primary),
+          color: convertTheme(theme.secondary),
         ),
         // Total
         Baseline(
@@ -484,7 +468,6 @@ Widget btnFavoriteWidget({
             style: fontStyle(
               size: 11,
               theme: theme,
-              color: convertTheme(theme.primary),
             ),
           ),
         ),
@@ -526,8 +509,8 @@ Widget btnLikeWidget({
         Icon(
           Icons.arrow_upward,
           color: contain
-              ? convertTheme(theme.primary)
-              : convertTheme(theme.primary).withOpacity(0.5),
+              ? convertTheme(theme.secondary)
+              : convertTheme(theme.secondary).withOpacity(0.5),
         ),
         // Total
         Baseline(
@@ -538,7 +521,6 @@ Widget btnLikeWidget({
             style: fontStyle(
               size: 11,
               theme: theme,
-              color: convertTheme(theme.primary),
             ),
           ),
         ),
@@ -580,8 +562,8 @@ Widget btnUnLikeWidget({
         Icon(
           Icons.arrow_downward,
           color: contain
-              ? convertTheme(theme.primary)
-              : convertTheme(theme.primary).withOpacity(0.5),
+              ? convertTheme(theme.secondary)
+              : convertTheme(theme.secondary).withOpacity(0.5),
         ),
         // Total
         Baseline(
@@ -592,7 +574,6 @@ Widget btnUnLikeWidget({
             style: fontStyle(
               size: 11,
               theme: theme,
-              color: convertTheme(theme.primary),
             ),
           ),
         ),

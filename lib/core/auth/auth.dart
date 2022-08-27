@@ -84,7 +84,9 @@ class AuthImpl {
 
         // Navigate
         toCreateAccountPage(
-            context: context, user: response.userCredential!.user!);
+          context: context,
+          user: response.userCredential!.user!,
+        );
       },
     );
   }
@@ -123,6 +125,9 @@ class AuthImpl {
           );
           return;
         }
+
+        // Navigate
+        toMainPage(context: context);
       },
     );
   }
@@ -206,7 +211,7 @@ class AuthImpl {
       builder: (_) => alertDialogTextWith2Button(
         text: "Are you sure want sign out?",
         fontSize: 15,
-        fontColor: convertTheme(theme.third),
+        fontColor: convertTheme(theme.secondary),
         onfalse: () {
           Navigator.pop(context);
         },

@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/features/domain/domain.dart';
 import 'package:image_cropper/image_cropper.dart';
@@ -32,11 +31,11 @@ Future<File?> imageCrop({
     uiSettings: [
       AndroidUiSettings(
         toolbarTitle: 'Edit Photo',
-        toolbarColor: Colors.white,
-        toolbarWidgetColor: convertTheme(theme.primary),
+        toolbarColor: convertTheme(theme.primary),
+        toolbarWidgetColor: convertTheme(theme.secondary),
         initAspectRatio: CropAspectRatioPreset.original,
         lockAspectRatio: false,
-        activeControlsWidgetColor: convertTheme(theme.primary),
+        activeControlsWidgetColor: convertTheme(theme.secondary),
       ),
       IOSUiSettings(
         title: 'Edit Photo',

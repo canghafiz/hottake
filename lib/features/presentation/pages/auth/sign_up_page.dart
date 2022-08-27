@@ -137,47 +137,6 @@ class _SignUpPageState extends State<SignUpPage> {
                             : "Sign Up",
                       ),
                     ),
-                    // Or Divider
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 16,
-                      ),
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Divider(
-                              color: convertTheme(themeEntity.secondary),
-                            ),
-                          ),
-                          const SizedBox(width: 8),
-                          Text(
-                            "OR",
-                            style: fontStyle(size: 9, theme: themeEntity),
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Divider(
-                              color: convertTheme(themeEntity.secondary),
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    // Btn Login With Google
-                    ElevatedButtonTextWithIcon(
-                      onTap: () {
-                        dI<AuthImpl>().loginWithGoogle(context);
-                      },
-                      themeEntity: themeEntity,
-                      text: "Sign In With Google",
-                      icon: Image.asset(
-                        googleImage,
-                        width: 24,
-                        height: 24,
-                      ),
-                      btnColor: convertTheme(themeEntity.secondary),
-                      textColor: convertTheme(themeEntity.third),
-                    ),
                     const SizedBox(height: 16),
                   ],
                 ),

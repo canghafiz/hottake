@@ -134,6 +134,34 @@ class _MapPageState extends State<MapPage> {
     return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
       selector: (state) => state,
       builder: (_, theme) => Scaffold(
+        extendBodyBehindAppBar: true,
+        endDrawer: drawer(
+          theme: theme,
+          context: context,
+          userId: widget.userId,
+          user: widget.user,
+        ),
+        appBar: AppBar(
+          leading: (widget.postId == null)
+              ? null
+              : IconButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  icon: Icon(
+                    Icons.arrow_back_ios,
+                    color: convertTheme(theme.secondary),
+                  ),
+                ),
+          title: Text(
+            "Map",
+            style: fontStyle(size: 17, theme: theme),
+          ),
+          iconTheme: IconThemeData(color: convertTheme(theme.secondary)),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+        ),
         body: SafeArea(
           child: StreamBuilder<QuerySnapshot>(
             stream: dI<PostFirestore>().getNotes(),
@@ -286,6 +314,35 @@ class _MapPageState extends State<MapPage> {
                             child: Icon(
                               Icons.location_on,
                               color: convertTheme(theme.primary),
+                            ),
+                          ),
+                        ),
+                      ),
+                      Align(
+                        alignment: Alignment.topCenter,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                            top: 16,
+                          ),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              borderRadius: const BorderRadius.all(
+                                Radius.circular(20),
+                              ),
+                              color: convertTheme(theme.third),
+                            ),
+                            child: Text(
+                              "Radius 5 KM",
+                              style: fontStyle(
+                                size: 11,
+                                theme: theme,
+                                color: Colors.white,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ),

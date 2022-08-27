@@ -75,6 +75,12 @@ class _PostLocationPageState extends State<PostLocationPage> {
     return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
       selector: (state) => state,
       builder: (_, theme) => Scaffold(
+        endDrawer: drawer(
+          theme: theme,
+          context: context,
+          userId: widget.userId,
+          user: widget.user,
+        ),
         body: SafeArea(
           child: Column(
             children: [
@@ -123,6 +129,19 @@ class _PostLocationPageState extends State<PostLocationPage> {
                         ),
                       ),
                     ),
+                    const SizedBox(width: 6),
+                    // Btn Show Drawer
+                    Builder(builder: (context) {
+                      return IconButton(
+                        onPressed: () {
+                          Scaffold.of(context).openEndDrawer();
+                        },
+                        icon: Icon(
+                          Icons.dehaze,
+                          color: convertTheme(theme.secondary),
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ),
@@ -255,6 +274,36 @@ class _PostLocationPageState extends State<PostLocationPage> {
                                           child: Icon(
                                             Icons.location_on,
                                             color: convertTheme(theme.primary),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                    Align(
+                                      alignment: Alignment.topCenter,
+                                      child: Padding(
+                                        padding: const EdgeInsets.only(
+                                          top: 16,
+                                        ),
+                                        child: Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8,
+                                            vertical: 4,
+                                          ),
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                                const BorderRadius.all(
+                                              Radius.circular(20),
+                                            ),
+                                            color: convertTheme(theme.third),
+                                          ),
+                                          child: Text(
+                                            "Radius 50 Meter",
+                                            style: fontStyle(
+                                              size: 11,
+                                              theme: theme,
+                                              color: Colors.white,
+                                            ),
+                                            textAlign: TextAlign.center,
                                           ),
                                         ),
                                       ),

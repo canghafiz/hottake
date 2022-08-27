@@ -1,7 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
+import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
 class ControlPage extends StatelessWidget {
@@ -26,12 +29,29 @@ class ControlPage extends StatelessWidget {
       ),
       PostLocationPage(postId: null, userId: user.uid, user: user),
       FavouritesPage(userId: user.uid, user: user),
-      UserPage(
-        userId: user.uid,
-        initialTab: 1,
-        user: user,
-        forOwn: true,
-        initPage: true,
+      BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
+        selector: (state) => state,
+        builder: (context, theme) => StreamBuilder<DocumentSnapshot>(
+          stream: dI<UserFirestore>().getRealTimeUser(user.uid),
+          builder: (context, snapshot) {
+            if (!snapshot.hasData) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: convertTheme(theme.secondary),
+                ),
+              );
+            }
+            // Model
+            final UserEntity userEntity = UserEntity.fromMap(
+                snapshot.data!.data() as Map<String, dynamic>);
+
+            return EditUserPage(
+              user: userEntity,
+              userId: snapshot.data!.id,
+              userAuth: user,
+            );
+          },
+        ),
       ),
     ];
     return Scaffold(
@@ -42,18 +62,7 @@ class ControlPage extends StatelessWidget {
             Expanded(
               child: BlocSelector<NavbarCubit, NavbarState, int>(
                 selector: (state) => state.bottomNav,
-                builder: (_, bottomNav) => Column(
-                  children: [
-                    // Top Nav
-                    (bottomNav == 0)
-                        ? const TopNavbarWidget()
-                        : const SizedBox(),
-                    // Pages
-                    Expanded(
-                      child: pages.elementAt(bottomNav),
-                    ),
-                  ],
-                ),
+                builder: (_, bottomNav) => pages.elementAt(bottomNav),
               ),
             ),
             // Bottom Nav

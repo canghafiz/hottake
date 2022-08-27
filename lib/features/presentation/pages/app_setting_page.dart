@@ -41,6 +41,17 @@ class AppSettingPage extends StatelessWidget {
               "App Setting",
               style: fontStyle(size: 15, theme: theme),
             ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  dI<AuthImpl>().logout(context: context, theme: theme);
+                },
+                child: Icon(
+                  Icons.exit_to_app,
+                  color: convertTheme(theme.secondary),
+                ),
+              ),
+            ],
             centerTitle: true,
             backgroundColor: Colors.transparent,
             elevation: 0,

@@ -7,6 +7,7 @@ Widget backgroundWidget({
   required BuildContext context,
   required String? urlAsset,
   required Widget mainContent,
+  Color? gradientColor,
 }) {
   return SizedBox(
     width: double.infinity,
@@ -29,7 +30,9 @@ Widget backgroundWidget({
         (urlAsset == null)
             ? const SizedBox()
             : Align(
-                alignment: Alignment.bottomCenter,
+                alignment: (gradientColor == null)
+                    ? Alignment.bottomCenter
+                    : Alignment.center,
                 child: Image.asset(
                   urlAsset,
                   fit: BoxFit.contain,
@@ -43,8 +46,30 @@ Widget backgroundWidget({
                 height: double.infinity,
                 color: convertTheme(
                         dI<ThemeCubitEvent>().read(context).state.primary)
-                    .withOpacity(0.3),
+                    .withOpacity((gradientColor != null) ? 0 : 0.5),
               ),
+        Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+            width: double.infinity,
+            height: MediaQuery.of(context).size.height / 2,
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [
+                  Colors.transparent,
+                  (gradientColor == null)
+                      ? Colors.transparent
+                      : gradientColor.withOpacity(0.6),
+                  (gradientColor == null)
+                      ? Colors.transparent
+                      : gradientColor.withOpacity(0.6),
+                ],
+              ),
+            ),
+          ),
+        ),
         // Main
         SafeArea(child: mainContent),
       ],

@@ -1,10 +1,9 @@
 part of 'navbar_cubit.dart';
 
 class NavbarState {
-  int bottomNav, topNav;
+  int bottomNav;
 
   NavbarState({
     required this.bottomNav,
-    required this.topNav,
   });
 }

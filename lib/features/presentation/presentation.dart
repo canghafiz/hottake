@@ -6,6 +6,7 @@ export 'package:hottake/features/presentation/cubits/cubit.dart';
 export 'package:hottake/features/presentation/cubits/post/post_cubit.dart';
 export 'package:hottake/features/presentation/cubits/comment/comment_cubit.dart';
 export 'package:hottake/features/presentation/cubits/create_account/create_account_cubit.dart';
+export 'package:hottake/features/presentation/cubits/image/image_cubit.dart';
 
 // Pages
 export 'package:hottake/features/presentation/pages/main_page.dart';
@@ -17,7 +18,6 @@ export 'package:hottake/features/presentation/pages/favourites_page.dart';
 export 'package:hottake/features/presentation/pages/home_page.dart';
 export 'package:hottake/features/presentation/pages/main_page.dart';
 export 'package:hottake/features/presentation/pages/map_page.dart';
-export 'package:hottake/features/presentation/pages/user/user_page.dart';
 export 'package:hottake/features/presentation/pages/user/edit_user_page.dart';
 export 'package:hottake/features/presentation/pages/post/post_creator_page.dart';
 export 'package:hottake/features/presentation/pages/post/post_location_page.dart';
@@ -25,11 +25,12 @@ export 'package:hottake/features/presentation/pages/comments_page.dart';
 export 'package:hottake/features/presentation/pages/image_detail_page.dart';
 export 'package:hottake/features/presentation/pages/create_account_page.dart';
 export 'package:hottake/features/presentation/pages/app_setting_page.dart';
+export 'package:hottake/features/presentation/pages/auth/auth_page.dart';
+export 'package:hottake/features/presentation/pages/activity_page.dart';
 
 // Widgets
 export 'package:hottake/features/presentation/widgets/navbar_widget.dart';
 export 'package:hottake/features/presentation/widgets/user/user_notes_widget.dart';
-export 'package:hottake/features/presentation/widgets/user/user_profile_widget.dart';
 export 'package:hottake/features/presentation/widgets/photo/photo_profile_widget.dart';
 export 'package:hottake/features/presentation/widgets/photo/photo_profile_bottom_sheet_widget.dart';
 export 'package:hottake/features/presentation/widgets/post/note_creator_widget.dart';
@@ -53,3 +54,5 @@ export 'package:hottake/features/presentation/widgets/create_account/textfield_c
 export 'package:hottake/features/presentation/widgets/create_account/location_create_widget.dart';
 export 'package:hottake/features/presentation/widgets/background_widget.dart';
 export 'package:hottake/features/presentation/widgets/post/post_vote_widget.dart';
+export 'package:hottake/features/presentation/widgets/photo/photo_upload_bar.dart';
+export 'package:hottake/features/presentation/widgets/drawer.dart';

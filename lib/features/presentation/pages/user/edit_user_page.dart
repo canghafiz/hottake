@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hottake/core/core.dart';
@@ -11,9 +12,11 @@ class EditUserPage extends StatefulWidget {
     Key? key,
     required this.user,
     required this.userId,
+    required this.userAuth,
   }) : super(key: key);
   final String userId;
   final UserEntity user;
+  final User userAuth;
 
   @override
   State<EditUserPage> createState() => _EditUserPageState();
@@ -47,39 +50,28 @@ class _EditUserPageState extends State<EditUserPage> {
 
   @override
   Widget build(BuildContext context) {
-    final themeState = dI<ThemeCubitEvent>().read(context).state;
-    return WillPopScope(
-      onWillPop: () async {
-        // Update State
-        dI<ThemeCubitEvent>().read(context).update(themeState);
-        return true;
-      },
-      child: BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
-        selector: (state) => state,
-        builder: (_, theme) => Scaffold(
-          appBar: AppBar(
-            leading: IconButton(
-              onPressed: () {
-                // Update State
-                dI<ThemeCubitEvent>().read(context).update(themeState);
-
-                Navigator.pop(context);
-              },
-              icon: Icon(
-                Icons.arrow_back,
-                color: convertTheme(theme.secondary),
-              ),
-            ),
-            title: Text(
-              "Edit Profile",
-              style: fontStyle(size: 15, theme: theme),
-            ),
-            centerTitle: true,
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            shadowColor: Colors.transparent,
+    return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
+      selector: (state) => state,
+      builder: (_, theme) => Scaffold(
+        endDrawer: drawer(
+          theme: theme,
+          context: context,
+          userId: widget.userId,
+          user: widget.userAuth,
+        ),
+        appBar: AppBar(
+          title: Text(
+            "Edit Profile",
+            style: fontStyle(size: 15, theme: theme),
           ),
-          body: SingleChildScrollView(
+          iconTheme: IconThemeData(color: convertTheme(theme.secondary)),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+        ),
+        body: Stack(
+          children: [
+            SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
               child: Padding(
                 padding: const EdgeInsets.symmetric(
@@ -199,14 +191,17 @@ class _EditUserPageState extends State<EditUserPage> {
                           themeEntity: theme,
                           text: "Save",
                           btnColor: convertTheme(theme.secondary),
-                          textColor: convertTheme(theme.third),
+                          textColor: convertTheme(theme.primary),
                         );
                       },
                     ),
                     const SizedBox(height: 24),
                   ],
                 ),
-              )),
+              ),
+            ),
+            PhotoUploadBar(theme: theme),
+          ],
         ),
       ),
     );
@@ -231,71 +226,101 @@ class EditUserPhotoProfileWidget extends StatelessWidget {
         width: 128,
         child: Stack(
           children: [
-            Container(
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                border: Border.all(
-                  width: 3,
-                  color: convertTheme(
-                    theme.secondary,
+            GestureDetector(
+              onTap: () {
+                if (url != null) {
+                  // Navigate
+                  toImageDetailPage(context: context, url: url);
+                }
+              },
+              child: Container(
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    width: 3,
+                    color: convertTheme(
+                      theme.secondary,
+                    ),
                   ),
                 ),
-              ),
-              child: Stack(
-                children: [
-                  PhotoProfileWidget(url: url, size: 128, theme: theme),
-                  Container(
-                    width: double.infinity,
-                    height: double.infinity,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Colors.black.withOpacity(0.5),
-                    ),
-                    child: Center(
-                      child: Icon(
-                        Icons.camera_alt_outlined,
-                        color: convertTheme(
-                          theme.secondary,
+                child: Stack(
+                  children: [
+                    PhotoProfileWidget(url: url, size: 128, theme: theme),
+                    Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: Colors.black.withOpacity(0.5),
+                      ),
+                      child: Center(
+                        child: Icon(
+                          Icons.camera_alt_outlined,
+                          color: convertTheme(
+                            theme.secondary,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
-            GestureDetector(
-              onTap: () {
-                // Show Modal Bottom
-                showModalBottom(
-                  theme: theme,
-                  context: context,
-                  content: PhotoProfileBottomSheetWidget(
-                    url: url,
-                    theme: theme,
-                    userId: userId,
-                  ),
-                );
+            BlocSelector<ImageCubit, ImageState, bool>(
+              selector: (state) {
+                return state.onUpload;
               },
-              child: Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  padding: const EdgeInsets.all(4),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: convertTheme(theme.primary),
-                    border: Border.all(
-                      width: 3,
-                      color: convertTheme(
-                        theme.secondary,
+              builder: (context, onUpload) {
+                return GestureDetector(
+                  onTap: () {
+                    if (onUpload) {
+                      // Show Dialog
+                      showDialog(
+                        context: context,
+                        builder: (context) => textDialog(
+                          text: "You must wait",
+                          size: 13,
+                          color: Colors.red,
+                          align: TextAlign.center,
+                        ),
+                      );
+
+                      return;
+                    }
+                    // Show Modal Bottom
+                    showModalBottom(
+                      theme: theme,
+                      context: context,
+                      content: photoProfileBottomSheetWidget(
+                        context: context,
+                        url: url,
+                        theme: theme,
+                        userId: userId,
+                      ),
+                    );
+                  },
+                  child: Align(
+                    alignment: Alignment.bottomRight,
+                    child: Container(
+                      padding: const EdgeInsets.all(4),
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: convertTheme(theme.primary),
+                        border: Border.all(
+                          width: 3,
+                          color: convertTheme(
+                            theme.secondary,
+                          ),
+                        ),
+                      ),
+                      child: Icon(
+                        Icons.add,
+                        color: convertTheme(theme.secondary),
                       ),
                     ),
                   ),
-                  child: Icon(
-                    Icons.add,
-                    color: convertTheme(theme.secondary),
-                  ),
-                ),
-              ),
+                );
+              },
             ),
           ],
         ),

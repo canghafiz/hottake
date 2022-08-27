@@ -5,7 +5,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
-import 'package:hottake/features/presentation/cubits/navbar/navbar_cubit.dart';
 
 class CreatePost {
   final PostRepository repository;
@@ -21,6 +20,7 @@ class CreatePost {
     required Map<String, dynamic>? rating,
     required BuildContext context,
     required User user,
+    required ThemeEntity theme,
   }) {
     repository.createPost(
       userId: userId,
@@ -31,11 +31,12 @@ class CreatePost {
       rating: rating,
     );
 
-    // Update State
-    dI<NavbarCubitEvent>().read(context).updateBottom(4);
-
-    // Navigate
-    toControlPage(context: context, user: user);
+    dI<PostFirestore>().afterFromPostCreator(
+      userId: userId,
+      theme: theme,
+      user: user,
+      context: context,
+    );
   }
 }
 
@@ -54,6 +55,7 @@ class UpdatePost {
     required Map<String, dynamic>? rating,
     required BuildContext context,
     required User user,
+    required ThemeEntity theme,
   }) {
     repository.updatePost(
       postId: postId,
@@ -64,11 +66,13 @@ class UpdatePost {
       rating: rating,
     );
 
-    // Update State
-    dI<NavbarCubitEvent>().read(context).updateBottom(4);
-
-    // Navigate
-    toControlPage(context: context, user: user);
+    //  Navigate
+    dI<PostFirestore>().afterFromPostCreator(
+      userId: userId,
+      theme: theme,
+      user: user,
+      context: context,
+    );
   }
 }
 

@@ -21,6 +21,22 @@ class FavouritesPage extends StatelessWidget {
     return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
       selector: (state) => state,
       builder: (_, theme) => Scaffold(
+        endDrawer: drawer(
+          theme: theme,
+          context: context,
+          userId: userId,
+          user: user,
+        ),
+        appBar: AppBar(
+          title: Text(
+            "Favourites",
+            style: fontStyle(size: 17, theme: theme),
+          ),
+          iconTheme: IconThemeData(color: convertTheme(theme.secondary)),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+        ),
         body: StreamBuilder<QuerySnapshot>(
           stream: dI<PostFirestore>().getNotes(),
           builder: (_, snapshot) {

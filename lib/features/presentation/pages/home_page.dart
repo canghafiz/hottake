@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hottake/core/core.dart';
 import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
@@ -15,21 +16,27 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<Widget> components(ThemeEntity theme) {
-      return [
-        PostNearbyWidget(userId: userId, theme: theme, user: user),
-        MapPage(userId: userId, postId: null, theme: theme, user: user),
-        FavouritesPage(userId: userId, user: user),
-      ];
-    }
-
     return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
       selector: (state) => state,
       builder: (_, theme) => Scaffold(
-        body: BlocSelector<NavbarCubit, NavbarState, int>(
-          selector: (state) => state.topNav,
-          builder: (_, state) => components(theme).elementAt(state),
+        backgroundColor: backgroundColor(theme),
+        endDrawer: drawer(
+          theme: theme,
+          context: context,
+          userId: userId,
+          user: user,
         ),
+        appBar: AppBar(
+          title: Text(
+            "Home",
+            style: fontStyle(size: 17, theme: theme),
+          ),
+          iconTheme: IconThemeData(color: convertTheme(theme.secondary)),
+          backgroundColor: Colors.transparent,
+          elevation: 0,
+          shadowColor: Colors.transparent,
+        ),
+        body: PostNearbyWidget(userId: userId, theme: theme, user: user),
       ),
     );
   }

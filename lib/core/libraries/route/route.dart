@@ -7,25 +7,29 @@ PageRoute _route(Widget screen) {
   return MaterialPageRoute(builder: (_) => screen);
 }
 
-void toUserPage({
-  required BuildContext context,
-  required String userId,
-  required int initialTab,
-  required User user,
-  required bool forOwn,
-}) {
-  Navigator.push(
-    context,
-    _route(
-      UserPage(
-        userId: userId,
-        initialTab: initialTab,
-        user: user,
-        forOwn: forOwn,
-        initPage: false,
-      ),
-    ),
-  );
+// void toUserPage({
+//   required BuildContext context,
+//   required String userId,
+//   required int initialTab,
+//   required User user,
+//   required bool forOwn,
+// }) {
+//   Navigator.push(
+//     context,
+//     _route(
+//       UserPage(
+//         userId: userId,
+//         initialTab: initialTab,
+//         user: user,
+//         forOwn: forOwn,
+//         initPage: false,
+//       ),
+//     ),
+//   );
+// }
+
+void toSignInPage(BuildContext context) {
+  Navigator.push(context, _route(const SignInPage()));
 }
 
 void toPasswordPage(BuildContext context) {
@@ -34,19 +38,6 @@ void toPasswordPage(BuildContext context) {
 
 void toSignUpPage(BuildContext context) {
   Navigator.push(context, _route(const SignUpPage()));
-}
-
-void toEditUserPage({
-  required BuildContext context,
-  required String userId,
-  required UserEntity user,
-}) {
-  Navigator.push(
-    context,
-    _route(
-      EditUserPage(user: user, userId: userId),
-    ),
-  );
 }
 
 void toPostCreatorPage({
@@ -93,6 +84,26 @@ void toMapPage({
   required User user,
 }) {
   Navigator.push(
+    context,
+    _route(
+      MapPage(
+        userId: userId,
+        postId: postId,
+        theme: theme,
+        user: user,
+      ),
+    ),
+  );
+}
+
+void toMapPageFromPostCreator({
+  required BuildContext context,
+  required String userId,
+  required String? postId,
+  required ThemeEntity theme,
+  required User user,
+}) {
+  Navigator.pushReplacement(
     context,
     _route(
       MapPage(
@@ -177,6 +188,19 @@ void toAppSettingPage({
     context,
     _route(
       AppSettingPage(userId: userId),
+    ),
+  );
+}
+
+void toActivityPage({
+  required BuildContext context,
+  required String userId,
+  required User user,
+}) {
+  Navigator.push(
+    context,
+    _route(
+      ActivityPage(userId: userId, user: user),
     ),
   );
 }

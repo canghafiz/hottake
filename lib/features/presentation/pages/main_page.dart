@@ -13,16 +13,16 @@ class MainPage extends StatelessWidget {
       stream: dI<FirebaseAuthImpl>().userStateChange(),
       builder: (_, snapshot) {
         if (!snapshot.hasData) {
-          return const SignInPage();
+          return const AuthPage();
         }
         return (snapshot.data == null)
-            ? const SignInPage()
+            ? const AuthPage()
             : FutureBuilder<bool>(
                 future: dI<UserFirestore>()
                     .checkIsUserAvailable(snapshot.data!.uid),
                 builder: (_, available) {
                   if (!available.hasData) {
-                    return const SignInPage();
+                    return const AuthPage();
                   }
                   return (!available.data!)
                       ? CreateAccountPage(user: snapshot.data!)

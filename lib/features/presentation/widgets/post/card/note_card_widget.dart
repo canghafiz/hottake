@@ -25,7 +25,6 @@ class NoteCardWidget extends StatelessWidget {
             size: 13,
             theme: theme,
             weight: FontWeight.bold,
-            color: convertTheme(theme.primary),
           ),
         ),
         // Note
@@ -34,7 +33,7 @@ class NoteCardWidget extends StatelessWidget {
           style: fontStyle(
             size: 13,
             theme: theme,
-            color: convertTheme(theme.primary).withOpacity(0.5),
+            color: convertTheme(theme.secondary).withOpacity(0.5),
           ),
         ),
       ],

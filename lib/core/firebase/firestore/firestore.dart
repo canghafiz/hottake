@@ -5,4 +5,5 @@ class Firestore {
   static const userCollection = "USER";
   static const postCollection = "POST";
   static const commentCollection = "COMMENT";
+  static const notificationCollection = "COMMENT";
 }

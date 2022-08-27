@@ -8,6 +8,8 @@ import 'package:jiffy/jiffy.dart';
 
 const keyTheme = "Theme";
 
+enum NotificationType { like, favorite, comment }
+
 List themes = [
   ThemeModel(primary: "242424", secondary: "FFFFFF", third: "FF5B58"),
   ThemeModel(primary: "FFFFFF", secondary: "242424", third: "FF5B58"),
@@ -93,11 +95,11 @@ int distanceAway({
 }
 
 mapStyle({required Function(String value) style, required bool isDark}) {
-  if (isDark) {
-    rootBundle.loadString('assets/map_style_dark.txt').then(
-          (load) => style(load),
-        );
-  }
+  const darkUrl = 'assets/map_style_dark.txt';
+  const lightUrl = 'assets/map_style_light.txt';
+  rootBundle.loadString(isDark ? darkUrl : lightUrl).then(
+        (load) => style(load),
+      );
 }
 
 enum PostOrderType { nearest, latest, popular, controversial }

@@ -32,3 +32,7 @@ TextStyle fontStyle({
     fontWeight: weight,
   );
 }
+
+Color backgroundColor(ThemeEntity theme) {
+  return convertTheme(theme.primary).withOpacity(0.5);
+}

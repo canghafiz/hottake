@@ -33,7 +33,7 @@ class RatingCardWidget extends StatelessWidget {
                 itemCount: 5,
                 itemPadding: const EdgeInsets.symmetric(horizontal: 1.0),
                 itemSize: 24,
-                unratedColor: convertTheme(theme.primary).withOpacity(0.3),
+                unratedColor: convertTheme(theme.secondary).withOpacity(0.3),
                 itemBuilder: (context, _) => const Icon(
                   Icons.star,
                   color: Colors.amber,
@@ -48,7 +48,7 @@ class RatingCardWidget extends StatelessWidget {
               style: fontStyle(
                 size: 11,
                 theme: theme,
-                color: convertTheme(theme.primary).withOpacity(0.5),
+                color: convertTheme(theme.secondary).withOpacity(0.5),
               ),
             ),
           ],
@@ -59,7 +59,7 @@ class RatingCardWidget extends StatelessWidget {
           style: fontStyle(
             size: 13,
             theme: theme,
-            color: convertTheme(theme.primary).withOpacity(0.5),
+            color: convertTheme(theme.secondary).withOpacity(0.5),
           ),
         ),
       ],

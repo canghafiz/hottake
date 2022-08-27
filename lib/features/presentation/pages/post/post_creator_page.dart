@@ -23,6 +23,12 @@ class PostCreatorPage extends StatelessWidget {
       selector: (state) => state,
       builder: (_, theme) => Scaffold(
         backgroundColor: convertTheme(theme.primary).withOpacity(0.7),
+        endDrawer: drawer(
+          theme: theme,
+          context: context,
+          userId: userId,
+          user: user,
+        ),
         appBar: AppBar(
           leading: IconButton(
             onPressed: () {

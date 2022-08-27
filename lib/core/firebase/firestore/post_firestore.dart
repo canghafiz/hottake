@@ -1,5 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:hottake/core/core.dart';
+import 'package:hottake/features/domain/domain.dart';
 
 class PostFirestore {
   Stream<QuerySnapshot> getMyNoteRealtime({
@@ -70,5 +73,29 @@ class PostFirestore {
         .collection(Firestore.postCollection)
         .doc(postId)
         .snapshots();
+  }
+
+  Future<void> afterFromPostCreator({
+    required String userId,
+    required ThemeEntity theme,
+    required User user,
+    required BuildContext context,
+  }) async {
+    await Firestore.instance
+        .collection(Firestore.postCollection)
+        .orderBy("dateCreated", descending: true)
+        .get()
+        .then(
+      (query) {
+        // Navigate
+        toMapPageFromPostCreator(
+          context: context,
+          userId: userId,
+          postId: query.docs[0].id,
+          theme: theme,
+          user: user,
+        );
+      },
+    );
   }
 }

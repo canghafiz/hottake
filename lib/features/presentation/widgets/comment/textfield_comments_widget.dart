@@ -55,7 +55,14 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
           ),
           decoration: BoxDecoration(
             borderRadius: const BorderRadius.all(Radius.circular(20)),
-            color: convertTheme(widget.theme.secondary),
+            color: convertTheme(widget.theme.primary),
+            boxShadow: [
+              BoxShadow(
+                blurRadius: 8,
+                offset: const Offset(0, 0),
+                color: convertTheme(widget.theme.secondary).withOpacity(0.2),
+              ),
+            ],
           ),
           child: Row(
             children: [
@@ -68,8 +75,8 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
                   style: fontStyle(
                     size: 13,
                     theme: widget.theme,
-                    color: convertTheme(widget.theme.primary),
                   ),
+                  cursorColor: convertTheme(widget.theme.secondary),
                   maxLines: null,
                   decoration: InputDecoration(
                     contentPadding: const EdgeInsets.all(0),
@@ -83,7 +90,6 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
                     hintStyle: fontStyle(
                       size: 13,
                       theme: widget.theme,
-                      color: convertTheme(widget.theme.primary),
                     ),
                   ),
                 ),
@@ -127,7 +133,7 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
                 },
                 child: Icon(
                   Icons.send_outlined,
-                  color: convertTheme(widget.theme.primary),
+                  color: convertTheme(widget.theme.secondary),
                 ),
               ),
             ],

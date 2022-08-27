@@ -12,7 +12,7 @@ class NavbarCubitEvent {
 class NavbarCubit extends Cubit<NavbarState> {
   NavbarCubit() : super(_default);
 
-  static final _default = NavbarState(bottomNav: 0, topNav: 0);
+  static final _default = NavbarState(bottomNav: 0);
 
   // Function
   void clear() {
@@ -23,16 +23,6 @@ class NavbarCubit extends Cubit<NavbarState> {
     emit(
       NavbarState(
         bottomNav: value, // Update
-        topNav: state.topNav,
-      ),
-    );
-  }
-
-  void updateTop(int value) {
-    emit(
-      NavbarState(
-        bottomNav: state.bottomNav,
-        topNav: value, // Update
       ),
     );
   }

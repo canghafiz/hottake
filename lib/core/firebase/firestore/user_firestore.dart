@@ -126,8 +126,6 @@ class UserFirestore {
       theme: theme,
     );
 
-    Navigator.pop(context);
-
     // Show Snackbar
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(

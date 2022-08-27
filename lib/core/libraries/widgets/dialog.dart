@@ -65,6 +65,7 @@ Widget alertDialogTextWith2Button({
       selector: (state) => state,
       builder: (_, theme) {
         return AlertDialog(
+          backgroundColor: convertTheme(theme.primary),
           shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.all(Radius.circular(5)),
           ),
@@ -104,7 +105,6 @@ Widget alertDialogTextWith2Button({
                 style: fontStyle(
                   size: fontSize,
                   theme: theme,
-                  color: convertTheme(theme.primary),
                 ),
               ),
               style: ElevatedButton.styleFrom(

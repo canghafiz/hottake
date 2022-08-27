@@ -14,6 +14,7 @@ void init() {
   dI.registerFactory(() => PostCubit());
   dI.registerFactory(() => CommentCubit());
   dI.registerFactory(() => CreateAccountCubit());
+  dI.registerFactory(() => ImageCubit());
 
   // Cubits Event
   dI.registerLazySingleton(() => ThemeCubitEvent());
@@ -22,6 +23,7 @@ void init() {
   dI.registerLazySingleton(() => PostCubitEvent());
   dI.registerLazySingleton(() => CommentCubitEvent());
   dI.registerLazySingleton(() => CreateAccountCubitEvent());
+  dI.registerLazySingleton(() => ImageCubitEvent());
 
   // Usecases
   dI.registerLazySingleton(() => GetTheme(dI()));
@@ -40,6 +42,10 @@ void init() {
   dI.registerLazySingleton(() => AddSubComment(dI()));
   dI.registerLazySingleton(() => UpdateFavoriteComment(dI()));
   dI.registerLazySingleton(() => UpdateFavoriteSubComment(dI()));
+  dI.registerLazySingleton(() => CreateNotification(dI()));
+  dI.registerLazySingleton(() => UpdateReadNotification(dI()));
+  dI.registerLazySingleton(() => DeleteNotification(dI()));
+  dI.registerLazySingleton(() => DeleteAllNotification(dI()));
 
   // Repositories
   dI.registerLazySingleton<ThemeRepository>(
@@ -66,6 +72,12 @@ void init() {
     ),
   );
 
+  dI.registerLazySingleton<NotificationRepository>(
+    () => NotificationRepositoryImpl(
+      remoteDataSource: dI(),
+    ),
+  );
+
   // Data Source
   dI.registerLazySingleton<ThemeLocalDataSource>(
     () => ThemeLocalDataSourceImpl(),
@@ -81,6 +93,10 @@ void init() {
 
   dI.registerLazySingleton<CommentRemoteDataSource>(
     () => CommentRemoteDataSourceFirebase(),
+  );
+
+  dI.registerLazySingleton<NotificationRemoteDataSource>(
+    () => NotificationRemoteDataSourceFirebase(),
   );
 
   // Core

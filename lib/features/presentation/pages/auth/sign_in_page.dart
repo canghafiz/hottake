@@ -29,15 +29,30 @@ class _SignInPageState extends State<SignInPage> {
   Widget build(BuildContext context) {
     // Clear State
     clearState(context);
-    return Scaffold(
-      body: backgroundWidget(
-        context: context,
-        urlAsset: smileEmojiImage,
-        mainContent: SingleChildScrollView(
-          physics: const BouncingScrollPhysics(),
-          child: BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
-            selector: (state) => state,
-            builder: (_, themeEntity) => Padding(
+    return BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
+      selector: (state) => state,
+      builder: (context, themeEntity) => Scaffold(
+        extendBodyBehindAppBar: true,
+        appBar: AppBar(
+          leading: IconButton(
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            icon: Icon(
+              Icons.arrow_back_ios,
+              color: convertTheme(themeEntity.secondary),
+            ),
+          ),
+          elevation: 0,
+          shadowColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+        ),
+        body: backgroundWidget(
+          context: context,
+          urlAsset: smileEmojiImage,
+          mainContent: SingleChildScrollView(
+            physics: const BouncingScrollPhysics(),
+            child: Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16,
               ),
@@ -47,7 +62,7 @@ class _SignInPageState extends State<SignInPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    const SizedBox(height: 48),
+                    const SizedBox(height: 16),
                     // Logo
                     Center(
                       child: Image.asset(
@@ -136,18 +151,6 @@ class _SignInPageState extends State<SignInPage> {
                             : "Sign In",
                       ),
                     ),
-                    const SizedBox(height: 16),
-                    // Btn Sign Up
-                    ElevatedButtonText(
-                      onTap: () {
-                        // Navigate
-                        toSignUpPage(context);
-                      },
-                      themeEntity: themeEntity,
-                      text: "Sign Up",
-                      btnColor: convertTheme(themeEntity.secondary),
-                      textColor: convertTheme(themeEntity.third),
-                    ),
                     // Or Divider
                     Padding(
                       padding: const EdgeInsets.symmetric(
@@ -174,18 +177,14 @@ class _SignInPageState extends State<SignInPage> {
                         ],
                       ),
                     ),
-                    // Btn Login With Google
-                    ElevatedButtonTextWithIcon(
+                    // Btn Sign Up
+                    ElevatedButtonText(
                       onTap: () {
-                        dI<AuthImpl>().loginWithGoogle(context);
+                        // Navigate
+                        toSignUpPage(context);
                       },
                       themeEntity: themeEntity,
-                      text: "Sign In With Google",
-                      icon: Image.asset(
-                        googleImage,
-                        width: 24,
-                        height: 24,
-                      ),
+                      text: "Sign Up",
                       btnColor: convertTheme(themeEntity.secondary),
                       textColor: convertTheme(themeEntity.third),
                     ),

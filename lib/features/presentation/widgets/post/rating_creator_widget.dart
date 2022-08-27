@@ -108,6 +108,7 @@ class _RatingCreatorWidgetState extends State<RatingCreatorWidget> {
                     if (widget.postId == null) {
                       // Create
                       dI<CreatePost>().call(
+                        theme: widget.theme,
                         userId: widget.userId,
                         longitude: state.longitude ?? "",
                         latitude: state.latitude ?? "",
@@ -123,6 +124,7 @@ class _RatingCreatorWidgetState extends State<RatingCreatorWidget> {
                     } else {
                       // Update
                       dI<UpdatePost>().call(
+                        theme: widget.theme,
                         userId: widget.userId,
                         postId: widget.postId!,
                         longitude: state.longitude ?? "",

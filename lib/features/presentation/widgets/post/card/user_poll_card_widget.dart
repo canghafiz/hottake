@@ -24,7 +24,6 @@ class UserPollCardWidget extends StatelessWidget {
           style: fontStyle(
             size: 13,
             theme: theme,
-            color: convertTheme(theme.primary),
           ),
         ),
         const SizedBox(height: 8),
@@ -52,7 +51,6 @@ class UserPollCardWidget extends StatelessWidget {
                               size: 11,
                               theme: theme,
                               weight: FontWeight.bold,
-                              color: convertTheme(theme.primary),
                             ),
                           ),
                         ),
@@ -63,7 +61,6 @@ class UserPollCardWidget extends StatelessWidget {
                             size: 11,
                             theme: theme,
                             weight: FontWeight.bold,
-                            color: convertTheme(theme.primary),
                           ),
                         ),
                         const SizedBox(width: 16),
@@ -74,7 +71,7 @@ class UserPollCardWidget extends StatelessWidget {
                       ? Container(
                           width: double.infinity,
                           height: 1,
-                          color: convertTheme(theme.primary),
+                          color: convertTheme(theme.secondary),
                         )
                       : const SizedBox(),
                 ],

@@ -10,6 +10,7 @@ export 'package:hottake/core/libraries/widgets/dialog.dart';
 export 'package:hottake/core/firebase/firestore/firestore.dart';
 export 'package:hottake/core/firebase/firestore/user_firestore.dart';
 export 'package:hottake/core/firebase/firestore/post_firestore.dart';
+export 'package:hottake/core/firebase/firestore/notification_firestore.dart';
 export 'package:hottake/core/firebase/firestore/comment_firestore.dart';
 export 'package:hottake/core/firebase/storage/firebase_storage.dart';
 export 'package:hottake/core/libraries/widgets/bottom_sheet.dart';

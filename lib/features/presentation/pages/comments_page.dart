@@ -44,7 +44,14 @@ class CommentsPage extends StatelessWidget {
                     ),
                     decoration: BoxDecoration(
                       borderRadius: const BorderRadius.all(Radius.circular(16)),
-                      color: convertTheme(theme.secondary),
+                      color: convertTheme(theme.primary),
+                      boxShadow: [
+                        BoxShadow(
+                          blurRadius: 8,
+                          offset: const Offset(0, 0),
+                          color: convertTheme(theme.secondary).withOpacity(0.2),
+                        ),
+                      ],
                     ),
                     child: Column(
                       children: [
@@ -56,7 +63,7 @@ class CommentsPage extends StatelessWidget {
                               topLeft: Radius.circular(16),
                               topRight: Radius.circular(16),
                             ),
-                            color: convertTheme(theme.secondary),
+                            color: convertTheme(theme.primary),
                           ),
                           child: Row(
                             children: [
@@ -67,7 +74,7 @@ class CommentsPage extends StatelessWidget {
                                 },
                                 child: Icon(
                                   Icons.arrow_back_ios,
-                                  color: convertTheme(theme.primary),
+                                  color: convertTheme(theme.secondary),
                                 ),
                               ),
                               // Total
@@ -78,7 +85,6 @@ class CommentsPage extends StatelessWidget {
                                     style: fontStyle(
                                       size: 13,
                                       theme: theme,
-                                      color: convertTheme(theme.primary),
                                     ),
                                     overflow: TextOverflow.ellipsis,
                                   ),

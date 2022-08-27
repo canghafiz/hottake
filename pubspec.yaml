@@ -32,11 +32,13 @@ dependencies:
   cupertino_icons: ^1.0.2
   firebase_auth: ^3.6.0
   firebase_core: ^1.20.0
+  firebase_messaging: ^13.0.0
   firebase_storage: ^10.3.4
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.1
   flutter_linkify: ^5.0.2
+  flutter_local_notifications: ^9.8.0+1
   flutter_polls: ^0.1.0
   flutter_rating_bar: ^4.0.1
   geolocator: ^7.4.0

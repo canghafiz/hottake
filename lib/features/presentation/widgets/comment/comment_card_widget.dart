@@ -33,7 +33,7 @@ class CommentCardWidget extends StatelessWidget {
             if (!snapshot.hasData) {
               return Center(
                 child: CircularProgressIndicator(
-                  color: convertTheme(theme.primary),
+                  color: convertTheme(theme.secondary),
                 ),
               );
             }
@@ -57,27 +57,15 @@ class CommentCardWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       // Username
-                      GestureDetector(
-                        onTap: () {
-                          // Navigate
-                          toUserPage(
-                            context: context,
-                            userId: comment.userId,
-                            initialTab: 0,
-                            user: userAuth,
-                            forOwn: (userId == comment.userId),
-                          );
-                        },
-                        child: Text(
-                          "@" + user.username,
-                          style: fontStyle(
-                            size: 13,
-                            theme: theme,
-                            color: convertTheme(theme.primary).withOpacity(0.5),
-                            weight: FontWeight.bold,
-                          ),
-                          overflow: TextOverflow.ellipsis,
+                      Text(
+                        "@" + user.username,
+                        style: fontStyle(
+                          size: 13,
+                          theme: theme,
+                          color: convertTheme(theme.secondary).withOpacity(0.5),
+                          weight: FontWeight.bold,
                         ),
+                        overflow: TextOverflow.ellipsis,
                       ),
                       // Comment
                       Text(
@@ -85,7 +73,6 @@ class CommentCardWidget extends StatelessWidget {
                         style: fontStyle(
                           size: 13,
                           theme: theme,
-                          color: convertTheme(theme.primary),
                         ),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
@@ -158,7 +145,7 @@ class CommentCardWidget extends StatelessWidget {
                         (comment.favorites.contains(userId))
                             ? Icons.favorite
                             : Icons.favorite_border_outlined,
-                        color: convertTheme(theme.primary),
+                        color: convertTheme(theme.secondary),
                       ),
                       // Total
                       Text(
@@ -166,7 +153,6 @@ class CommentCardWidget extends StatelessWidget {
                         style: fontStyle(
                           size: 11,
                           theme: theme,
-                          color: convertTheme(theme.primary),
                         ),
                       ),
                     ],
@@ -229,7 +215,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
             style: fontStyle(
               size: 9,
               theme: widget.theme,
-              color: convertTheme(widget.theme.primary).withOpacity(0.5),
+              color: convertTheme(widget.theme.secondary).withOpacity(0.5),
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -241,7 +227,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
             style: fontStyle(
               size: 9,
               theme: widget.theme,
-              color: convertTheme(widget.theme.primary).withOpacity(0.5),
+              color: convertTheme(widget.theme.secondary).withOpacity(0.5),
             ),
             overflow: TextOverflow.ellipsis,
           ),
@@ -263,7 +249,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
               if (!snapshot.hasData) {
                 return Center(
                   child: CircularProgressIndicator(
-                    color: convertTheme(widget.theme.primary),
+                    color: convertTheme(widget.theme.secondary),
                   ),
                 );
               }
@@ -284,7 +270,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
                                 style: fontStyle(
                                   size: 11,
                                   theme: widget.theme,
-                                  color: convertTheme(widget.theme.primary)
+                                  color: convertTheme(widget.theme.secondary)
                                       .withOpacity(0.5),
                                 ),
                                 overflow: TextOverflow.ellipsis,
@@ -292,7 +278,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
                               // Icon
                               Icon(
                                 Icons.arrow_drop_down,
-                                color: convertTheme(widget.theme.primary)
+                                color: convertTheme(widget.theme.secondary)
                                     .withOpacity(0.5),
                               ),
                             ],
@@ -334,7 +320,7 @@ class _SubCommentWidgetState extends State<SubCommentWidget> {
                                 style: fontStyle(
                                   size: 11,
                                   theme: widget.theme,
-                                  color: convertTheme(widget.theme.primary)
+                                  color: convertTheme(widget.theme.secondary)
                                       .withOpacity(0.5),
                                 ),
                                 overflow: TextOverflow.ellipsis,

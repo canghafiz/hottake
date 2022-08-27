@@ -80,10 +80,15 @@ class _CreateAccountPageState extends State<CreateAccountPage> {
               elevation: 0,
               shadowColor: Colors.transparent,
             ),
-            body: backgroundWidget(
-              context: context,
-              urlAsset: assetsImages.elementAt(currentPage),
-              mainContent: contents(theme).elementAt(currentPage),
+            body: Stack(
+              children: [
+                backgroundWidget(
+                  context: context,
+                  urlAsset: assetsImages.elementAt(currentPage),
+                  mainContent: contents(theme).elementAt(currentPage),
+                ),
+                PhotoUploadBar(theme: theme),
+              ],
             ),
           ),
         ),

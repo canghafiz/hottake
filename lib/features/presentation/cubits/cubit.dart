@@ -24,4 +24,6 @@ void clearState(BuildContext context) {
   dI<PostCubitEvent>().read(context).clear();
   // Create Account
   dI<CreateAccountCubitEvent>().read(context).clear();
+  // Image
+  dI<CreateAccountCubitEvent>().read(context).clear();
 }
