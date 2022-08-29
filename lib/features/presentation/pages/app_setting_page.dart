@@ -44,7 +44,11 @@ class AppSettingPage extends StatelessWidget {
             actions: [
               TextButton(
                 onPressed: () {
-                  dI<AuthImpl>().logout(context: context, theme: theme);
+                  dI<AuthImpl>().logout(
+                    context: context,
+                    theme: theme,
+                    userId: userId,
+                  );
                 },
                 child: Icon(
                   Icons.exit_to_app,

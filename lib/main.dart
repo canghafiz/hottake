@@ -8,12 +8,43 @@ import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 import 'package:provider/provider.dart';
 import 'package:sizer/sizer.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+// Global Key
+final navigatorKey = GlobalKey<NavigatorState>();
+
+// Notification
+Future<void> firebaseMessagingBackground(RemoteMessage message) async {
+  debugPrint("Handling a background message: ${message.messageId}");
+}
+
+const AndroidNotificationChannel channel = AndroidNotificationChannel(
+  "high_importance_channel",
+  "High Important Notifications",
+  importance: Importance.high,
+  playSound: true,
+);
+
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
 
 void main() async {
   init();
   WidgetsFlutterBinding.ensureInitialized();
   // Init Firebase
   await Firebase.initializeApp();
+  // Notification
+  FirebaseMessaging.onBackgroundMessage(firebaseMessagingBackground);
+  await flutterLocalNotificationsPlugin
+      .resolvePlatformSpecificImplementation<
+          AndroidFlutterLocalNotificationsPlugin>()!
+      .createNotificationChannel(channel);
+  await FirebaseMessaging.instance.setForegroundNotificationPresentationOptions(
+    alert: true,
+    badge: true,
+    sound: true,
+  );
   // Set Device Orientation Only Potrait
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
   runApp(const MainApp());
@@ -52,6 +83,7 @@ class MainApp extends StatelessWidget {
         selector: (state) => state,
         builder: (_, state) => Sizer(
           builder: (_, __, ___) => MaterialApp(
+            navigatorKey: navigatorKey,
             title: "HotTake",
             debugShowCheckedModeBanner: false,
             theme: appTheme(context: context, theme: state),

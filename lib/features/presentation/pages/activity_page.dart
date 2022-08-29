@@ -56,7 +56,7 @@ class ActivityPage extends StatelessWidget {
           body: TabBarView(
             children: [
               UserNotesWidget(userId: userId, theme: theme, user: user),
-              Container(),
+              NotificationPage(user: user),
             ],
           ),
         ),

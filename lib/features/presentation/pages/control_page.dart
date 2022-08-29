@@ -7,7 +7,7 @@ import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
-class ControlPage extends StatelessWidget {
+class ControlPage extends StatefulWidget {
   const ControlPage({
     Key? key,
     required this.user,
@@ -15,24 +15,37 @@ class ControlPage extends StatelessWidget {
   final User user;
 
   @override
-  Widget build(BuildContext context) {
-    // // Init
-    initState(context: context, user: user);
+  State<ControlPage> createState() => _ControlPageState();
+}
 
+class _ControlPageState extends State<ControlPage> {
+  @override
+  void initState() {
+    super.initState();
+    // State
+    initialState(context: context, user: widget.user);
+
+    // Notification
+    dI<NotificationService>().subAllTopics(widget.user.uid);
+    dI<NotificationService>().setupMessageHandling(widget.user);
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final pages = [
-      HomePage(userId: user.uid, user: user),
+      HomePage(userId: widget.user.uid, user: widget.user),
       MapPage(
-        userId: user.uid,
+        userId: widget.user.uid,
         postId: null,
-        theme: dI<ThemeCubitEvent>().read(context).state,
-        user: user,
+        user: widget.user,
       ),
-      PostLocationPage(postId: null, userId: user.uid, user: user),
-      FavouritesPage(userId: user.uid, user: user),
+      PostLocationPage(
+          postId: null, userId: widget.user.uid, user: widget.user),
+      FavouritesPage(userId: widget.user.uid, user: widget.user),
       BlocSelector<ThemeCubit, ThemeEntity, ThemeEntity>(
         selector: (state) => state,
         builder: (context, theme) => StreamBuilder<DocumentSnapshot>(
-          stream: dI<UserFirestore>().getRealTimeUser(user.uid),
+          stream: dI<UserFirestore>().getRealTimeUser(widget.user.uid),
           builder: (context, snapshot) {
             if (!snapshot.hasData) {
               return Center(
@@ -48,12 +61,13 @@ class ControlPage extends StatelessWidget {
             return EditUserPage(
               user: userEntity,
               userId: snapshot.data!.id,
-              userAuth: user,
+              userAuth: widget.user,
             );
           },
         ),
       ),
     ];
+
     return Scaffold(
       body: SafeArea(
         child: Column(

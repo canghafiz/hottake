@@ -106,4 +106,6 @@ void init() {
   dI.registerLazySingleton(() => PostFirestore());
   dI.registerLazySingleton(() => CommentFirestore());
   dI.registerLazySingleton(() => ImagePickerService());
+  dI.registerLazySingleton(() => NotificationFirestore());
+  dI.registerLazySingleton(() => NotificationService());
 }

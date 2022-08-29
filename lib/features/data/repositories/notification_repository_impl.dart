@@ -11,15 +11,15 @@ class NotificationRepositoryImpl implements NotificationRepository {
 
   @override
   Future<void> create({
-    required String postId,
-    required Map<String, dynamic>? data,
+    required String? postId,
+    required String? comment,
     required NotificationType type,
     required String userId,
     required String myId,
   }) async {
     remoteDataSource.create(
       postId: postId,
-      data: data,
+      comment: comment,
       type: type,
       userId: userId,
       myId: myId,

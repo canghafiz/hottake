@@ -43,26 +43,28 @@ Widget postDetailWidget({
         ),
       ),
       // Content
-      SingleChildScrollView(
-        physics: const BouncingScrollPhysics(),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              const SizedBox(height: 16),
-              PostCardWidget(
-                post: post,
-                userId: userId,
-                postId: postId,
-                note: note,
-                rating: rating,
-                userPoll: userPoll,
-                theme: theme,
-                enableClick: false,
-                userAuth: user,
-              ),
-              const SizedBox(height: 16),
-            ],
+      Expanded(
+        child: SingleChildScrollView(
+          physics: const BouncingScrollPhysics(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Column(
+              children: [
+                const SizedBox(height: 16),
+                PostCardWidget(
+                  post: post,
+                  userId: userId,
+                  postId: postId,
+                  note: note,
+                  rating: rating,
+                  userPoll: userPoll,
+                  theme: theme,
+                  enableClick: false,
+                  userAuth: user,
+                ),
+                const SizedBox(height: 16),
+              ],
+            ),
           ),
         ),
       ),

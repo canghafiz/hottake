@@ -4,8 +4,8 @@ import 'package:hottake/features/data/data.dart';
 
 abstract class NotificationRemoteDataSource {
   Future<void> create({
-    required String postId,
-    required Map<String, dynamic>? data,
+    required String? postId,
+    required String? comment,
     required NotificationType type,
     required String userId,
     required String myId,
@@ -28,8 +28,8 @@ class NotificationRemoteDataSourceFirebase
     implements NotificationRemoteDataSource {
   @override
   Future<void> create({
-    required String postId,
-    required Map<String, dynamic>? data,
+    required String? postId,
+    required String? comment,
     required NotificationType type,
     required String userId,
     required String myId,
@@ -41,9 +41,9 @@ class NotificationRemoteDataSourceFirebase
         .add(
           NotificationModel.toMap(
             postId: postId,
-            data: data,
             type: type,
-            userId: userId,
+            userId: myId,
+            comment: comment,
           ),
         );
   }

@@ -5,6 +5,13 @@ import 'package:hottake/core/core.dart';
 import 'package:hottake/features/domain/domain.dart';
 
 class PostFirestore {
+  Future<DocumentSnapshot> getSinglePost(String postId) {
+    return Firestore.instance
+        .collection(Firestore.postCollection)
+        .doc(postId)
+        .get();
+  }
+
   Stream<QuerySnapshot> getMyNoteRealtime({
     required String userId,
     required PostOrderType type,
@@ -92,7 +99,6 @@ class PostFirestore {
           context: context,
           userId: userId,
           postId: query.docs[0].id,
-          theme: theme,
           user: user,
         );
       },

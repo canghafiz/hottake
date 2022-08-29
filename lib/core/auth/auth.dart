@@ -204,6 +204,7 @@ class AuthImpl {
   Future<void> logout({
     required BuildContext context,
     required ThemeEntity theme,
+    required String userId,
   }) async {
     // Show Dialog
     showDialog(
@@ -220,6 +221,9 @@ class AuthImpl {
           // Update State
           clearState(context);
           dI<ThemeCubitEvent>().read(context).clear();
+
+          // Notification
+          dI<NotificationService>().unsubAllTopic(userId);
 
           // Navigate
           toMainPage(context: context);

@@ -1,72 +1,43 @@
 import 'package:hottake/core/core.dart';
 
 class NotificationEntity {
-  final String userId, postId, type;
-  final Map<String, dynamic>? data;
+  final String userId, type, date;
+  final String? postId, comment;
   final bool isRead;
 
   NotificationEntity({
     required this.postId,
-    required this.data,
     required this.type,
     required this.userId,
     required this.isRead,
+    required this.comment,
+    required this.date,
   });
 
   static NotificationEntity fromMap(Map<String, dynamic> data) {
     return NotificationEntity(
       postId: data['postId'],
-      data: data['data'],
       type: data['type'],
       userId: data['userId'],
       isRead: data['isRead'],
+      comment: data['comment'],
+      date: data['date'],
     );
   }
 
   static Map<String, dynamic> toMap({
-    required String postId,
-    required Map<String, dynamic>? data,
+    required String? postId,
+    required String? comment,
     required NotificationType type,
     required String userId,
   }) {
     return {
       "postId": postId,
-      "data": data,
+      "comment": comment,
       "type": type.name,
       "userId": userId,
       "isRead": false,
-    };
-  }
-}
-
-class NotificationCommentDataEntity {
-  final String commentId, comment;
-  final String? subcommentId;
-
-  NotificationCommentDataEntity({
-    required this.comment,
-    required this.commentId,
-    required this.subcommentId,
-  });
-
-  // Map
-  static NotificationCommentDataEntity fromMap(Map<String, dynamic> data) {
-    return NotificationCommentDataEntity(
-      comment: data['comment'],
-      commentId: data['commentId'],
-      subcommentId: data['subcommentId'],
-    );
-  }
-
-  static Map<String, dynamic> toMap({
-    required String commentId,
-    required String comment,
-    required String? subcommentId,
-  }) {
-    return {
-      "comment": comment,
-      "commentId": commentId,
-      "subcommentId": subcommentId,
+      "date": convertTime(DateTime.now()),
     };
   }
 }

@@ -17,12 +17,10 @@ class MapPage extends StatefulWidget {
     Key? key,
     required this.userId,
     required this.postId,
-    required this.theme,
     required this.user,
   }) : super(key: key);
   final String userId;
   final String? postId;
-  final ThemeEntity theme;
   final User user;
 
   @override
@@ -31,6 +29,18 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   final Completer<GoogleMapController> _controller = Completer();
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.postId != null) {
+      _controller.future.then(
+        (value) => value.showMarkerInfoWindow(
+          MarkerId(widget.postId!),
+        ),
+      );
+    }
+  }
 
   void _currentLocation() async {
     await getCurrentLocationAndReturn().then(
@@ -96,10 +106,10 @@ class _MapPageState extends State<MapPage> {
                     note: note,
                     rating: rating,
                     userPoll: userPoll,
-                    theme: widget.theme,
+                    theme: theme,
                     user: widget.user,
                   ),
-                  theme: widget.theme,
+                  theme: theme,
                 );
               } else {
                 // Show Dialog
@@ -283,13 +293,11 @@ class _MapPageState extends State<MapPage> {
                         onMapCreated: (value) {
                           _controller.complete(value);
 
-                          if (widget.postId != null) {
-                            value.showMarkerInfoWindow(
-                              MarkerId(
-                                widget.postId!,
-                              ),
-                            );
-                          }
+                          value.showMarkerInfoWindow(
+                            MarkerId(
+                              widget.postId ?? "",
+                            ),
+                          );
 
                           mapStyle(
                             isDark: (theme.primary ==

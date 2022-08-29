@@ -4,7 +4,7 @@ import 'package:hottake/core/core.dart';
 import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/presentation/presentation.dart';
 
-void initState({
+void initialState({
   required BuildContext context,
   required User user,
 }) {

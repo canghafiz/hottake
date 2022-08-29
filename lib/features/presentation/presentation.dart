@@ -27,6 +27,7 @@ export 'package:hottake/features/presentation/pages/create_account_page.dart';
 export 'package:hottake/features/presentation/pages/app_setting_page.dart';
 export 'package:hottake/features/presentation/pages/auth/auth_page.dart';
 export 'package:hottake/features/presentation/pages/activity_page.dart';
+export 'package:hottake/features/presentation/pages/notification_page.dart';
 
 // Widgets
 export 'package:hottake/features/presentation/widgets/navbar_widget.dart';
@@ -56,3 +57,4 @@ export 'package:hottake/features/presentation/widgets/background_widget.dart';
 export 'package:hottake/features/presentation/widgets/post/post_vote_widget.dart';
 export 'package:hottake/features/presentation/widgets/photo/photo_upload_bar.dart';
 export 'package:hottake/features/presentation/widgets/drawer.dart';
+export 'package:hottake/features/presentation/widgets/notification_card_widget.dart';

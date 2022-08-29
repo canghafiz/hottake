@@ -10,12 +10,10 @@ import 'package:hottake/features/presentation/presentation.dart';
 class CommentsPage extends StatelessWidget {
   const CommentsPage({
     Key? key,
-    required this.post,
     required this.postId,
     required this.userId,
     required this.user,
   }) : super(key: key);
-  final PostEntity post;
   final String userId, postId;
   final User user;
 
@@ -79,15 +77,38 @@ class CommentsPage extends StatelessWidget {
                               ),
                               // Total
                               Flexible(
-                                child: Center(
-                                  child: Text(
-                                    "${post.totalComments} Comments",
-                                    style: fontStyle(
-                                      size: 13,
-                                      theme: theme,
-                                    ),
-                                    overflow: TextOverflow.ellipsis,
-                                  ),
+                                child: StreamBuilder<DocumentSnapshot>(
+                                  stream: dI<PostFirestore>()
+                                      .getSingleNoteRealtime(postId),
+                                  builder: (_, snapshot) {
+                                    if (!snapshot.hasData) {
+                                      return Center(
+                                        child: Text(
+                                          "Loading...",
+                                          style: fontStyle(
+                                            size: 13,
+                                            theme: theme,
+                                          ),
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                      );
+                                    }
+                                    // Model
+                                    final PostEntity post = PostEntity.fromMap(
+                                        snapshot.data!.data()
+                                            as Map<String, dynamic>);
+
+                                    return Center(
+                                      child: Text(
+                                        "${post.totalComments} Comments",
+                                        style: fontStyle(
+                                          size: 13,
+                                          theme: theme,
+                                        ),
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                    );
+                                  },
                                 ),
                               ),
                             ],

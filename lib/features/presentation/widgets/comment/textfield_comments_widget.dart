@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hottake/core/core.dart';
@@ -96,45 +97,80 @@ class _TextfieldCommentsWidgetState extends State<TextfieldCommentsWidget> {
               ),
               const SizedBox(width: 12),
               // Send
-              GestureDetector(
-                onTap: () {
-                  if (controller.text.isNotEmpty) {
-                    // Update Data
-                    if (state.commentId == null) {
-                      // Comment
-                      dI<AddComment>().call(
-                        postId: widget.postId,
-                        userId: widget.userId,
-                        comment: controller.text,
-                      );
-
-                      controller.clear();
-
-                      // Update State
-                      dI<CommentCubitEvent>().read(context).unFocus();
-                    } else {
-                      // SubComment
-                      dI<AddSubComment>().call(
-                        postId: widget.postId,
-                        commentId: state.commentId!,
-                        userId: widget.userId,
-                        comment: controller.text,
-                      );
-
-                      controller.clear();
-
-                      // Update State
-                      dI<CommentCubitEvent>()
-                          .read(context)
-                          .updateCommentId(null);
-                      dI<CommentCubitEvent>().read(context).unFocus();
-                    }
+              FutureBuilder<DocumentSnapshot>(
+                future: dI<PostFirestore>().getSinglePost(widget.postId),
+                builder: (context, snapshot) {
+                  if (!snapshot.hasData) {
+                    return const SizedBox();
                   }
+
+                  // Model
+                  final PostEntity post = PostEntity.fromMap(
+                      snapshot.data!.data() as Map<String, dynamic>);
+
+                  return FutureBuilder<DocumentSnapshot>(
+                    future: dI<UserFirestore>().getOneTimeUser(widget.userId),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) {
+                        return const SizedBox();
+                      }
+                      // Model
+                      final UserEntity user = UserEntity.fromMap(
+                          snapshot.data!.data() as Map<String, dynamic>);
+
+                      return GestureDetector(
+                        onTap: () {
+                          if (controller.text.isNotEmpty) {
+                            // Call Notification
+                            dI<NotificationService>().sendNotifPost(
+                              postId: widget.postId,
+                              comment: controller.text,
+                              type: NotificationType.comment,
+                              userId: post.userId,
+                              myId: widget.userId,
+                              username: user.username,
+                            );
+
+                            // Update Data
+                            if (state.commentId == null) {
+                              // Comment
+                              dI<AddComment>().call(
+                                postId: widget.postId,
+                                userId: widget.userId,
+                                comment: controller.text,
+                              );
+
+                              controller.clear();
+
+                              // Update State
+                              dI<CommentCubitEvent>().read(context).unFocus();
+                            } else {
+                              // SubComment
+                              dI<AddSubComment>().call(
+                                postId: widget.postId,
+                                commentId: state.commentId!,
+                                userId: widget.userId,
+                                comment: controller.text,
+                              );
+
+                              controller.clear();
+
+                              // Update State
+                              dI<CommentCubitEvent>()
+                                  .read(context)
+                                  .updateCommentId(null);
+                              dI<CommentCubitEvent>().read(context).unFocus();
+                            }
+                          }
+                        },
+                        child: Icon(
+                          Icons.send_outlined,
+                          color: convertTheme(widget.theme.secondary),
+                        ),
+                      );
+                    },
+                  );
                 },
-                child: Icon(
-                  Icons.send_outlined,
-                  color: convertTheme(widget.theme.secondary),
-                ),
               ),
             ],
           ),

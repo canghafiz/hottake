@@ -7,6 +7,7 @@ class NotificationFirestore {
         .collection(Firestore.userCollection)
         .doc(userId)
         .collection(Firestore.notificationCollection)
+        .orderBy("date", descending: true)
         .snapshots();
   }
 }

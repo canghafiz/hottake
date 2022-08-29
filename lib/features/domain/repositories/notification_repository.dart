@@ -4,8 +4,8 @@ import 'package:hottake/core/core.dart';
 
 abstract class NotificationRepository {
   FutureOr<void> create({
-    required String postId,
-    required Map<String, dynamic>? data,
+    required String? postId,
+    required String? comment,
     required NotificationType type,
     required String userId,
     required String myId,

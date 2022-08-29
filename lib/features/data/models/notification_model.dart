@@ -4,24 +4,26 @@ import 'package:hottake/features/domain/domain.dart';
 class NotificationModel extends NotificationEntity {
   NotificationModel({
     required super.postId,
-    required super.data,
     required super.type,
     required super.userId,
     required super.isRead,
+    required super.comment,
+    required super.date,
   });
 
   static Map<String, dynamic> toMap({
-    required String postId,
-    required Map<String, dynamic>? data,
+    required String? postId,
+    required String? comment,
     required NotificationType type,
     required String userId,
   }) {
     return {
       "postId": postId,
-      "data": data,
+      "comment": comment,
       "type": type.name,
       "userId": userId,
       "isRead": false,
+      "date": convertTime(DateTime.now()),
     };
   }
 }
