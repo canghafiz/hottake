@@ -67,6 +67,7 @@ void toMapPage({
         userId: userId,
         postId: postId,
         user: user,
+        fromMainPage: false,
       ),
     ),
   );

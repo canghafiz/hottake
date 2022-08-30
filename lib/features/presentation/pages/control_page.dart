@@ -40,6 +40,7 @@ class _ControlPageState extends State<ControlPage> {
         userId: widget.user.uid,
         postId: widget.postId,
         user: widget.user,
+        fromMainPage: true,
       ),
       PostLocationPage(
           postId: null, userId: widget.user.uid, user: widget.user),

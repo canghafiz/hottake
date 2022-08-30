@@ -203,7 +203,14 @@ class NotificationService {
               type == NotificationType.like) {
             // Navigate
             navigatorKey.currentState!.push(
-              route(MapPage(userId: userId, postId: postId, user: user)),
+              route(
+                MapPage(
+                  userId: userId,
+                  postId: postId,
+                  user: user,
+                  fromMainPage: false,
+                ),
+              ),
             );
           }
         }

@@ -18,9 +18,11 @@ class MapPage extends StatefulWidget {
     required this.userId,
     required this.postId,
     required this.user,
+    required this.fromMainPage,
   }) : super(key: key);
   final String userId;
   final String? postId;
+  final bool fromMainPage;
   final User user;
 
   @override
@@ -152,7 +154,7 @@ class _MapPageState extends State<MapPage> {
           user: widget.user,
         ),
         appBar: AppBar(
-          leading: (widget.postId == null)
+          leading: (widget.fromMainPage)
               ? null
               : IconButton(
                   onPressed: () {
