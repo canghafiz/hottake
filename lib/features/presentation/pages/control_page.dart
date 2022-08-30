@@ -11,8 +11,10 @@ class ControlPage extends StatefulWidget {
   const ControlPage({
     Key? key,
     required this.user,
+    required this.postId,
   }) : super(key: key);
   final User user;
+  final String? postId;
 
   @override
   State<ControlPage> createState() => _ControlPageState();
@@ -36,7 +38,7 @@ class _ControlPageState extends State<ControlPage> {
       HomePage(userId: widget.user.uid, user: widget.user),
       MapPage(
         userId: widget.user.uid,
-        postId: null,
+        postId: widget.postId,
         user: widget.user,
       ),
       PostLocationPage(

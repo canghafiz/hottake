@@ -87,7 +87,7 @@ class MainApp extends StatelessWidget {
             title: "HotTake",
             debugShowCheckedModeBanner: false,
             theme: appTheme(context: context, theme: state),
-            home: const MainPage(),
+            home: const MainPage(postId: null),
           ),
         ),
       ),

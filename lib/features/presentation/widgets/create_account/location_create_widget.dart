@@ -35,7 +35,7 @@ class LocationCreateWidget extends StatelessWidget {
       dI<BackendCubitEvent>().read(context).updateStatus(BackendStatus.undoing);
 
       // Navigate
-      toControlPage(context: context, user: user);
+      toControlPage(context: context, user: user, postId: null);
     }
 
     return SingleChildScrollView(
@@ -76,6 +76,9 @@ class LocationCreateWidget extends StatelessWidget {
                       (allow) {
                         if (allow) {
                           updateData(createAccountState);
+                          // Call Storage
+                          dI<SharedPreferencesService>()
+                              .setLocationPermission(allow);
                           return;
                         }
                         // Show Dialog

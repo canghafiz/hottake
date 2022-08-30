@@ -108,4 +108,5 @@ void init() {
   dI.registerLazySingleton(() => ImagePickerService());
   dI.registerLazySingleton(() => NotificationFirestore());
   dI.registerLazySingleton(() => NotificationService());
+  dI.registerLazySingleton(() => SharedPreferencesService());
 }

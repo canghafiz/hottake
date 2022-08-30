@@ -2,7 +2,9 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:hottake/core/core.dart';
+import 'package:hottake/dependency_injection.dart';
 import 'package:hottake/features/domain/domain.dart';
+import 'package:hottake/features/presentation/cubits/navbar/navbar_cubit.dart';
 
 class PostFirestore {
   Future<DocumentSnapshot> getSinglePost(String postId) {
@@ -95,12 +97,13 @@ class PostFirestore {
         .then(
       (query) {
         // Navigate
-        toMapPageFromPostCreator(
+        toMainPage(
           context: context,
-          userId: userId,
           postId: query.docs[0].id,
-          user: user,
         );
+
+        // Update State
+        dI<NavbarCubitEvent>().read(context).updateBottom(1);
       },
     );
   }

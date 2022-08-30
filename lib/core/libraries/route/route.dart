@@ -72,24 +72,6 @@ void toMapPage({
   );
 }
 
-void toMapPageFromPostCreator({
-  required BuildContext context,
-  required String userId,
-  required String? postId,
-  required User user,
-}) {
-  Navigator.pushReplacement(
-    context,
-    route(
-      MapPage(
-        userId: userId,
-        postId: postId,
-        user: user,
-      ),
-    ),
-  );
-}
-
 void toCommentsPage({
   required BuildContext context,
   required String userId,
@@ -123,10 +105,11 @@ void toImageDetailPage({
 void toControlPage({
   required BuildContext context,
   required User user,
+  required String? postId,
 }) {
   Navigator.pushAndRemoveUntil(
     context,
-    route(ControlPage(user: user)),
+    route(ControlPage(user: user, postId: postId)),
     (route) => false,
   );
 }
@@ -144,10 +127,11 @@ void toCreateAccountPage({
 
 void toMainPage({
   required BuildContext context,
+  required String? postId,
 }) {
   Navigator.pushAndRemoveUntil(
     context,
-    route(const MainPage()),
+    route(MainPage(postId: postId)),
     (route) => false,
   );
 }

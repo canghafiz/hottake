@@ -52,18 +52,15 @@ class _PostLocationPageState extends State<PostLocationPage> {
   @override
   void initState() {
     super.initState();
-    final state = dI<PostCubitEvent>().read(context).state;
-    if (state.latitude == null && state.longitude == null) {
-      getCurrentLocation(
-        (value) {
-          // Update State
-          dI<PostCubitEvent>().read(context).updateLocation(
-                latitude: value.latitude.toString(),
-                longitude: value.longitude.toString(),
-              );
-        },
-      );
-    }
+    getCurrentLocation(
+      (value) {
+        // Update State
+        dI<PostCubitEvent>().read(context).updateLocation(
+              latitude: value.latitude.toString(),
+              longitude: value.longitude.toString(),
+            );
+      },
+    );
     if (widget.postId == null) {
       // Update State
       dI<PostCubitEvent>().read(context).clear();
@@ -145,7 +142,7 @@ class _PostLocationPageState extends State<PostLocationPage> {
                   ],
                 ),
               ),
-              // Map
+              // Map  || Btn Select Location
               Expanded(
                 child: BlocSelector<PostCubit, PostState, PostState>(
                   selector: (state) => state,
@@ -179,133 +176,165 @@ class _PostLocationPageState extends State<PostLocationPage> {
                                     ),
                                   );
                                 }
-                                return Stack(
+                                return Column(
                                   children: [
-                                    GoogleMap(
-                                      zoomControlsEnabled: false,
-                                      myLocationButtonEnabled: false,
-                                      markers: {
-                                        Marker(
-                                          markerId: const MarkerId('1'),
-                                          position: LatLng(
-                                            double.parse(state.latitude!),
-                                            double.parse(state.longitude!),
-                                          ),
-                                          icon: snapshot.data!,
-                                          infoWindow: const InfoWindow(
-                                            title:
-                                                "Move the pin to select location on map",
-                                          ),
-                                        ),
-                                      },
-                                      circles: {
-                                        Circle(
-                                          circleId: const CircleId("Radius"),
-                                          center: LatLng(
-                                            yourLocation.data!.latitude,
-                                            yourLocation.data!.longitude,
-                                          ),
-                                          radius: 50,
-                                          fillColor: convertTheme(
-                                                  (themes[0] as ThemeEntity)
-                                                      .third)
-                                              .withOpacity(0.3),
-                                          strokeColor: Colors.transparent,
-                                        ),
-                                      },
-                                      myLocationEnabled: true,
-                                      initialCameraPosition: CameraPosition(
-                                        target: LatLng(
-                                          double.parse(state.latitude!),
-                                          double.parse(state.longitude!),
-                                        ),
-                                        zoom: 20,
-                                      ),
-                                      onMapCreated: (value) {
-                                        _controller.complete(value);
-                                        value.showMarkerInfoWindow(
-                                          const MarkerId("1"),
-                                        );
-                                        mapStyle(
-                                          isDark: (theme.primary ==
-                                              (themes[0] as ThemeModel)
-                                                  .primary),
-                                          style: (style) {
-                                            value.setMapStyle(style);
-                                          },
-                                        );
-                                      },
-                                      onCameraMove: (value) {
-                                        if (locationOnRadius(
-                                          current: LatLng(
-                                            yourLocation.data!.latitude,
-                                            yourLocation.data!.longitude,
-                                          ),
-                                          postLoc: LatLng(
-                                            value.target.latitude,
-                                            value.target.longitude,
-                                          ),
-                                          radius: 50,
-                                        )) {
-                                          // Update State
-                                          dI<PostCubitEvent>()
-                                              .read(context)
-                                              .updateLocation(
-                                                latitude: value.target.latitude
-                                                    .toString(),
-                                                longitude: value
-                                                    .target.longitude
-                                                    .toString(),
+                                    // Map
+                                    Expanded(
+                                      child: Stack(
+                                        children: [
+                                          GoogleMap(
+                                            zoomControlsEnabled: false,
+                                            myLocationButtonEnabled: false,
+                                            markers: {
+                                              Marker(
+                                                markerId: const MarkerId('1'),
+                                                position: LatLng(
+                                                  double.parse(state.latitude!),
+                                                  double.parse(
+                                                      state.longitude!),
+                                                ),
+                                                icon: snapshot.data!,
+                                                infoWindow: const InfoWindow(
+                                                  title:
+                                                      "Move the pin to select location on map",
+                                                ),
+                                              ),
+                                            },
+                                            circles: {
+                                              Circle(
+                                                circleId:
+                                                    const CircleId("Radius"),
+                                                center: LatLng(
+                                                  yourLocation.data!.latitude,
+                                                  yourLocation.data!.longitude,
+                                                ),
+                                                radius: 50,
+                                                fillColor: convertTheme(
+                                                        (themes[0]
+                                                                as ThemeEntity)
+                                                            .third)
+                                                    .withOpacity(0.3),
+                                                strokeColor: Colors.transparent,
+                                              ),
+                                            },
+                                            myLocationEnabled: true,
+                                            initialCameraPosition:
+                                                CameraPosition(
+                                              target: LatLng(
+                                                double.parse(state.latitude!),
+                                                double.parse(state.longitude!),
+                                              ),
+                                              zoom: 20,
+                                            ),
+                                            onMapCreated: (value) {
+                                              _controller.complete(value);
+                                              value.showMarkerInfoWindow(
+                                                const MarkerId("1"),
                                               );
-                                        }
-                                      },
-                                    ),
-                                    Align(
-                                      alignment: Alignment.bottomRight,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          bottom: 16,
-                                          right: 16,
-                                        ),
-                                        child: FloatingActionButton(
-                                          onPressed: () {
-                                            _currentLocation();
-                                          },
-                                          child: Icon(
-                                            Icons.location_on,
-                                            color: convertTheme(theme.primary),
+                                              mapStyle(
+                                                isDark: (theme.primary ==
+                                                    (themes[0] as ThemeModel)
+                                                        .primary),
+                                                style: (style) {
+                                                  value.setMapStyle(style);
+                                                },
+                                              );
+                                            },
+                                            onCameraMove: (value) {
+                                              if (locationOnRadius(
+                                                current: LatLng(
+                                                  yourLocation.data!.latitude,
+                                                  yourLocation.data!.longitude,
+                                                ),
+                                                postLoc: LatLng(
+                                                  value.target.latitude,
+                                                  value.target.longitude,
+                                                ),
+                                                radius: 50,
+                                              )) {
+                                                // Update State
+                                                dI<PostCubitEvent>()
+                                                    .read(context)
+                                                    .updateLocation(
+                                                      latitude: value
+                                                          .target.latitude
+                                                          .toString(),
+                                                      longitude: value
+                                                          .target.longitude
+                                                          .toString(),
+                                                    );
+                                              }
+                                            },
                                           ),
-                                        ),
+                                          Align(
+                                            alignment: Alignment.bottomRight,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                bottom: 16,
+                                                right: 16,
+                                              ),
+                                              child: FloatingActionButton(
+                                                onPressed: () {
+                                                  _currentLocation();
+                                                },
+                                                child: Icon(
+                                                  Icons.location_on,
+                                                  color: convertTheme(
+                                                      theme.primary),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                          Align(
+                                            alignment: Alignment.topCenter,
+                                            child: Padding(
+                                              padding: const EdgeInsets.only(
+                                                top: 16,
+                                              ),
+                                              child: Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                  horizontal: 8,
+                                                  vertical: 4,
+                                                ),
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                      const BorderRadius.all(
+                                                    Radius.circular(20),
+                                                  ),
+                                                  color:
+                                                      convertTheme(theme.third),
+                                                ),
+                                                child: Text(
+                                                  "Radius 50 Meter",
+                                                  style: fontStyle(
+                                                    size: 11,
+                                                    theme: theme,
+                                                    color: Colors.white,
+                                                  ),
+                                                  textAlign: TextAlign.center,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ),
-                                    Align(
-                                      alignment: Alignment.topCenter,
-                                      child: Padding(
-                                        padding: const EdgeInsets.only(
-                                          top: 16,
-                                        ),
-                                        child: Container(
-                                          padding: const EdgeInsets.symmetric(
-                                            horizontal: 8,
-                                            vertical: 4,
-                                          ),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                const BorderRadius.all(
-                                              Radius.circular(20),
-                                            ),
-                                            color: convertTheme(theme.third),
-                                          ),
-                                          child: Text(
-                                            "Radius 50 Meter",
-                                            style: fontStyle(
-                                              size: 11,
-                                              theme: theme,
-                                              color: Colors.white,
-                                            ),
-                                            textAlign: TextAlign.center,
-                                          ),
-                                        ),
+                                    // Btn Select Location
+                                    Padding(
+                                      padding: const EdgeInsets.all(16),
+                                      child: ElevatedButtonText(
+                                        onTap: () {
+                                          // Navigate
+                                          toPostCreatorPage(
+                                            context: context,
+                                            userId: widget.userId,
+                                            postId: widget.postId,
+                                            user: widget.user,
+                                          );
+                                        },
+                                        themeEntity: theme,
+                                        text: "Select Location",
                                       ),
                                     ),
                                   ],
@@ -314,23 +343,6 @@ class _PostLocationPageState extends State<PostLocationPage> {
                             );
                           },
                         ),
-                ),
-              ),
-              // Btn Select Location
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: ElevatedButtonText(
-                  onTap: () {
-                    // Navigate
-                    toPostCreatorPage(
-                      context: context,
-                      userId: widget.userId,
-                      postId: widget.postId,
-                      user: widget.user,
-                    );
-                  },
-                  themeEntity: theme,
-                  text: "Select Location",
                 ),
               ),
             ],

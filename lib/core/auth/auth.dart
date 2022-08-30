@@ -127,7 +127,7 @@ class AuthImpl {
         }
 
         // Navigate
-        toMainPage(context: context);
+        toMainPage(context: context, postId: null);
       },
     );
   }
@@ -153,7 +153,7 @@ class AuthImpl {
         }
 
         // Navigate
-        toMainPage(context: context);
+        toMainPage(context: context, postId: null);
       },
     );
   }
@@ -226,7 +226,7 @@ class AuthImpl {
           dI<NotificationService>().unsubAllTopic(userId);
 
           // Navigate
-          toMainPage(context: context);
+          toMainPage(context: context, postId: null);
         },
         onFalseText: "Cancel",
         onTrueText: "Yes",

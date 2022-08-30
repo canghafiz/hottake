@@ -109,3 +109,5 @@ String convertDoubleNumber(double value) {
 
   return value.toString().replaceAll(regex, "");
 }
+
+const locationPermissionKey = "locationPermission";
